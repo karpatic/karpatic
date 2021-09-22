@@ -7,8 +7,8 @@ Presently I teach data science at the University of Baltimore, and have created 
 Below you will find a few samples of my work:
 
 - Anything hosted on my current employer's [github](https://github.com/bniajfi) account
-- This [website generator](https://github.com/bnia/bniabuilder) I built to create data-intensive applications
-- A [stripped-down](https://github.com/3Diot/template_webpacked_capacitor) version I use for miscellaneous projects ( such as this midi reprograming [tool](https://charleskarpati.com/stomp/))
+- A [website generator](https://github.com/bnia/bniabuilder) I built to create data-intensive applications
+- A [stripped-down](https://github.com/3Diot/template_webpacked_capacitor) version of the generator I use for miscellaneous projects ( such as this midi reprograming [tool](https://charleskarpati.com/stomp/))
 
 - And the video below is of a website I made that communicates analyzed music data to an IOT Mesh network via Web Bluetooth:
 <p align="center">
@@ -20,7 +20,7 @@ Below you will find a few samples of my work:
   <img width="300" height="350" src="https://charleskarpati.com/images/3DprintV2.jpg" alt=" A 3D printed map of Baltimore. Heights represent the percent of households with no internet."/>
 </p>
 
-- I have a bunch more stuff that is private (ML, Stonk, and crypto-projects) and we may talk about all that if you are interested.
+- I have much more stuff that is private (ML, Stonk, and crypto-projects) and we may talk about all that if you are interested.
 
 It would be a great honor to work with you. 
 
