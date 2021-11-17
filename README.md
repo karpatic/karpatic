@@ -1,8 +1,8 @@
-# Hi Ben, 👋
+# Hi, 👋
 
 I am Charles Karpati, 27 years old, resident of Bethesda, Maryland. I have an MS in information systems from UMBC (May 2020).  
 
-Presently I teach data science at the University of Baltimore, and have created numerous tutorials covering a wide array of technical concepts, see references [1](https://github.com/BNIA/dataplay), [2](https://github.com/BNIA/VitalSigns), [3](https://github.com/BNIA/dataguide), [4](https://github.com/BNIA/datalabs). I am also a full stack developer (Vanilla or Webpack+Node, Python) for a non-profit organization in Baltimore City, where I create and disseminate quality of life indicators (Python and JS). I take pride in my work, all my tutorials are accompanied by open-source resources published on pypi and npm. I do this to help others in the non-profit sector with data processing, creation, and visualization. I am also mentoring data-science interns, developing software to assist internal operations, and to clean, analyze, and process geo-spatial data. I started programming when I was fourteen, I enjoy the cyber and social aspects of it all. I am passionately involved with the CryptoVoxels community, and have made a decision to pivot my career towards building out the defi infrastructure. I presently own a parcel in CV, where I intend to introduce next-gen NFT's.
+Presently I teach data science at the University of Baltimore, and have created numerous tutorials covering a wide array of technical concepts, see references [1](https://github.com/BNIA/dataplay), [2](https://github.com/BNIA/VitalSigns), [3](https://github.com/BNIA/dataguide), [4](https://github.com/BNIA/datalabs). I am also a full stack developer (Vanilla or Webpack+Node, Python) for a non-profit organization in Baltimore City, where I create and disseminate quality of life indicators (Python and JS). I take pride in my work, all my tutorials are accompanied by open-source resources published on pypi and npm. I do this to help others in the non-profit sector with data processing, creation, and visualization. I am also mentoring data-science interns, developing software to assist internal operations, and to clean, analyze, and process geo-spatial data. I started programming when I was fourteen, I enjoy the cyber and social aspects of it all. I am passionate about the defi community, and have made a decision to pivot my career towards building out the it's infrastructure.
 
 Below you will find a few samples of my work:
 
@@ -21,7 +21,5 @@ Below you will find a few samples of my work:
 </p>
 
 - I have much more stuff that is private (ML, Stonk, and crypto-projects) and we may talk about all that if you are interested.
-
-It would be a great honor to work with you. 
 
 Sincerely, Charles.
