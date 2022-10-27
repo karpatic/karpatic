@@ -1,10 +1,10 @@
-# Hi there Cryptovoxels team! 👋
+# Hello! 👋
 
-I am Carlos Karpati, 27 years old, resident of Bethesda, Maryland. I have an MS in information systems from UMBC (May 2020).  
+I am Carlos Karpati, 28 years old, resident of Bethesda, Maryland. I have an MS in information systems from UMBC (May 2020).  
 
 I see that you are in need of a react/node developer and I want to let you know that I am your ideal candidate!
 
-A self-taught programmer who started at the age of 14, for the past 5 years I worked as a full stack developer (Vanilla or React, Webpack+Node, Python) at a non-profit in Baltimore City. While there, I created and disseminated quality of life indicators from disparate administrative datasets for the benefaction of the cities inhabitants and community-based orgs. A process that existed for 13 years and once took 3 people the better part of a year to do has since been automated. Every one of the last three mayors have bettered their understanding of the city through our services and have each directly credited our works in their campaign victory speeches.
+A self-taught programmer who started at the age of 14, I spent 5 years after undergrad working as a full stack developer (Vanilla or React, Webpack+Node, Python) at a University of Baltimore institute that works to make city-government data accessible to the public. While there, I created and disseminated quality of life indicators from disparate administrative datasets for the benefaction of the cities inhabitants and community-based orgs.
 
 As a self-support unit, the BNIA-JFI organization took on countless jobs with neighborhood organizations to create bespoke data-intense web products to further analyze, enmesh, and visualize community data. Through this, I have ammased extensive experience working with react, node, and webpack. see references [1](https://geoloom.org), [2](https://bniajfi.org/bold/), [3](https://bniajfi.org/greenpatterns/). More examples are provided below. Being the sole developer for the entire outfit, a lot was riding on my ability to perform - and I did. As a forewarning: expired data sharing agreements means some functinality on the above links are now defunt.
 
