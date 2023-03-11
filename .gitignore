@@ -1,0 +1,11 @@
+.venv/
+.node_modules/
+node_modules
+src/ipynb/notready
+.env
+dist
+esp_lights/.pio
+esp_lights/.vscode/.browse.c_cpp.db*
+esp_lights/.vscode/c_cpp_properties.json
+esp_lights/.vscode/launch.json
+esp_lights/.vscode/ipch

@@ -1,0 +1,141 @@
+/* Basics */
+* {font-family: Helvetica, Arial, sans-serif; }
+*{ user-select: text; box-sizing: border-box; position: relative;}
+
+/* CSS Not used onload => blockquote, blockquote span, blockquote::before, pre, pre>code */
+
+/* 
+more space between contrasts. 
+more or same vertical padding than horizontal.
+
+Give each color a distinct brightness value.
+use near-white or black (f2f2f2 or 222 if you aren't saturating) 
+- f2f2f2 is just 95% brightness 
+- 222222 is just 13% brightness 
+Saturate neutrals colors at least 5%.
+Layers get brighter. 
+- +12% more for dark interfaces,
+- +7% for light interfaces.
+
+--canvas:                    hsl(0, 10%, 90%); 
+--background:                hsl(0, 80%, 90%); 
+--foreground:                rgb(255, 240, 240); 
+*/  
+:root {  
+  --canvas: 227, 227, 232;
+  --background-darker: 214, 214, 255; 
+  --background: 209, 209, 250; 
+  --foreground: 240, 240, 255;
+  --near-black: 0, 72, 72; /* 180, 100%, 14% */
+  /* --near-black: 0, 14, 42; darkblue - 220, 100%, 8% */
+  --near-white: 226, 226, 238; /*light red -  0, 26%, 91% */
+
+  --max-width: min(800px, 100vw);
+}
+:root {  
+  /* phasing bg to show and hide cubes */
+  --bggradient1:  rgb(var(--canvas));
+  --bggradient2:  rgba(var(--canvas), 0.8);
+
+  /*Foot and Header Gradients And Shadows */
+  --bggradientheader: linear-gradient(70deg, 
+          rgba(var(--background), .5), 
+          rgba(var(--foreground), .5), 
+          rgba(var(--background), .5) 
+  );  
+  --bggradientfooter: linear-gradient(70deg, 
+          rgba(var(--background), .6), 
+          rgba(var(--foreground), .6), 
+          rgba(var(--background), .6) 
+  );
+  /* shadows should double blur than their y's */
+  /* Borders should contrast both interior and int/exterior of container */
+  --filterdropshadowover: drop-shadow(4px 4px 10px rgb(var(--foreground)) );
+  --filterdropshadowunder: drop-shadow(4px -4px 1px rgb(var(--background)));
+
+  --radial1:radial-gradient(at 52% 13%, hsla(215,77%,79%,1) 0px, transparent 50%),
+  radial-gradient(at 40% 33%, hsla(173,63%,76%,1) 0px, transparent 50%),
+  radial-gradient(at 15% 92%, hsla(166,97%,69%,1) 0px, transparent 50%),
+  radial-gradient(at 97% 78%, hsla(229,94%,76%,1) 0px, transparent 50%),
+  radial-gradient(at 19% 52%, hsla(27,99%,69%,1) 0px, transparent 50%),
+  radial-gradient(at 68% 16%, hsla(339,76%,78%,1) 0px, transparent 50%),
+  radial-gradient(at 25% 1%, hsla(202,73%,63%,1) 0px, transparent 50%);
+  
+  --max-width: min(800px, 100vw);
+  --change1: 0%;
+  --change2: 100%;
+  --path1:path('M 0 0 L 0 2 L 0 0');
+  --path2:0;
+}
+/*
+raise lower letter spacing and line height for smaller text 
+-- text size multiples of 8. line height +8px.
+*/
+html { 
+  font-size: 18px; 
+  line-height: 26px;
+} 
+::selection {  background: rgb(var(--background)); }
+h1,h2,h3,h4 {text-align: center; text-shadow: none; transition: all .3s ease-in-out;}
+h2:hover,h3:hover,h4:hover { text-shadow: 1px 1px 45px rgb(var(--near-black)); transition: all .4s ease-in-out;}
+h1,h2,h3,h4,a { color: rgb(var(--near-black)); font-weight: 600; font-family: Courier New,Courier,Monaco,monospace;}
+
+a{ text-decoration: none; } 
+/* Expanding hover effect */
+a::before {
+  content: '';
+  background-color: rgb(var(--background));
+  position: absolute;
+  left: 0; 
+  width: 100%;
+  height: 0px;
+  z-index: -1;
+  transition: all .3s ease-in-out;
+}
+a:hover::before {
+  height: 8px;
+  bottom: 0;
+  height: 100%;
+}
+span{ font-family: inherit;}
+p { word-break: break-word; font-family: Georgia,TimesNewRoman,Times,Times New Roman,serif; }
+pre{ max-width: calc( var(--max-width) - 70px); background: rgb(var(--background)); padding: 12px; }
+pre > code { color: var(--foreground) }
+/* Instead of setting a page width use: li { max-width: 80ch; } */
+/* Blockquote */
+blockquote{ 
+  margin: 32px 24px;
+  font-style:italic; background-color: rgb(var(--foreground)); 
+  color: var(--foreground); border-left:8px solid rgb(var(--foreground)); 
+  position: relative; padding: 12px 5px 1px 5px; 
+}
+blockquote::before{ content: "\201C"; color: rgb(var(--foreground)); padding-top: 6px; font-size:4em; position: absolute; left: 10px; top:-10px; }
+blockquote span{ color: rgb(var(--near-black)); font-style: normal; font-weight: bold; display: block; text-align: center; }
+
+/* Summary */
+.details{ background: rgba(var(--background), 0.4); }
+details[open] > summary::marker { content: "💖"; }
+details > summary > * { display: inline; }
+summary::marker { content: "🧡"; } 
+
+ul{  
+  padding-left: 0px;
+}
+
+summary{ text-align: center; cursor: pointer; font-size: 20px;padding: 12px 0px;}
+
+hr{
+  margin: 1px 1px 10px 1px;
+  border-top: 1px solid rgba(var(--near-black), 0.1);
+}
+
+/*
+body
+*/
+body { 
+  margin: 0px;
+  overflow-x: hidden;
+} 
+html {
+  scroll-behavior: smooth;
+}

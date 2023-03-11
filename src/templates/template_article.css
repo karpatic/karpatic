@@ -1,0 +1,283 @@
+h1>a{
+  /* transparent text w animated lin gradient bg */
+  background: linear-gradient(90deg, 
+    rgb(var(--near-black)), 
+    rgba(var(--near-black), .4), 
+    rgb(var(--near-black)), 
+    rgba(var(--near-black), .4)
+  );
+  background-size: 300% 100%; 
+  background-clip: text; 
+  color: transparent;
+  animation: gradient 5s ease infinite; 
+}
+h1>a:hover { text-decoration: underline; color: rgb(var(--near-black)); }
+
+
+
+
+
+
+#gradient_bg::before {
+  z-index: -6;
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 300%;
+  background: linear-gradient(180deg, var(--bggradient1), var(--bggradient2));
+  animation: gradient-scroll 2s alternate infinite 2000ms; 
+
+}
+@keyframes gradient-scroll {
+  0% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(0, 0, 0); }
+  75% { transform: translate3d(0, -50%, 0); } 
+  100% { transform: translate3d(0, -50%, 0); } 
+}
+
+@keyframes gradient {
+    0% {		background-position: 0% 0%;	} 
+    50% {	  background-position: 100% 100%;	} 
+    100% {	background-position: 0% 0%;	}  
+}
+
+
+
+
+
+
+body:has(#sitemap:focus-within) { 
+  overscroll-behavior-y: contain; /* Prevent drag-refresh */
+} 
+#sitemap{
+  position: fixed; 
+  min-width: 8em;
+  top: 0;
+  left: 0;  
+  z-index: 999;
+  overflow: hidden;   
+  border-radius: .7rem;
+  padding: 1rem;
+  padding-top: 0px;
+  overflow-x: hidden;
+
+  backdrop-filter: blur(2px) saturate(100%);
+  -webkit-backdrop-filter: blur(2px) saturate(100%);
+  background-color: rgba(var(--foreground), 0.6);
+  border-radius: 12px; 
+  box-shadow: 3px 2px 5px rgb(var(--background) ), -3px -2px 20px rgb(var(--near-white)), inset 0px 0 10px rgb(var(--near-white));
+}
+@keyframes glow { 
+  50% { box-shadow: 3px 2px 20px rgb(var(--near-white)), -3px -2px 20px rgb(var(--background)), inset 0px 0 10px rgb(var(--background));  } 
+}
+
+/* hide checkbox, but still expose it to screen readers.*/
+input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; white-space: nowrap; }
+
+/* Use Labels to trigger CSS Effects on checkbox checked */
+#toggle-sitemap{ visibility: hidden; }
+#toggle-sitemap:not(:checked) ~ #sitemap { animation: collapse 1s forwards, glow 6s linear infinite; }
+#toggle-sitemap:checked ~ #sitemap { animation: expand 1s forwards, pulse 6s linear infinite; }
+@keyframes collapse { from { max-height:75vh} to { max-height:3em; } }
+@keyframes expand { to { max-height:75vh } from { max-height:3em; } }
+
+/* Use Labels to trigger CSS Effects on checkbox checked */
+#sitemap > label {
+  line-height: 3em; width: -webkit-fill-available; 
+  display: flex; cursor: grab;
+  color: rgb(var(--near-black));
+  justify-content: space-between;
+}
+#sitemap > label:hover {
+  text-shadow: 1px 1px 45px rgb(var(--near-black)); 
+} 
+
+#toggle-sitemap:not(:checked) ~ #sitemap > label > span { animation: dismiss 1s forwards;  } 
+#toggle-sitemap:checked ~ #sitemap > label > span { animation: reveal 500ms forwards;  }
+#sitemap > label > span:nth-child(2) { --rotate:0deg; } 
+#sitemap > label > span:nth-child(3) { --rotate:45deg; } 
+@keyframes reveal {  from {transform:rotate(var(--rotate))} to {transform: rotate(90deg); } } 
+@keyframes dismiss { from {transform:rotate(90deg)} to {transform: rotate(var(--rotate)); } } 
+
+#sitemap-content{
+  display:grid;
+  overflow-x: hidden;
+  max-height: calc(75vh - 6em);
+}
+
+  /* triggers w observer on header and on hover */
+  @keyframes shake {
+    0% {transform: translate(0, 0);-webkit-transform: translate(0, 0);}
+    50% {transform: translate(4px, 0);-webkit-transform: translate(4px, 0);}
+    100% {transform: translate(0, 0);-webkit-transform: translate(0, 0);}
+  } 
+  
+  #currentPage:hover {color: rgb(var(--near-black));}
+  #currentPage + div>a:hover{ text-decoration: line-through !important;}
+  #currentPage + div {display:block;font-size: 16px; line-height:16px;}
+  #currentPage:hover{animation:gradient 4s linear alternate infinite, shake 1s linear alternate infinite;}
+  #currentPage{ animation:gradient 4s linear alternate infinite;
+    background-size: 100% 400%;
+    border-radius: 5px;
+    background-image: var(--radial1)
+  }
+  #drag{
+    position:absolute;
+    color:rgb(var(--near-black));
+    top:-19px;
+    left:-12px;
+    font-size: 12px;
+    animation:shake 1s linear alternate infinite;
+  }
+  #sitemap-content> a { display: inherit;  width: fit-content;}
+  #sitemap-content> a:hover{animation:shake 1s linear alternate infinite;}
+
+
+
+
+
+#header{
+  /* center and size to header_nav*/
+  width: fit-content;
+  margin: 60px auto 30px auto;
+}
+#header_nav{
+  padding: 12px;
+  text-align: center;
+  z-index: 9;
+}
+#header_bg_wrapper{
+  position: absolute;
+  top:0px;
+  width:100%;
+  height:100%;   
+  filter: var(--filterdropshadowover); 
+}
+#header_bg{  
+  border-radius: 50px;
+  width:100%;
+  height:100%;  
+  background: var(--bggradientheader);
+  clip-path: polygon(33% 38%, 0 43%, 0 0, 100% 0, 100% 43%, 66% 38%, 66% 46%, 100% 60%, 100% 100%, 0 100%, 0 60%, 33% 46%);
+  animation:spin-header 1s linear alternate infinite;
+  transition-duration: 2s;
+} 
+#header:hover > #header_bg_wrapper > #header_bg{
+  clip-path: polygon(0% 15%, 15% 15%, 15% 0%, 85% 0%, 85% 15%, 100% 15%, 100% 85%, 85% 85%, 85% 100%, 15% 100%, 15% 85%, 0% 85%);
+} 
+@keyframes spin-header{ 
+  from{transform:rotate(-4deg);} 
+    to{transform:rotate(4deg);} 
+}
+@keyframes wiggle { /*used by intersection observer in main.js*/
+  0% {transform: translate(0, 0);}
+  50% {transform: translate(5px, 0);}
+  100% {transform: translate(0, 0);}
+}
+
+
+
+
+
+
+
+#pageTransitioneer {
+  font-size:22px;
+  position: fixed;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  overflow: hidden;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50px;
+  background: var(--radial1);
+  background-size: 100% 200%; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(var(--near-black));
+}
+
+@keyframes pageTransitioneer {
+  0% {opacity:1; transform: translate(-50%, -50%) scale(0);}
+  70% {opacity:1; transform: translate(-50%, -50%) scale(1);  }
+  100% {opacity:1; transform: translate(-50%, -50%) scale(1); }
+}
+
+
+
+
+
+
+#footer{
+  height: 200px;
+  width: min(100vw, 800px);
+  margin: 30px auto 0px auto;
+  display: flex;
+  align-items: flex-end; 
+  justify-content: center; 
+} 
+#thanks{color: rgb(var(--near-black)); font-size:22px; padding:10px; text-align:center}
+#footer_bg_wrapper{
+  position: absolute;
+  top: 0px;
+  z-index: -1;
+  width:100%; height:100%;   
+  filter: var(--filterdropshadowunder); 
+}
+#footer_bg{
+  /* This is the animation */
+  width:100%; height:100%;
+  background: var(--bggradientfooter);
+} 
+
+
+/*
+    margin-block-start:
+    margin-block-end:
+*/
+.broider {
+  border-image:  url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAAAAXNSR0IArs4c6QAAAatJREFUeF7t3EuOwjAABFG4XY7M7WAdI9FquSKZuNjaNJ7nJp8R8Hy0j+N4n57yej3biDvP7zEE/dkHQeG3i6CCwgJwnA0VFBaA42zo5aDpsmh2HP4DVov7bugsWHr+agLwegQVFBaA4/JJaXwLpwVsfm8vaCpIOS5oCZamC5qEyvEMOgZuflmUfAVNQuW4oCVYmi5oEirHe9DyBXabLii844IKCgvAcX1D23v7ccE3v9cX1IbCAnCcDV0O9ObHxNZ7vqGCnswFbSsY5gsqKCwAx9lQQWEBOM6GCgoLwHE2VFBYAI6zoYLCAnCcDRUUFoDjbKigsAAcZ0MFhQXgOBsqKCwAx9lQQWEBOM6GCgoLwHE2VFBYAI6zoZeDzn7+c1zgZh/VyV/vnt1BQYdfDhO0ErChFVee3J+UcubWMwSFt19QQWEBOC6flNrLns2/Ty+oDYUF4Dgbejno+ALpmJjG4QWvHpcvmxJYGl9dAF6foILCAnBcbmh7TIUX+G9xgsI7JqigsAAclxuaLovSOLzg1eMEhXdIUEFhATjOf44ICgvAcTZUUFgAjvsAzQksZB+8F2AAAAAASUVORK5CYII=") 28 /  28px / 0 round;
+  border-width:  28px 16px;
+  border-style:  solid;
+  max-width: 800px;
+  margin: auto;
+}
+.broider img{
+  width: fill-available;
+}
+
+.broider>*{padding: 26px;} 
+@media only screen and (max-width: 769px){ 
+  .broider { border-width: 28px 0px 28px 16px; } 
+  .broider>*{ padding: 26px 12px } 
+}
+
+.twitter-tweet{ margin: auto; }
+
+#tracer { 
+  --scrollPercent:0px;
+  transform: rotate(90deg);
+  background: rgb(var(--near-black));
+  clip-path: path('M27.822 8.205v-2.862h-2.637V2.484h-6.03v2.859h-2.637v2.862h-2.355v-2.862h-2.64V2.484H5.496v2.859H2.859v2.862H.501v5.718h2.358v2.862h2.259v2.859H7.38v2.859h2.637v2.862h3.015v2.859h4.617v-2.859h3.012v-2.862h2.64v-2.859H25.563v-2.859h2.259v-2.862h2.355V8.205z');
+  position:fixed; top: calc( var(--scrollPercent) - 15px );
+  width: 30px; height: 30px; z-index:1;
+}
+@keyframes clip-path-polygon {
+  0% { clip-path: var(--path2) }
+  100% { clip-path: var(--path1) }
+}
+
+
+
+#svg_bg{position: fixed;z-index:-8;top:0px; width:100vw; height:100vh}
+.cube {--startx: 0; --starty: 0; --endx: -100vh; --endy: -120vh; will-change: transform;}
+@keyframes cube-animation { 
+  from { transform: translate3d(var(--startx), var(--starty),0 ) }
+  to { transform: translate3d(var(--endx), var(--endy), 0 ) } 
+}
