@@ -75,7 +75,7 @@ function convertNb(cells) {
 }
 
 function replaceEmojis(text) {
-    ///console.log('- replaceEmojis Running');
+    console.log('- replaceEmojis Running');
     /* 
         8. Convert emojis to html entities
     */
@@ -86,8 +86,36 @@ function replaceEmojis(text) {
     text = text.replace('🧡', '&#129505');
     text = text.replace('💖', '&#128150');
     // Dec => Code => https://apps.timwhitlock.info/unicode/inspect/hex/1F633
+    text = convertNotes(text);
     return text;
 }
+
+function convertNotes(str) {
+    let matchCount = 0;
+    const regex = /(<p|<li)(.*?)\(\(\((.*?)\)\)\)/g;
+    const replacement = (_, p1, p2, p3) => {
+        matchCount++;
+        console.log({p1}, p1.includes('p') );
+        let pStart = p1.includes('p') ? " style='display:inline'":'' 
+        return `
+            ${p1 + pStart + p2}
+                <label for='footnote${matchCount}' class='footnote-label'>(&hellip;)</label>
+            ${pStart&&'</p>'}
+            <input type='checkbox' id='footnote${matchCount}' class='footnote-checkbox'>
+            <aside class='footnote'>
+                <div>
+                    <span class='FootnoteHeader'>Footnote:</span>
+                    ${p3}
+                </div>
+                <label for='footnote${matchCount}' class='footnote-label'>Close</label>
+            </aside>
+            ${pStart&&"</p style='display:inline'>"}
+        `;
+    };
+    return str.replace(regex, replacement);
+}
+
+
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

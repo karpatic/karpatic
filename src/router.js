@@ -30,7 +30,7 @@ export const handleRoute = async (route) => {
     window.oldMeta = window.meta || { template: window?.template?.className, sitemap: window?.sitemap?.className };
     window.meta = content.meta; meta.content = content.content; document.title = window.meta.title; 
     window.newSitemap =  window.oldMeta?.sitemap  !== window.meta.sitemap
-    window.newTemplate = window.oldMeta?.template !== window.meta.template
+    window.newTemplate = window.oldMeta?.template !== window.meta.template 
     // console.log('~~~~~~~~> handleRoute', {route, 'oldmeta':window.oldMeta, 'template':window.meta.template, 'newsitemap':window.newSitemap, 'newtemplate':window.newTemplate})
 
 

@@ -1,7 +1,7 @@
 <div id="tracer"></div>
 <svg xmlns="http://www.w3.org/2000/svg" id="svg_bg"></svg> 
 <!-- this checkbox holds state of whether modal is visible or not -->
-<input checked type="checkbox" id="toggle-sitemap">
+<input type="checkbox" id="toggle-sitemap">
 <div id="sitemap"> 
   <label for="toggle-sitemap"><span>Hide</span> <span>Show </span>Sitemap</label>
 </div>
@@ -12,8 +12,7 @@
 </div>  
 <div id="header">
   <div id="header_nav">
-    <h1><a style="cursor: pointer;" href="./">CVMiniGames</a> | <a href="./" id="title"></a></h1>
-    <p><a style="cursor: pointer;" href="https://www.cryptovoxels.com/play?coords=N@1447E,1128S">PLAY NOW</a></p>
+    <h1><a href="./">Charles Karpati</a> | <a href="" id="title"></a></h1> 
     <p id="summary"></p>
   </div>
   <span id="header_bg_wrapper"><div id="header_bg"></div></span> 
@@ -31,6 +30,7 @@
 <script type="text/javascript">
 
 // Onstart: Uncheck & Rollup for mobile Vs. Slide Left on Large Screens
+/*
 var tsm = document.getElementById("toggle-sitemap");
 tsm.checked = !window.innerWidth < 800
 var sm = document.getElementById("sitemap");
@@ -41,6 +41,7 @@ if( space > size ){
   sm.style.transition = 'left 0.5s ease-in-out';
   setTimeout( ()=>sm.style.transition = 'none',500) // CSS transitions .5 seconds
 }
+*/
 
 // alternately toggle-sitemap if sitemap-content scroll behaviors is not good.
 var inDrag, dragStartX, dragStartY, objInitLeft, objInitTop = 0;
@@ -80,23 +81,24 @@ const observer = new IntersectionObserver((entries) => {
         el.animation = txt 
         if(pos<300 || pos>300){ /* ' Scrolling', pos>100?'Down: ':'Up */  
             window.activeHeader && (window.activeHeader.style.textDecoration='none')
-            let tocLink = document.getElementById('anchor_link_'+e.id)
+            let tocLink = document.getElementById('goto_'+e.id)
             tocLink && ( tocLink.style.animation = txt, tocLink.style.textDecoration='line-through' ) 
             window.activeHeader = tocLink
         }
     });
 });
-loadObserver = (t) =>{ document.querySelectorAll('h2,h3,h4,h5,h6').forEach((el) => observer.observe(el) ) };  
+loadObserver = (t) =>{ document.querySelectorAll('h2,h3,h4').forEach((el) => observer.observe(el) ) };  
 window.addEventListener('templateRefreshed', async () =>{ setTimeout( ()=> loadObserver(), 2000) } );
 loadObserver();
 
 // Lazy Load
-window.loadOnce = false
-document.addEventListener('scroll', () => { 
-  window.loadOnce||((document.head||document.documentElement).appendChild(document.createElement('script')).src='templates/template_article_lazy.js');
-  window.loadOnce=true;
-  let scrollPercent = (document.documentElement.scrollTop) / (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 100;
-  document.getElementById('tracer').style.setProperty('--scrollPercent', scrollPercent + '%');
-});
+function throttle(func, wait) { let lastCallTime, timeout; return function(...args) { const now = Date.now();
+    if (!lastCallTime || now - lastCallTime >= wait) { clearTimeout(timeout); func.apply(this, args); lastCallTime = now;} 
+    else { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait - (now - lastCallTime)); } };
+}
+window.addEventListener('scroll', throttle(() => { let d = document.documentElement;
+  window.loadOnce||((document.head||d).appendChild(document.createElement('script')).src='templates/template_article_lazy.js'); window.loadOnce=true;
+  window.tracer?.style.setProperty('--scrollPercent', (d.scrollTop) / (d.scrollHeight - d.clientHeight) * 100 + '%');
+}, 50) );
 
 </script>

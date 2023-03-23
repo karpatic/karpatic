@@ -3,18 +3,25 @@
 // 5.
 //  
 const createNav = async () => {   
-    // white sitemap to show is located in posts YAML.
-    let sitemap = await (await fetch(`./posts/${window.meta.sitemap}`)).json();
+    // which sitemap to show is located in posts YAML.
+    loc = window.meta.sitemap; sm = window.sitemap 
+    sm && (sm.style.visibility = loc?'visible':'hidden'); if(!loc)return; 
+    let sitemap = await (await fetch(`./posts/${loc}`)).json(); 
     window.lbl = window.lbl || ` 
         <label for="toggle-sitemap">
             <div id='drag'>Drag me!</div>
             <span>&#x21e8;</span> Sitemap <span>&#x2715;</span>
         </label>
         <hr/>`
-    sitemap = sitemap.map((item) => `<a id="${item.tab==window.meta.tab?'currentPage':('link_'+item.tab)}" id='link_${item.tab}' href="./${item.filename}.html" title="${item.summary}">${item.tab}</a>`)
-    if(window.sitemap){ 
-        window.sitemap.className = window.meta.sitemap; window.sitemap.innerHTML = `${lbl}<div id='sitemap-content'>${sitemap.join('')}</div>`; 
-    }
+    sitemap = sitemap.map((item) => `
+        <a id="${ item.tab==window.meta.tab?'currentPage':('link_'+item.tab)}" 
+            id='link_${item.tab }' 
+            href="./${item.filename}.html" 
+            title="${item.summary}">
+            ${item.tab}
+        </a>`
+    )
+    if(sm){ sm.className = loc; sm.innerHTML = `${lbl}<div id='sitemap-content'>${sitemap.join('')}</div>`; }
 } 
 const capFirst = (str) => {let l=12; return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase().replace(':','').slice(0, l) + (str.length > l+1 ? '...' : '') }
 
@@ -29,11 +36,11 @@ function addTocToSiteMap() {
     if (!('toc' in window.meta) || window.meta.toc != 'true') return;
 
     // Find all headers and add them to the sitemap directly under the current page's link.
-    let toc = [...document.querySelectorAll('h2, h3, h4, h5, h6')]
+    let toc = [...document.querySelectorAll('h2, h3, h4')]
         .map((header) =>{ 
             const z=capFirst(header.innerText || header.textContent);
             const spaces = '&emsp;'.repeat(header.tagName.slice(1)-1)
-            return `${spaces}<a id='anchor_link_${z}' href='#${z}'>${z}</a>`
+            return `${spaces}<a href='#${z}'>${z}</a>`
         })
     .join('<br/>')
     tocNode = document.createElement('div'); tocNode.setAttribute('id', 'toc'); tocNode.innerHTML = toc; 
@@ -41,11 +48,11 @@ function addTocToSiteMap() {
 }
 
 function addAnchorsToHeaders() {
-    let headers = document.querySelectorAll('h2, h3, h4, h5, h6');
-    headers.forEach(header => {
+    [...document.querySelectorAll('h2, h3, h4')].forEach(header => {
         header.id=capFirst(header.innerText||header.textContent);
-        let anchor = document.createElement('a');
-        anchor.id= anchor.href = window.meta.filename+'.html#_anchor_'+header.id; 
+        let anchor = document.createElement('a'); 
+        anchor.className = 'anchor';
+        anchor.id = anchor.href = '#'+header.id; 
         anchor.setAttribute('aria-label', 'Link to ' + header.id);
         header.parentNode.insertBefore(anchor, header.nextSibling);
     });
