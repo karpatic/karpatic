@@ -1,6 +1,6 @@
 // Page Load Logic and Routing
 window.oldRoute = location.pathname.replace(origin,'');
-window.isLocal = window.isLocal || !!!window.content?.innerHTML.trim()
+window.isLocal ||= !!!window.content?.innerHTML.trim()
 window.preRendering = /ReactSnap/.test(navigator.userAgent)
 
 export const navEvent = async (event) => {
@@ -8,7 +8,7 @@ export const navEvent = async (event) => {
     let route = (event.target.href || event.target.location.href).replace(window.origin,'');  
     if (route.split("#")[0] != window.oldRoute.split("#")[0]){ await handleRoute( route ); window.oldRoute = route; }; 
     route.indexOf('#') == -1 && window.scrollTo({ top: 0, behavior: 'smooth' });
-    let t = document.getElementById(route.split('#')[1]); t && t.scrollIntoView({ behavior: 'smooth' });
+    let t = document.getElementById(route.split('#')[1]); t?.scrollIntoView({ behavior: 'smooth' });
 };
 
 
@@ -18,7 +18,7 @@ export const navEvent = async (event) => {
 export const handleRoute = async (route) => {
     
     // Client route change for first time.
-    if (!window.meta && !isLocal) { registerServiceWorker(); } 
+    !window.meta && !isLocal && registerServiceWorker(); 
     await import(/* webpackChunkName: "sitemap" */ './sitemap.js');
 
     // Get the Upcoming Files Json Data 

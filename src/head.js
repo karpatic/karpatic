@@ -91,7 +91,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 
   // Onload Event
   setTimeout(()=>{  
-    window.redirect&&window.redirect(); 
+    window.redirect?.(); 
     setTimeout(()=>{
       //document.querySelector("#sitemap").setAttribute("data-server-rendered", "true");
       document.querySelectorAll('[data-rh]').forEach(e=>{

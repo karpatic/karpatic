@@ -14,7 +14,7 @@ console.log("%c Contact me: charleskarpati@gmail.com","color: blue; font-family:
 
 window.updateRedirectListeners = () => { document.querySelectorAll('a[href^="./"]').forEach(l=>[l.removeEventListener,l.addEventListener].forEach(f=>f.call(l,'click',redirect))) }
 window.redirect = (async (event=false) =>{ 
-    event && event.preventDefault() 
+    event?.preventDefault?.() 
     !window.navEvent && ({ handleRoute: window.handleRoute, navEvent: window.navEvent } = await import(/* webpackChunkName: "router" */ './router.js')); 
     event.type == 'click' ? ( history.pushState({}, '', event.target.href), navEvent(event) ) : handleRoute(location.pathname) 
 } ) 

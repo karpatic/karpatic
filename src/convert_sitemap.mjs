@@ -86,7 +86,7 @@ async function ipynb_publish(file = 'index', saveto = "../src/posts/", type = 'j
         const { nb2json } = await import('./convert.mjs?type=module', { type: 'module' } );
         final = await nb2json(file);
         let { filename, ...meta } = final.meta;
-        filename = filename.toLowerCase().replace(' ', '_');
+        filename = filename.toLowerCase().replaceAll(' ', '_');
         final.meta = { filename, ...meta };
         file = filename
     }

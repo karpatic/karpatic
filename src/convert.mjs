@@ -15,7 +15,7 @@ export async function ipynb_publish(file = 'index') {
    ///console.log(('START:', {saveto, file, type}, '\n');
     let final = await nb2json(file);
     let { filename, ...meta } = final.meta;
-    filename = filename.toLowerCase().replace(' ', '_');
+    filename = filename.toLowerCase().replaceAll(' ', '_');
     final.meta = { filename, ...meta };
     file = filename
    ///console.log(('Saving ', final, '\n\n');
@@ -52,14 +52,14 @@ function get_metadata(data) {
     const y = {};
     for (const x of data.source) {
         if (x.startsWith('#')) {
-            y.title = x.replace('\n', '').replace('# ', '', 2);
+            y.title = x.replaceAll('\n', '').replaceAll('# ', '', 2);
         } 
         else if (x.startsWith('>')) {
-            y.summary = x.replace('\n', '').replace('> ', '', 1);
+            y.summary = x.replaceAll('\n', '').replaceAll('> ', '', 1);
         } 
         else if (x.startsWith('-')) {
             const key = x.slice(x.indexOf('- ') + 2, x.indexOf(': '));
-            const val = x.slice(x.indexOf(': ') + 2).replace('\n', '');
+            const val = x.slice(x.indexOf(': ') + 2).replaceAll('\n', '');
             y[key] = val;
         }
     }
@@ -79,12 +79,12 @@ function replaceEmojis(text) {
     /* 
         8. Convert emojis to html entities
     */
-    text = text.replace('🙂', '&#1F642');
-    text = text.replace('😳', '&#128563');
-    text = text.replace('\u2003', '&#8195');
-    text = text.replace('👷', '&#128119');
-    text = text.replace('🧡', '&#129505');
-    text = text.replace('💖', '&#128150');
+    text = text.replaceAll('🙂', '&#1F642');
+    text = text.replaceAll('😳', '&#128563');
+    text = text.replaceAll('\u2003', '&#8195');
+    text = text.replaceAll('👷', '&#128119');
+    text = text.replaceAll('🧡', '&#129505');
+    text = text.replaceAll('💖', '&#128150');
     // Dec => Code => https://apps.timwhitlock.info/unicode/inspect/hex/1F633
     text = convertNotes(text);
     return text;
@@ -197,8 +197,8 @@ function processSource(source, flags) {
     // ///console.log('processSource... ', source);
     for (let lbl of flags) {
       // ///console.log('processSource... ', lbl);
-        source = source.replace(lbl + '\r\n', '');
-        source = source.replace(lbl + '\n', ''); // Strip the Flag
+        source = source.replaceAll(lbl + '\r\n', '');
+        source = source.replaceAll(lbl + '\n', ''); // Strip the Flag
         if (lbl == '#collapse_input_open') source = makeDetails(source, true);
         if (lbl == '#collapse_input') source = makeDetails(source, false);
         if (lbl == '#hide ') source = '';
@@ -228,8 +228,8 @@ function processOutput(source, flags) {
     else if (keys.includes('text/plain')) { source = !(/<Figure/.test(source['data']['text/plain'])) ?  source['data']['text/plain'] : '' }
 
     for (let lbl of flags) {
-        source = source.replace(lbl + '\r\n', '');
-        source = source.replace(lbl + '\n', '');
+        source = source.replaceAll(lbl + '\r\n', '');
+        source = source.replaceAll(lbl + '\n', '');
         if (lbl == '#collapse_output_open') { source = makeDetails(source, true); }
         if (lbl == '#collapse_output') { source = makeDetails(source, false); }
         if (lbl == '#hide_output') { source = ''; }

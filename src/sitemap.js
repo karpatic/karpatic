@@ -2,10 +2,13 @@
 //  
 const createNav = async () => {   
     // which sitemap to show is located in posts YAML.
-    loc = window.meta.sitemap; sm = window.sitemap 
-    sm && (sm.style.visibility = loc?'visible':'hidden'); if(!loc)return; 
+    loc = window.meta.sitemap; 
+    sm = window.sitemap 
+    sm && (sm.style.visibility = loc?'visible':'hidden'); 
+    if(!loc)return; 
     let sitemap = await (await fetch(`./posts/${loc}`)).json(); 
-    window.lbl = window.lbl || ` 
+    
+    window.lbl ||= ` 
         <label role="button" tabindex="0" for="toggle-sitemap">
             <div id='drag'>Drag me!</div>
             <span>&#x21e8;</span> Sitemap <span>&#x2715;</span>
@@ -21,22 +24,23 @@ const createNav = async () => {
     )
     if(sm){ sm.className = loc; sm.innerHTML = `${lbl}<div id='sitemap-content'>${sitemap.join('')}</div>`; }
 } 
-const capFirst = (str) => {let l=12; return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase().replace(':','').slice(0, l) + (str.length > l+1 ? '...' : '') }
+const formatLink = (str) => str.trim().replaceAll(/[^a-zA-Z]/g, "").slice(0, 12)
+    .replace(/\b\w/g, (c) => c.toUpperCase()) + (str.length > 12 + 1 ? "..." : "");
 
 function addTocToSiteMap() {
     window.currentPage?.removeAttribute('id')
-    let tocNode = document.getElementById('toc'); tocNode && tocNode.remove()
+    let tocNode = document.getElementById('toc'); tocNode?.remove()
     
     const sitemap = document.getElementById('sitemap')
     const currentPage = sitemap.querySelector(`a[title="${window.meta.summary}"]`)
-    currentPage && currentPage.setAttribute('id', 'currentPage')
+    currentPage?.setAttribute('id', 'currentPage')
 
     if (!('toc' in window.meta) || window.meta.toc != 'true') return;
 
     // Find all headers and add them to the sitemap directly under the current page's link.
     let toc = [...document.querySelectorAll('h2, h3, h4')]
         .map((header) =>{ 
-            const z=capFirst(header.innerText || header.textContent);
+            const z=formatLink(header.innerText || header.textContent);
             const spaces = '&emsp;'.repeat(header.tagName.slice(1)-1)
             return `${spaces}<a href='#${z}'>${z}</a>`
         })
@@ -47,7 +51,7 @@ function addTocToSiteMap() {
 
 function addAnchorsToHeaders() {
     [...document.querySelectorAll('h2, h3, h4')].forEach(header => {
-        header.id=capFirst(header.innerText||header.textContent);
+        header.id=formatLink(header.innerText||header.textContent);
         let anchor = document.createElement('a'); 
         anchor.className = 'anchor';
         anchor.id = anchor.href = '#'+header.id; 
@@ -66,7 +70,7 @@ function addAnchorsToHeaders() {
 //
 window.addEventListener('refreshTemplate', async () => { 
     // console.log('~~~~~~~~~~> refreshTemplate');
-    window.meta.robots && ( document.querySelector('meta[name="robots"]')?.setAttribute('content', window.meta.robots) )
+    document.querySelector('meta[name="robots"]')?.setAttribute('content', window.meta.robots||'index, follow')
     const replace = (id) => {
         const el = document.getElementById(id); el.innerHTML = ''; 
         el.appendChild( document.createRange().createContextualFragment( meta[id] ));
