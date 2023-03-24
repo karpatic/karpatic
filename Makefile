@@ -28,4 +28,4 @@ datascience:
 	node ./src/convert_sitemap.mjs ./src/ipynb/ ./src/posts/ mapdatascience index,datascience
 
 remainder:
-	node ./src/convert_sitemap.mjs ./src/ipynb/ ./src/posts/ mapremainder legal
+	node ./src/convert_sitemap.mjs ./src/ipynb/ ./src/posts/ mapremainder legal,aboutmysite,aboutme

@@ -37,6 +37,7 @@ export const handleRoute = async (route) => {
     // Load a template on route change or local init
     if ( newTemplate ){ 
         document.body.innerHTML = await (await fetch(`./templates/${window.meta.template}.html`)).text(); 
+        document.body.insertAdjacentHTML('beforebegin', `<style>${await (await fetch(`./templates/${window.meta.template}.css`)).text()}</style>`);
         await loadScripts(); 
     } 
 

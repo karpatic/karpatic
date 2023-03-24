@@ -31,7 +31,7 @@ export async function nb2json(fname) {
         1a. Must be in directory of ipynb you want to convert to html.
     */
     if (typeof process !== 'undefined') { fname = `http://localhost:8085/${fname}.ipynb`; }
-    console.log('- nb2json', fname, '\n');
+    // console.log('- nb2json', fname, '\n');
     let ipynb = await fetch(fname, { headers: { 'Content-Type': 'application/json; charset=utf-8' } })
     const nb = await ( ipynb ).json();
     const meta = get_metadata(nb.cells[0]);
@@ -75,7 +75,7 @@ function convertNb(cells) {
 }
 
 function replaceEmojis(text) {
-    console.log('- replaceEmojis Running');
+    // console.log('- replaceEmojis Running');
     /* 
         8. Convert emojis to html entities
     */
@@ -95,11 +95,11 @@ function convertNotes(str) {
     const regex = /(<p|<li)(.*?)\(\(\((.*?)\)\)\)/g;
     const replacement = (_, p1, p2, p3) => {
         matchCount++;
-        console.log({p1}, p1.includes('p') );
+        // console.log({p1}, p1.includes('p') );
         let pStart = p1.includes('p') ? " style='display:inline'":'' 
         return `
             ${p1 + pStart + p2}
-                <label for='footnote${matchCount}' class='footnote-label'>(&hellip;)</label>
+                <label role="button" tabindex="0" for='footnote${matchCount}' class='footnote-label'>(&hellip;)</label>
             ${pStart&&'</p>'}
             <input type='checkbox' id='footnote${matchCount}' class='footnote-checkbox'>
             <aside class='footnote'>
@@ -107,7 +107,7 @@ function convertNotes(str) {
                     <span class='FootnoteHeader'>Footnote:</span>
                     ${p3}
                 </div>
-                <label for='footnote${matchCount}' class='footnote-label'>Close</label>
+                <label role="button" tabindex="0" for='footnote${matchCount}' class='footnote-label'>Close</label>
             </aside>
             ${pStart&&"</p style='display:inline'>"}
         `;

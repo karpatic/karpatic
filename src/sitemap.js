@@ -1,5 +1,3 @@
-// import "./templates/template_article.css"; 
-
 // 5.
 //  
 const createNav = async () => {   
@@ -8,7 +6,7 @@ const createNav = async () => {
     sm && (sm.style.visibility = loc?'visible':'hidden'); if(!loc)return; 
     let sitemap = await (await fetch(`./posts/${loc}`)).json(); 
     window.lbl = window.lbl || ` 
-        <label for="toggle-sitemap">
+        <label role="button" tabindex="0" for="toggle-sitemap">
             <div id='drag'>Drag me!</div>
             <span>&#x21e8;</span> Sitemap <span>&#x2715;</span>
         </label>
