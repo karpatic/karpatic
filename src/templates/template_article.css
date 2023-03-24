@@ -253,6 +253,7 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
 @media only screen and (max-width: 769px){ 
   .broider { border-width: 28px 0px 28px 16px; } 
   .broider>*{ padding: 26px 12px } 
+  #head_separator{ display: none; }
 }
 
 .twitter-tweet{ margin: auto; }

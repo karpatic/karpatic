@@ -107,8 +107,8 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
   Array.from(document.getElementsByTagName("script")).forEach(script => { 
       if (new RegExp("head|helmet", "i").test(script.getAttribute('src')) ||
           !script.type && script.src.includes('webpack-dev-server') || 
-          (script.textContent.includes('webpackBootstrap'))|| 
-          (script.textContent.includes('css')) ) { 
+          (script.textContent.includes('webpackBootstrap'))
+        ) { 
             script.remove(); return; 
       }  
   });      
