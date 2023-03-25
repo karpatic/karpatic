@@ -5,9 +5,9 @@ const createNav = async () => {
     loc = window.meta.sitemap; 
     sm = window.sitemap 
     sm && (sm.style.visibility = loc?'visible':'hidden'); 
-    if(!loc)return; 
+    if(!loc)return;  
     let sitemap = await (await fetch(`./posts/${loc}`)).json(); 
-    
+    console.log('LOADING5', sitemap);
     window.lbl ||= ` 
         <label role="button" tabindex="0" for="toggle-sitemap">
             <div id='drag'>Drag me!</div>
@@ -54,8 +54,9 @@ function addAnchorsToHeaders() {
         header.id=formatLink(header.innerText||header.textContent);
         let anchor = document.createElement('a'); 
         anchor.className = 'anchor';
-        anchor.id = anchor.href = '#'+header.id; 
+        anchor.id = anchor.href = '#'+header.id;  
         anchor.setAttribute('aria-label', 'Link to ' + header.id);
+        anchor.setAttribute('onclick', `navigator.clipboard.writeText('https://charleskarpati.com/${location.pathname+window.location.hash}')`);
         header.parentNode.insertBefore(anchor, header.nextSibling);
     });
 }
@@ -69,7 +70,7 @@ function addAnchorsToHeaders() {
 // - Else Runs 'pageTransitioneer' animation if it exists
 //
 window.addEventListener('refreshTemplate', async () => { 
-    console.log('~~~~~~~~~~> refreshTemplate');
+    // console.log('~~~~~~~~~~> refreshTemplate');
     document.querySelector('meta[name="robots"]')?.setAttribute('content', window.meta.robots||'index, follow')
     const replace = (id) => {
         const el = document.getElementById(id); el.innerHTML = ''; 
@@ -79,21 +80,15 @@ window.addEventListener('refreshTemplate', async () => {
         ['content', 'title', 'summary'].map((id) => replace( id ) )
         addTocToSiteMap(); addAnchorsToHeaders();
         !window.navEvent && ({ handleRoute: window.handleRoute, navEvent: window.navEvent } = await import(/* webpackChunkName: "router" */ './router.js')); 
-    }
+    } 
     const pageT = document.getElementById('pageTransitioneer');
-    console.log('1~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
     if(window.newSitemap){ await createNav(); }
-    console.log('2~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
     if(window.newTemplate){
-            console.log('3~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
             populateTemplate(), 
-            console.log('4~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
             document.querySelectorAll('a').forEach((el) =>{ el.id = el.id || el.innerText + Math.floor(Math.random() * 1000000)}) 
     }
     else if ( window.location.href.indexOf('#') == -1 && pageT ){
-        console.log('5~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
         pageT.style.animation = 'pageTransitioneer 1s alternate 2, gradient 1s alternate 2'
-        console.log('6~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
         setTimeout( ()=>{ !pageT?'':pageT.style.animation = 'none' }, 2300);  
         setTimeout( async ()=>{ populateTemplate(); }, 1100)
     }

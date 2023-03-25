@@ -15,24 +15,22 @@ export const navEvent = async (event) => {
 // Loads a route and it's dependencies via it's meta data obtained from it's path.
 // 1) Get meta data from route. 2) Register service worker. 3) load template. 
 // 4) Load scripts 5) Dispatch event listeners. 6) Update route change event listeners
-export const handleRoute = async (route) => {
-    
+export const handleRoute = async (route) => { 
     // Client route change for first time.
     !window.meta && !isLocal && registerServiceWorker(); 
-    await import(/* webpackChunkName: "sitemap" */ './sitemap.js');
+    await import(/* webpackChunkName: "sitemap" */ './sitemap.js'); 
 
     // Get the Upcoming Files Json Data 
     // IF IN DEV run the raw convert fn to get the json data.
     let p = route.replace("/",'').replace('.html','') || 'index';
-    let {ipynb_publish} = isLocal && await import(/* webpackChunkName: "convert" */ './convert.mjs')
-    let content = await (isLocal ? ipynb_publish(`./ipynb/${p}.ipynb`) : (await fetch(`./posts/${p}.json`)).json() ); 
+    let {ipynb_publish} = isLocal && await import(/* webpackChunkName: "convert" */ './convert.mjs') 
+    let content = await (isLocal ? ipynb_publish(`./ipynb/${p}.ipynb`) : (await fetch(`./posts/${p}.json`)).json() );
     
     window.oldMeta = window.meta || { template: window?.template?.className, sitemap: window?.sitemap?.className };
     window.meta = content.meta; meta.content = content.content; document.title = window.meta.title; 
     window.newSitemap =  window.oldMeta?.sitemap  !== window.meta.sitemap
     window.newTemplate = window.oldMeta?.template !== window.meta.template 
     // console.log('~~~~~~~~> handleRoute', {route, 'oldmeta':window.oldMeta, 'template':window.meta.template, 'newsitemap':window.newSitemap, 'newtemplate':window.newTemplate})
-
 
     // Load a template on route change or local init
     if ( newTemplate ){ 
@@ -75,6 +73,7 @@ const registerServiceWorker = async () => {
         if (registration.installing) { console.log("Service worker installing"); } 
         else if (registration.waiting) { console.log("Service worker installed"); } 
         else if (registration.active) { console.log("Service worker active"); } 
+        // Fired when the SW file was modified
         registration.onupdatefound = () => {
             const installingWorker = registration.installing;
             installingWorker.onstatechange = () => {

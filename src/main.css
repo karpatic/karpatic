@@ -1,6 +1,11 @@
 /* Basics */
-* {font-family: Helvetica, Arial, sans-serif; }
+* {font-family: Georgia,TimesNewRoman,Times,Times New Roman,serif; }
 *{ user-select: text; box-sizing: border-box; position: relative;}
+html{ 
+  font-size: 1.125em; 
+  line-height: 1.625em;
+} 
+::selection {  background: rgb(var(--background)); }
 
 /* CSS Not used onload => blockquote, blockquote span, blockquote::before, pre, pre>code */
 
@@ -71,14 +76,11 @@ Layers get brighter.
 raise lower letter spacing and line height for smaller text 
 -- text size multiples of 8. line height +8px.
 */
-html { 
-  font-size: 18px; 
-  line-height: 26px;
-} 
-::selection {  background: rgb(var(--background)); }
 h1,h2,h3,h4 {text-align: center; text-shadow: none; transition: all .3s ease-in-out;}
 h2:hover,h3:hover,h4:hover { text-shadow: 1px 1px 45px rgb(var(--near-black)); transition: all .4s ease-in-out;}
-h1,h2,h3,h4,a { color: rgb(var(--near-black)); font-weight: 600; font-family: Courier New,Courier,Monaco,monospace;}
+h1,h2,h3,h4,a { color: rgb(var(--near-black)); font-weight: 600; 
+  font-family: Courier New, Courier, Monaco, monospace, Helvetica, Arial, sans-serif;
+}
 
 summary:hover .anchor::after { content: '🔗'; height: .8em; }
 .anchor{position: absolute; left: 0px;}
@@ -102,7 +104,7 @@ a:hover::before {
   height: 100%;
 }
 span{ font-family: inherit;}
-p { word-break: break-word; font-family: Georgia,TimesNewRoman,Times,Times New Roman,serif; }
+p { word-break: break-word; }
 pre{ max-width: calc( var(--max-width) - 70px); background: rgb(var(--background)); padding: 12px; }
 pre > code { color: var(--foreground) }
 /* Instead of setting a page width use: li { max-width: 80ch; } */
@@ -126,7 +128,7 @@ ul{
   padding-left: 10px;
 }
 
-summary{ text-align: center; cursor: pointer; font-size: 20px;padding: 12px 0px;}
+summary{ text-align: center; cursor: pointer; font-size:1.25em;padding: 12px 0px;}
 
 hr{
   margin: 1px 1px 10px 1px;
@@ -178,4 +180,17 @@ aside > .footnote-label {
   cursor: pointer;
   padding:10px;
   margin:10px; 
+}
+
+
+@media (prefers-color-scheme: dark) {
+	html {
+		filter: invert(100%);
+	}
+	img:not(.ignore-color-scheme),video:not(.ignore-color-scheme) {
+		filter: brightness(50%) invert(100%);
+	}
+	.ignore-color-scheme {
+		filter: invert(100%);
+	}
 }

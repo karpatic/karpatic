@@ -9,7 +9,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 (async () => {
   const page = window.location.pathname.replace("/",'').replace('.html','') || 'index';
-  if(page=='404')return
 
   //let hr = JSON.parse((await import(`./header.json`) ).default)
   let hr = await (await fetch((await import(`./header.json`) ).default)).json() 
@@ -43,6 +42,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
           <link rel="license"             href="https://opensource.org/licenses/MIT"/>
           <link rel="canonical"           href={`https://${hr.title}.com/${page}`} /> 
           <link rel="icon" type="image/ico" sizes="16x16"     href={hr.icon16}/>
+          
           { /*
           <link rel="author"              href={hr.author}/>
           <link rel="me"                  href={hr.owneremail} type="text/html"/>

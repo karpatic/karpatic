@@ -5,23 +5,14 @@
 // so the previous v1 cache isn't disturbed.
 // When no pages are using the previous version, the new worker activates and becomes responsible for fetches.
 
-const CACHE_NAME = 'cv-website-cache-v8';
-
-// List of URLs to cache
-const urlsToCache = [
-  '/'
-];
-
-// Enable navigation preload
-const enableNavigationPreload = async () => { 
-  if (self.registration.navigationPreload) { await self.registration.navigationPreload.enable(); } };
-self.addEventListener("activate", (event) => { event.waitUntil(enableNavigationPreload()); });
+//  Increment to force the cache to update.
+const CACHE_NAME = 'cv-website-cache-v9';
 
 // Install event
 self.addEventListener('install', async event => {
   try{
     console.log('Service worker installing...')
-    const cache = await caches.open(CACHE_NAME); 
+    const cache = await caches.open(['/']); 
     console.log('Service worker Adding URLS...')
     await cache.addAll(urlsToCache) 
     console.log('Service worker  - event.waitUntil...')

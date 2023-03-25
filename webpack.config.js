@@ -201,7 +201,7 @@ module.exports = (env, args) => {
         patterns: [ 
           { from: './robots.txt', to: 'robots.txt', toType: 'file' }, 
           { from: './CNAME', to: 'CNAME', toType: 'file' }, 
-          { from: './src/404.html', to: '404.html', toType: 'file' }, 
+          // { from: './src/404.html', to: '404.html', toType: 'file' }, 
           { from: './src/service-worker.js', to: 'service-worker.js', toType: 'file' }, 
           { from: './src/templates/template_article.html',    to: 'templates/template_article.html', toType: 'file' },
           { from: './src/templates/template_article_lazy.js', to: 'templates/template_article_lazy.js', toType: 'file' },

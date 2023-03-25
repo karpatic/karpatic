@@ -113,7 +113,7 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
   
   #currentPage:hover {color: rgb(var(--near-black));}
   #currentPage + div>a:hover{ text-decoration: line-through !important;}
-  #currentPage + div {display:block;font-size: 16px; line-height:16px;}
+  #currentPage + div {display:block;font-size: 1em; line-height:1em;}
   #currentPage:hover{animation:gradient 4s linear alternate infinite, shake 1s linear alternate infinite;}
   #currentPage{ animation:gradient 4s linear alternate infinite;
     background-size: 100% 400%;
@@ -123,9 +123,9 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
   #drag{
     position:absolute;
     color:rgb(var(--near-black));
-    top:-19px;
-    left:-12px;
-    font-size: 12px;
+    top:-1.25em;
+    left:-0.75em;
+    font-size: 0.75em;
     animation:shake 1s linear alternate infinite;
   }
   #sitemap-content> a { display: inherit;  width: fit-content;}
@@ -181,7 +181,7 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
 
 
 #pageTransitioneer {
-  font-size:22px;
+  font-size:1.25em;
   position: fixed;
   z-index: 100;
   top: 50%;
@@ -219,7 +219,8 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
   align-items: flex-end; 
   justify-content: center; 
 } 
-#thanks{color: rgb(var(--near-black)); font-size:22px; padding:10px; text-align:center}
+#thanks{color: rgb(var(--near-black)); font-size:1.25em; padding:10px; text-align:center}
+#thanks a{font-size:0.75em;}
 #footer_bg_wrapper{
   position: absolute;
   top: 0px;
