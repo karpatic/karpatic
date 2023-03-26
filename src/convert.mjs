@@ -93,7 +93,8 @@ function replaceEmojis(text) {
 function convertNotes(str) {
     let matchCount = 0;
     const regex = /(<p|<li)(.*?)\(\(\((.*?)\)\)\)/g;
-    const replacement = (_, p1, p2, p3) => {
+    const replacement = (_, p1, p2, p3, p4) => {
+        console.log({_,p1, p2, p3, p4})
         matchCount++;
         // console.log({p1}, p1.includes('p') );
         let pStart = p1.includes('p') ? " style='display:inline'":'' 
@@ -112,7 +113,9 @@ function convertNotes(str) {
             ${pStart&&"</p style='display:inline'>"}
         `;
     };
-    return str.replace(regex, replacement);
+    let fixed = str.replace(regex, replacement);
+    console.log({matchCount})
+    return fixed + Array.from({length: matchCount}, () => "<div class='spacer'></div>").join('');
 }
 
 

@@ -41,10 +41,6 @@ h1>a::selection { text-decoration: underline; color: rgb(var(--near-black)); }
 }
 
 
-
-
-
-
 body:has(#sitemap:focus-within) { 
   overscroll-behavior-y: contain; /* Prevent drag-refresh */
 } 
@@ -209,6 +205,13 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
 
 
 
+.controls-container{
+  display:flex;
+  width: min(100vw, 800px);
+  margin: 0px auto 30px auto;
+  padding-right:25px;
+  justify-content:flex-end;
+}
 
 
 #footer{
@@ -279,4 +282,37 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
 @keyframes cube-animation { 
   from { transform: translate3d(var(--startx), var(--starty),0 ) }
   to { transform: translate3d(var(--endx), var(--endy), 0 ) } 
+}
+
+
+#light,#expand{ display:block; cursor:pointer; }
+#light::before {content: '🌜 Dark mode';}
+#lightmode:checked ~ #light::before {content: '🌞 Light mode';}
+html:has(#lightmode:checked){
+  filter: invert(100%);
+}
+
+#expand::before {content: '➕ Expand notes';}
+#expandmode:checked ~ #expand::before {content: '➖ Collapse notes';}
+
+
+.spacer {height: 0px;}
+body:has(#expandmode:checked) .spacer {height: 200px;}
+body:has(#expandmode:checked) .footnote:nth-child(n) {
+  display: flex;
+  position:fixed;
+  bottom: calc(n*200+100px);
+}
+
+
+#music{display: flex; align-items: center; margin:0 0 0 -7px;}
+audio{ height:40px; margin-left: -6px; }
+audio::-webkit-media-controls-panel{ background: rgba(var(--background), .5); }
+#music >span {
+  border-radius: 50%;
+  width:40px;
+  height:40px;
+  overflow: hidden;
+  display: inline-block;
+  margin-right: 5px;
 }

@@ -49,6 +49,12 @@ function addTocToSiteMap() {
     currentPage.parentNode.insertBefore(tocNode, currentPage.nextSibling)
 }
 
+window.toast = () => {
+    let toast = document.getElementById('toast-container');
+    toast.style.animation = 'toast 3s';
+    setTimeout(() => { toast.style.animation = 'none'; }, 3000);
+}
+
 function addAnchorsToHeaders() {
     [...document.querySelectorAll('h2, h3, h4')].forEach(header => {
         header.id=formatLink(header.innerText||header.textContent);
@@ -56,7 +62,7 @@ function addAnchorsToHeaders() {
         anchor.className = 'anchor';
         anchor.id = anchor.href = '#'+header.id;  
         anchor.setAttribute('aria-label', 'Link to ' + header.id);
-        anchor.setAttribute('onclick', `navigator.clipboard.writeText('https://charleskarpati.com/${location.pathname+window.location.hash}')`);
+        anchor.setAttribute('onclick', `navigator.clipboard.writeText('https://charleskarpati.com${location.pathname+window.location.hash}'); window.toast?.();`);
         header.parentNode.insertBefore(anchor, header.nextSibling);
     });
 }

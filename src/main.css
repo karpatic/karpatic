@@ -4,7 +4,13 @@
 html{ 
   font-size: 1.125em; 
   line-height: 1.625em;
+  scroll-behavior: smooth;
+  transition : filter 500ms linear
 } 
+body { 
+  margin: 0px;
+  overflow-x: hidden;
+}
 ::selection {  background: rgb(var(--background)); }
 
 /* CSS Not used onload => blockquote, blockquote span, blockquote::before, pre, pre>code */
@@ -135,17 +141,6 @@ hr{
   border-top: 1px solid rgba(var(--near-black), 0.1);
 }
 
-/*
-body
-*/
-body { 
-  margin: 0px;
-  overflow-x: hidden;
-} 
-html {
-  scroll-behavior: smooth;
-}
-
 
 
 
@@ -182,15 +177,26 @@ aside > .footnote-label {
   margin:10px; 
 }
 
+#toast-container {
+  display: flex;
+  bottom: 15%;
+  position: fixed;
+  transform: scale(0);
+  width: 100vw;
+  z-index: 1;
+  justify-content: center;
+}
+#toast-container >p{
+  padding:10px;
+  border-radius: 50px;
+  width:fit-content;
+  background: rgb(var(--near-black));
+  color:rgb(var(--foreground));
+}
 
-@media (prefers-color-scheme: dark) {
-	html {
-		filter: invert(100%);
-	}
-	img:not(.ignore-color-scheme),video:not(.ignore-color-scheme) {
-		filter: brightness(50%) invert(100%);
-	}
-	.ignore-color-scheme {
-		filter: invert(100%);
-	}
+@keyframes toast {
+    0% { transform: scale(0); }
+    20% {transform: scale(1); }
+    80% {transform: scale(1); }
+    100% {transform: scale(0); }
 }
