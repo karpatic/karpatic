@@ -7,7 +7,6 @@
 
 //  Increment to force the cache to update.
 const CACHE_NAME = 'cv-website-cache-'+CACHEBUST;
-new webpack.DefinePlugin({});
 
 // Install event
 self.addEventListener('install', async event => {

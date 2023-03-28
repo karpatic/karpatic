@@ -41,8 +41,7 @@ export const handleRoute = async (route) => {
 
     // Dispatch pageLoaded event for template/ content hooks 
     // Listeners in template.html and | sitemap.js -> Populates window.newTemplate & updates toc. 
-    window.dispatchEvent( new CustomEvent('refreshTemplate') );
-    setTimeout( ()=>{ window.updateRedirectListeners() }, 100);
+    window.dispatchEvent( new CustomEvent('refreshTemplate') ); 
 }
 
 // Re-Load scripts present on page when a new template is added.
@@ -70,9 +69,11 @@ const registerServiceWorker = async () => {
     if (!("serviceWorker" in navigator)) { return }
     try {
         const registration = await navigator.serviceWorker.register("/service-worker.js");
+        /*
         if (registration.installing) { console.log("Service worker installing"); } 
         else if (registration.waiting) { console.log("Service worker installed"); } 
         else if (registration.active) { console.log("Service worker active"); } 
+        */
         // Fired when the SW file was modified
         registration.onupdatefound = () => {
             const installingWorker = registration.installing;

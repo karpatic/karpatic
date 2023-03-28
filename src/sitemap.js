@@ -50,9 +50,9 @@ function addTocToSiteMap() {
 }
 
 window.toast = () => {
-    let toast = document.getElementById('toast-container');
-    toast.style.animation = 'toast 3s';
-    setTimeout(() => { toast.style.animation = 'none'; }, 3000);
+    let e = document.getElementById('toast-container');
+    e.style.animation = 'toast 3s';
+    e.addEventListener('animationend', () => {e.style.animation ='none';}, { once: true });
 }
 
 function addAnchorsToHeaders() {
@@ -86,6 +86,8 @@ window.addEventListener('refreshTemplate', async () => {
         ['content', 'title', 'summary'].map((id) => replace( id ) )
         addTocToSiteMap(); addAnchorsToHeaders();
         !window.navEvent && ({ handleRoute: window.handleRoute, navEvent: window.navEvent } = await import(/* webpackChunkName: "router" */ './router.js')); 
+        window.updateRedirectListeners();
+        window.loadObserver();
     } 
     const pageT = document.getElementById('pageTransitioneer');
     if(window.newSitemap){ await createNav(); }
@@ -95,7 +97,9 @@ window.addEventListener('refreshTemplate', async () => {
     }
     else if ( window.location.href.indexOf('#') == -1 && pageT ){
         pageT.style.animation = 'pageTransitioneer 1s alternate 2, gradient 1s alternate 2'
-        setTimeout( ()=>{ !pageT?'':pageT.style.animation = 'none' }, 2300);  
+        pageT.addEventListener('animationend', () => {pageT.style.animation ='none';}, { once: true }); 
+    
+
         setTimeout( async ()=>{ populateTemplate(); }, 1100)
     }
 }, {passive: true});

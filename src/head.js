@@ -20,7 +20,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
   let header = <HelmetProvider>
         <Helmet>    
           <meta charset="UTF-8"/>
-          <meta http-equiv="Content-Security-Policy" content="img-src 'self' https://charleskarpati.com/ data:;"/>
+          <meta http-equiv="Content-Security-Policy" content="img-src 'self' https://charleskarpati.com/ data:; connect-src 'self' https://ping.charleskarpati.com/;"/>
           <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
           <title>{hr.tab||hr.longName}</title>
           <meta name="author"             content={hr.author}/>

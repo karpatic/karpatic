@@ -22,10 +22,10 @@
 <div class="controls-container">
   <div> 
     <input type="checkbox" id="lightmode"><label for="lightmode" id="light"></label>
-    <input type="checkbox" id="expandmode"><label for="expandmode" id="expand" title="Shown in footer or when clicking '(...)'"></label>
+    <input type="checkbox" id="expandmode"><label for="expandmode" id="expand"></label>
     <p id="music" title="Bauchamp - 127 bass with bug and perc.mp3"><span>
       <audio controls  controlsList="nodownload noplaybackrate" preload="none" loop  
-        src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Bauchamp/Loop_Mania_Sampler_Pack/Bauchamp_-_127_bass_with_bug_and_perc.mp3"></audio>
+        src="./audio/title.mp3"></audio>
     </span> Musical loops</p>
   </div>
 </div>
@@ -45,15 +45,10 @@
 // Onstart: Uncheck & Rollup for mobile Vs. Slide Left on Large Screens
 /*
 var tsm = document.getElementById("toggle-sitemap");
-tsm.checked = !window.innerWidth < 800
+tsm.checked = !w.innerWidth < 800
 var sm = document.getElementById("sitemap");
 var size = sm.offsetWidth;
 var space = document.querySelector(".broider").getBoundingClientRect().left;
-if( space > size ){
-  sm.style.left=space-size+"px";
-  sm.style.transition = 'left 0.5s ease-in-out';
-  setTimeout( ()=>sm.style.transition = 'none',500) // CSS transitions .5 seconds
-}
 */
 
 // alternately toggle-sitemap if sitemap-content scroll behaviors is not good.
@@ -84,7 +79,8 @@ function moveFN(e) {
 // Hit em w/ the ol razzle dazzle; and give em the wiggles~! >:D
 // IntersectionObserver for animations and Highlighting active TOC Anchor link
 // Runs once on load and again on templateRefreshed event
-window.activeHeader = null
+let w = window;
+w.activeHeader = null
 const observer = new IntersectionObserver((entries) => { 
     entries.forEach((entry) => {let e=entry.target
         let txt = "0.5s ease-in-out 0s 2 normal none running wiggle";
@@ -93,25 +89,25 @@ const observer = new IntersectionObserver((entries) => {
         if (!entry.isIntersecting){ el.animation == txt && (el.animation = ''); return; }
         el.animation = txt 
         if(pos<300 || pos>300){ /* ' Scrolling', pos>100?'Down: ':'Up */  
-            window.activeHeader && (window.activeHeader.style.textDecoration='none')
+            w.activeHeader && (w.activeHeader.style.textDecoration='none')
             let tocLink = document.getElementById('goto_'+e.id)
             tocLink && ( tocLink.style.animation = txt, tocLink.style.textDecoration='line-through' ) 
-            window.activeHeader = tocLink
+            w.activeHeader = tocLink
         }
     });
 });
-loadObserver = (t) =>{ document.querySelectorAll('h2,h3,h4').forEach((el) => observer.observe(el) ) };  
-window.addEventListener('refreshTemplate', async () =>{ setTimeout( ()=> loadObserver(), 2000) } );
+w.loadObserver = (t) =>{ document.querySelectorAll('h2,h3,h4').forEach((el) => observer.observe(el) ) };  
 loadObserver();
 
 // Lazy Load
-function throttle(func, wait) { let lastCallTime, timeout; return function(...args) { const now = Date.now();
-    if (!lastCallTime || now - lastCallTime >= wait) { clearTimeout(timeout); func.apply(this, args); lastCallTime = now;} 
-    else { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait - (now - lastCallTime)); } };
+function throttle(func, wait) { 
+    let last, t; return function(...args) { const now = Date.now(); clearTimeout(t); 
+    if (!last || now - last >= wait) { func.apply(this, args); last = now;} 
+    else { t = setTimeout(() => func.apply(this, args), wait - (now - last)); } };
 }
-window.addEventListener('scroll', throttle(() => { let d = document.documentElement;
-  window.loadOnce||((document.head||d).appendChild(document.createElement('script')).src='templates/template_article_lazy.js'); window.loadOnce=true;
-  window.tracer?.style.setProperty('--scrollPercent', (d.scrollTop) / (d.scrollHeight - d.clientHeight) * 100 + '%');
+w.addEventListener('scroll', throttle(() => { let d = document.documentElement;
+  w.loadOnce||((document.head||d).appendChild(document.createElement('script')).src='templates/template_article_lazy.js'); w.loadOnce=true;
+  w.tracer?.style.setProperty('--scrollPercent', (d.scrollTop) / (d.scrollHeight - d.clientHeight) * 100 + '%');
 }, 50) );
 
 </script>

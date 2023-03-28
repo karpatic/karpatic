@@ -121,10 +121,11 @@ function cleanCell(cell) {
     if (cell['cell_type'] == 'markdown') {
         ///console.log('- - - Parsing Markdown');
         x = marked.parse(cell['source'].join(' ')); //marko.convert
-        if (x.includes('<li>')) {
-            // Wrap each list item in a <p> element
-            x = x.replace(/<li>(.*?)<\/li>/g, '<li><p>$1</p></li>');
-        }
+        x = x.replace(/<li>(.*?)<\/li>/g, '<li><p>$1</p></li>'); // wrap li's in p's 
+        x = x.replace(/<a\s+(?:[^>]*?\s+)?href="(.*?)"/g, (match, href) => { // open links in new tab
+            if (!href.startsWith('./')) { match += ' onclick="window.sendPing(this)" target="_blank" rel="noopener noreferrer nofollow"'; }
+            return match;
+        });
     } else {
         x = processCode(cell);
     }
