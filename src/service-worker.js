@@ -6,20 +6,22 @@
 // When no pages are using the previous version, the new worker activates and becomes responsible for fetches.
 
 //  Increment to force the cache to update.
-const CACHE_NAME = 'cv-website-cache-v9';
+const CACHE_NAME = 'cv-website-cache-'+CACHEBUST;
+new webpack.DefinePlugin({});
 
 // Install event
 self.addEventListener('install', async event => {
   try{
-    console.log('Service worker installing...')
+    console.log('CACHENAME: ',CACHE_NAME)
+    //console.log('Service worker installing...')
     const cache = await caches.open(['/']); 
-    console.log('Service worker Adding URLS...')
+    //console.log('Service worker Adding URLS...')
     await cache.addAll(urlsToCache) 
-    console.log('Service worker  - event.waitUntil...')
+    //console.log('Service worker  - event.waitUntil...')
     event.waitUntil( cache );
-    console.log('Service worker done installing...')
+    //console.log('Service worker done installing...')
   }
-  catch(error){} // console.error('Cache operation failed:', error)}
+  catch(error){}
 });
 
 const putInCache = async (request, response) => {

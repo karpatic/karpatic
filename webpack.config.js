@@ -2,6 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const postcssPresetEnv = require("postcss-preset-env");
 const postcss = require('postcss');
+const webpack = require('webpack');
 const cssnano = require('cssnano'); // or: https://webpack.js.org/plugins/css-minimizer-webpack-plugin/
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin-patched');
@@ -49,6 +50,7 @@ module.exports = (env, args) => {
     entry: { 
       head: './src/head.js', 
       main: './src/main.js',
+      'service-worker': './src/service-worker.js',
     },
     output: {
       path: path.resolve('./docs'),
@@ -56,7 +58,8 @@ module.exports = (env, args) => {
       filename: (pathData) => {
         // [name] defers to id when it doesn't exist.
         // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', pathData)
-        return '[runtime].[id].[hash].js'
+
+        return pathData.runtime=='service-worker'?'service-worker.js':'[runtime].[id].[hash].js'
       },
       chunkFilename: 'chunk.[name].[chunkhash].js',
       globalObject: "self",
@@ -183,6 +186,7 @@ module.exports = (env, args) => {
     },
     
     plugins: [
+      new webpack.DefinePlugin({ CACHEBUST: JSON.stringify(Math.floor(Math.random() * 100000000)) }),
       new MiniCssExtractPlugin({
         filename: "[name].css",
         chunkFilename: "[name].[id].css",

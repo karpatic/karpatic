@@ -63,7 +63,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
           */}
           <meta name="theme-color"        content={hr.themecolor}/>
           <meta name="robots"             content="index,follow"/>
-          <noscript>Your browser does not support JavaScript!</noscript>
           <meta property="og:url" content={`http://www.${hr.title}.com/${page}`} />
           <meta property="og:title"       content={hr.title}/>
           <meta property="og:description" content={hr.summary || hr.description}/>

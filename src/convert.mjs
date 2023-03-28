@@ -92,30 +92,20 @@ function replaceEmojis(text) {
 
 function convertNotes(str) {
     let matchCount = 0;
-    const regex = /(<p|<li)(.*?)\(\(\((.*?)\)\)\)/g;
-    const replacement = (_, p1, p2, p3, p4) => {
-        console.log({_,p1, p2, p3, p4})
+    const regex = /(<p)(.*?)\(\(\((.*?)\)\)\)(.*?)(<\/p>)/g;
+    const replacement = (_, p1, p2, p3, p4, p5) => {
+        //console.log({_,p1, p2, p3, p4, p5})
         matchCount++;
         // console.log({p1}, p1.includes('p') );
-        let pStart = p1.includes('p') ? " style='display:inline'":'' 
+        let pStart =" style='display:inline'"
         return `
-            ${p1 + pStart + p2}
-                <label role="button" tabindex="0" for='footnote${matchCount}' class='footnote-label'>(&hellip;)</label>
-            ${pStart&&'</p>'}
-            <input type='checkbox' id='footnote${matchCount}' class='footnote-checkbox'>
-            <aside class='footnote'>
-                <div>
-                    <span class='FootnoteHeader'>Footnote:</span>
-                    ${p3}
-                </div>
-                <label role="button" tabindex="0" for='footnote${matchCount}' class='footnote-label'>Close</label>
-            </aside>
-            ${pStart&&"</p style='display:inline'>"}
+            ${p1 + pStart + p2 + p4 + p5}
+            <input type='checkbox' id='note${matchCount}' class='notebox'>
+            <label ${pStart} role="button" tabindex="0" for='note${matchCount}' class='notelbl'>[${matchCount}]</label>
+            <aside> <b>Note:</b> ${p3} </aside>
         `;
     };
-    let fixed = str.replace(regex, replacement);
-    console.log({matchCount})
-    return fixed + Array.from({length: matchCount}, () => "<div class='spacer'></div>").join('');
+    return str.replace(regex, replacement);
 }
 
 
@@ -131,6 +121,10 @@ function cleanCell(cell) {
     if (cell['cell_type'] == 'markdown') {
         ///console.log('- - - Parsing Markdown');
         x = marked.parse(cell['source'].join(' ')); //marko.convert
+        if (x.includes('<li>')) {
+            // Wrap each list item in a <p> element
+            x = x.replace(/<li>(.*?)<\/li>/g, '<li><p>$1</p></li>');
+        }
     } else {
         x = processCode(cell);
     }

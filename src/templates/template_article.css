@@ -11,7 +11,7 @@ h1>a{
   color: transparent;
   animation: gradient 5s ease infinite; 
 }
-h1>a::selection { text-decoration: underline; color: rgb(var(--near-black)); }
+h1>a::selection { color: rgb(var(--near-black)); }
 
 
 
@@ -237,16 +237,11 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
   background: var(--bggradientfooter);
 } 
 
-
-/*
-    margin-block-start:
-    margin-block-end:
-*/
 .broider {
   border-image:  url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAAAAXNSR0IArs4c6QAAAatJREFUeF7t3EuOwjAABFG4XY7M7WAdI9FquSKZuNjaNJ7nJp8R8Hy0j+N4n57yej3biDvP7zEE/dkHQeG3i6CCwgJwnA0VFBaA42zo5aDpsmh2HP4DVov7bugsWHr+agLwegQVFBaA4/JJaXwLpwVsfm8vaCpIOS5oCZamC5qEyvEMOgZuflmUfAVNQuW4oCVYmi5oEirHe9DyBXabLii844IKCgvAcX1D23v7ccE3v9cX1IbCAnCcDV0O9ObHxNZ7vqGCnswFbSsY5gsqKCwAx9lQQWEBOM6GCgoLwHE2VFBYAI6zoYLCAnCcDRUUFoDjbKigsAAcZ0MFhQXgOBsqKCwAx9lQQWEBOM6GCgoLwHE2VFBYAI6zoZeDzn7+c1zgZh/VyV/vnt1BQYdfDhO0ErChFVee3J+UcubWMwSFt19QQWEBOC6flNrLns2/Ty+oDYUF4Dgbejno+ALpmJjG4QWvHpcvmxJYGl9dAF6foILCAnBcbmh7TIUX+G9xgsI7JqigsAAclxuaLovSOLzg1eMEhXdIUEFhATjOf44ICgvAcTZUUFgAjvsAzQksZB+8F2AAAAAASUVORK5CYII=") 28 /  28px / 0 round;
   border-width:  28px 16px;
   border-style:  solid;
-  max-width: 800px;
+  max-width: var(--max-width);
   margin: auto;
 }
 .broider img{
@@ -258,6 +253,7 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
   .broider { border-width: 28px 0px 28px 16px; } 
   .broider>*{ padding: 26px 12px } 
   #head_separator{ display: none; }
+  .notebox:checked + aside{ flex-direction: column-reverse; align-items: flex-end}
 }
 
 .twitter-tweet{ margin: auto; }
@@ -285,25 +281,10 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
 }
 
 
-#light,#expand{ display:block; cursor:pointer; }
-#light::before {content: '🌜 Dark mode';}
+#light,#expand,.notelbl { cursor:pointer; }
+#light::before {content: '🌜 Dark mode'; display: block;}
 #lightmode:checked ~ #light::before {content: '🌞 Light mode';}
-html:has(#lightmode:checked){
-  filter: invert(100%);
-}
-
-#expand::before {content: '➕ Expand notes';}
-#expandmode:checked ~ #expand::before {content: '➖ Collapse notes';}
-
-
-.spacer {height: 0px;}
-body:has(#expandmode:checked) .spacer {height: 200px;}
-body:has(#expandmode:checked) .footnote:nth-child(n) {
-  display: flex;
-  position:fixed;
-  bottom: calc(n*200+100px);
-}
-
+html:has(#lightmode:checked){ filter: invert(100%); }
 
 #music{display: flex; align-items: center; margin:0 0 0 -7px;}
 audio{ height:40px; margin-left: -6px; }
@@ -316,3 +297,18 @@ audio::-webkit-media-controls-panel{ background: rgba(var(--background), .5); }
   display: inline-block;
   margin-right: 5px;
 }
+.notebox+label{color:rgb(var(--near-black));}
+aside { 
+  border: solid rgb(var(--near-black));
+  border-width: 10px 2px 0px 2px; 
+  border-radius:7% 7% 0% 0%;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background:rgb(var(--canvas));
+  padding: 20px;  
+  z-index:1; 
+}
+aside, .notebox {display: none;}
+#expand::before {content: '➕ Expand notes';}
+#expandmode:checked ~ #expand::before {content: '➖ Collapse notes';}
+.notebox:checked + .notelbl:after{content:' [X]'}
+.notebox:checked + .notelbl + aside, body:has(#expandmode:checked) aside{ display: block;}
