@@ -1,3 +1,18 @@
+// alternately toggle-sitemap if sitemap-content scroll behaviors is not good.
+function moveFN(e) {
+    if (!inDrag) {return;} 
+    e.preventDefault();
+    document.getElementById('drag').style.display='none';
+    dragToX = e.pageX || e.targetTouches[0].clientX; 
+    dragToY = e.pageY || e.targetTouches[0].clientY; 
+    sitemap.style.left = (objInitLeft + dragToX-dragStartX) + "px";
+    sitemap.style.top = (objInitTop + dragToY-dragStartY) + "px";
+} 
+[ [["mousemove", "touchmove"], moveFN],
+  [["mouseup", "touchend"], () => inDrag = false],
+].forEach(evt => evt[0].forEach(type => sitemap.addEventListener(type, evt[1], { passive: false })));
+
+
 window.rir = (min, max) => Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min);
 
 // Footer Background Animation

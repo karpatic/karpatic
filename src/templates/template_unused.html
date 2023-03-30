@@ -43,6 +43,12 @@
 # Notes
 
 ## JS
+throttle(scroll, 50)
+function throttle(fn, wait) { 
+  let last, t; return function(...args) { const now = Date.now(); clearTimeout(t); 
+  if (!last || now - last >= wait) { fn.apply(this, args); last = now;} 
+  else { t = setTimeout(() => fn.apply(this, args), wait - (now - last)); } };
+}
 
 // let content = JSON.parse((await import(`./posts/${page||'index'}.json`) ).default)  
 // let content = await (await fetch((await import(/* webpackChunkName: "[request]" */ `./posts/${page}.json`) ).default)).json()  
@@ -60,6 +66,14 @@ https://chromium.googlesource.com/chromium/blink/+/72fef91ac1ef679207f51def8133b
 
 # CSS
 
+/*
+var tsm = document.getElementById("toggle-sitemap");
+tsm.checked = !w.innerWidth < 800
+var sm = document.getElementById("sitemap");
+var size = sm.offsetWidth;
+var space = document.querySelector(".broider").getBoundingClientRect().left;
+*/
+// Onstart: Uncheck & Rollup for mobile Vs. Slide Left on Large Screens
 /*
 audio::-webkit-media-controls
 audio::-webkit-media-controls-enclosure

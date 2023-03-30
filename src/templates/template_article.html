@@ -30,7 +30,6 @@
   </div>
 </div>
 
-
 <div class='broider' id='content'>
   <div id="outline"></div>
   <div id="content"></div>
@@ -42,44 +41,22 @@
 
 <!-- <link rel="stylesheet" type="text/css" href="/templates/template_article.css"></link>-->
 <script type="text/javascript">
-// Onstart: Uncheck & Rollup for mobile Vs. Slide Left on Large Screens
-/*
-var tsm = document.getElementById("toggle-sitemap");
-tsm.checked = !w.innerWidth < 800
-var sm = document.getElementById("sitemap");
-var size = sm.offsetWidth;
-var space = document.querySelector(".broider").getBoundingClientRect().left;
-*/
-
-// alternately toggle-sitemap if sitemap-content scroll behaviors is not good.
+let w = window;
 var inDrag, dragStartX, dragStartY, objInitLeft, objInitTop = 0;
-function downFN(e) {
-    inDrag = true;
+function loadLazy() { w.loadOnce||((document.head||d).appendChild(document.createElement('script')).src='templates/template_article_lazy.js');  w.loadOnce=true; }
+function downFN(e) { loadLazy(); inDrag = true;
     objInitLeft = sitemap.offsetLeft; objInitTop = sitemap.offsetTop;
     dragStartX = e.pageX || e.targetTouches[0].clientX; 
     dragStartY = e.pageY || e.targetTouches[0].clientY; 
 }
-function moveFN(e) {
-    if (!inDrag) {return;} 
-    e.preventDefault();
-    document.getElementById('drag').style.display='none';
-    dragToX = e.pageX || e.targetTouches[0].clientX; 
-    dragToY = e.pageY || e.targetTouches[0].clientY; 
-    sitemap.style.left = (objInitLeft + dragToX-dragStartX) + "px";
-    sitemap.style.top = (objInitTop + dragToY-dragStartY) + "px";
-} 
-[  [["mousedown", "touchstart"], downFN],
-  [["mousemove", "touchmove"], moveFN],
-  [["mouseup", "touchend"], () => inDrag = false],
+function scrollFN(){ let d = document.documentElement; loadLazy();
+  w.tracer?.style.setProperty('--scrollPercent', (d.scrollTop) / (d.scrollHeight - d.clientHeight) * 100 + '%');
+}
+
+[ [["mousedown", "touchstart"], downFN], 
+  [["scroll"], scrollFN] 
 ].forEach(evt => evt[0].forEach(type => sitemap.addEventListener(type, evt[1], { passive: false })));
 
-
-
-
-// Hit em w/ the ol razzle dazzle; and give em the wiggles~! >:D
-// IntersectionObserver for animations and Highlighting active TOC Anchor link
-// Runs once on load and again on templateRefreshed event
-let w = window;
 w.activeHeader = null
 const observer = new IntersectionObserver((entries) => { 
     entries.forEach((entry) => {let e=entry.target
@@ -88,7 +65,7 @@ const observer = new IntersectionObserver((entries) => {
         let el = (e.parentNode.nodeName == "SUMMARY" && e.parentNode.style || e.style ) 
         if (!entry.isIntersecting){ el.animation == txt && (el.animation = ''); return; }
         el.animation = txt 
-        if(pos<300 || pos>300){ /* ' Scrolling', pos>100?'Down: ':'Up */  
+        if(pos<300 || pos>300){
             w.activeHeader && (w.activeHeader.style.textDecoration='none')
             let tocLink = document.getElementById('goto_'+e.id)
             tocLink && ( tocLink.style.animation = txt, tocLink.style.textDecoration='line-through' ) 
@@ -98,16 +75,4 @@ const observer = new IntersectionObserver((entries) => {
 });
 w.loadObserver = (t) =>{ document.querySelectorAll('h2,h3,h4').forEach((el) => observer.observe(el) ) };  
 loadObserver();
-
-// Lazy Load
-function throttle(func, wait) { 
-    let last, t; return function(...args) { const now = Date.now(); clearTimeout(t); 
-    if (!last || now - last >= wait) { func.apply(this, args); last = now;} 
-    else { t = setTimeout(() => func.apply(this, args), wait - (now - last)); } };
-}
-w.addEventListener('scroll', throttle(() => { let d = document.documentElement;
-  w.loadOnce||((document.head||d).appendChild(document.createElement('script')).src='templates/template_article_lazy.js'); w.loadOnce=true;
-  w.tracer?.style.setProperty('--scrollPercent', (d.scrollTop) / (d.scrollHeight - d.clientHeight) * 100 + '%');
-}, 50) );
-
 </script>
