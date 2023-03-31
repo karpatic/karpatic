@@ -1,0 +1,79 @@
+body:has(#sitemap:focus-within) { overscroll-behavior-y: contain; } /* Prevent drag-refresh */ 
+#sitemap{
+    position: fixed; 
+    min-width: 8em;
+    top: 0;
+    left: 0;  
+    z-index: 999;
+    overflow: hidden;   
+    border-radius: .7rem;
+    padding: 1rem;
+    padding-top: 0px;
+    overflow-x: hidden;
+    backdrop-filter: blur(2px) saturate(100%);
+    -webkit-backdrop-filter: blur(2px) saturate(100%);
+    background-color: rgba(var(--foreground), 0.6);
+    border-radius: 12px; 
+    box-shadow: 3px 2px 5px rgb(var(--background) ), -3px -2px 20px rgb(var(--near-white)), inset 0px 0 10px rgb(var(--near-white));
+}
+
+/* hide checkbox, but still expose it to screen readers.*/
+input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; white-space: nowrap; }
+
+/* Use Labels to trigger CSS Effects on checkbox checked */
+#toggle-sitemap{ visibility: hidden; }
+#toggle-sitemap:not(:checked) ~ #sitemap { animation: collapse 1s forwards, glow 6s linear infinite; }
+#toggle-sitemap:checked ~ #sitemap { animation: expand 1s forwards, pulse 6s linear infinite; }
+@keyframes glow { 50% { box-shadow: 3px 2px 20px rgb(var(--near-white)), -3px -2px 20px rgb(var(--background)), inset 0px 0 10px rgb(var(--background));  } }
+@keyframes collapse { from { max-height:75vh} to { max-height:3em; } }
+@keyframes expand { to { max-height:75vh } from { max-height:3em; } }
+
+/* Use Labels to trigger CSS Effects on checkbox checked */
+#sitemap > label {
+    line-height: 3em; width: -webkit-fill-available; 
+    display: flex; cursor: grab;
+    color: rgb(var(--near-black));
+    justify-content: space-between;
+}
+#sitemap > label:hover {   text-shadow: 1px 1px 45px rgb(var(--near-black)); } 
+
+#toggle-sitemap:not(:checked) ~ #sitemap > label > span { animation: dismiss 1s forwards;  } 
+#toggle-sitemap:checked ~ #sitemap > label > span { animation: reveal 500ms forwards;  }
+#sitemap > label > span:nth-child(2) { --rotate:0deg; } 
+#sitemap > label > span:nth-child(3) { --rotate:45deg; } 
+@keyframes reveal {  from {transform:rotate(var(--rotate))} to {transform: rotate(90deg); } } 
+@keyframes dismiss { from {transform:rotate(90deg)} to {transform: rotate(var(--rotate)); } } 
+
+#sitemap-content{
+    display:grid;
+    overflow-x: hidden;
+    max-height: calc(75vh - 6em);
+}
+
+/* triggers w observer on header and on hover */
+@keyframes shake {
+    0% {transform: translate(0, 0);-webkit-transform: translate(0, 0);}
+    50% {transform: translate(4px, 0);-webkit-transform: translate(4px, 0);}
+    100% {transform: translate(0, 0);-webkit-transform: translate(0, 0);}
+} 
+
+#currentPage:hover {color: rgb(var(--near-black));}
+#currentPage + div>a:hover{ text-decoration: line-through !important;}
+#currentPage + div {display:block;font-size: 1em; line-height:1em;}
+#currentPage:hover{animation:gradient 4s linear alternate infinite, shake 1s linear alternate infinite;}
+#currentPage{ 
+    background-size: 100% 400%;
+    border-radius: 5px;
+    background-image: var(--radial1);
+    animation:gradient 4s linear alternate infinite;
+}
+#drag{
+    position:absolute;
+    color:rgb(var(--near-black));
+    top:-1.25em;
+    left:-0.75em;
+    font-size: 0.75em;
+    animation:shake 1s linear alternate infinite;
+}
+#sitemap-content> a { display: inherit;  width: fit-content;}
+#sitemap-content> a:hover{animation:shake 1s linear alternate infinite;}

@@ -7,7 +7,7 @@ const createNav = async () => {
     sm && (sm.style.visibility = loc?'visible':'hidden'); 
     if(!loc)return;  
     let sitemap = await (await fetch(`./posts/${loc}`)).json(); 
-    console.log('LOADING5', sitemap);
+    // console.log('LOADING5', sitemap);
     window.lbl ||= ` 
         <label role="button" tabindex="0" for="toggle-sitemap">
             <div id='drag'>Drag me!</div>

@@ -12,27 +12,8 @@ body {
   overflow-x: hidden;
 }
 ::selection {  background: rgb(var(--background)); }
-
-/* CSS Not used onload => blockquote, blockquote span, blockquote::before, pre, pre>code */
-
-/* 
-more space between contrasts. 
-more or same vertical padding than horizontal.
-
-Give each color a distinct brightness value.
-use near-white or black (f2f2f2 or 222 if you aren't saturating) 
-- f2f2f2 is just 95% brightness 
-- 222222 is just 13% brightness 
-Saturate neutrals colors at least 5%.
-Layers get brighter. 
-- +12% more for dark interfaces,
-- +7% for light interfaces.
-
---canvas:                    hsl(0, 10%, 90%); 
---background:                hsl(0, 80%, 90%); 
---foreground:                rgb(255, 240, 240); 
-*/  
-:root {  
+:root{
+  --radial1:radial-gradient(at 52% 13%, hsla(215,77%,79%,1) 0px, transparent 50%);
   --canvas: 227, 227, 232;
   --background-darker: 214, 214, 255; 
   --background: 209, 209, 250; 
@@ -63,14 +44,6 @@ Layers get brighter.
   /* Borders should contrast both interior and int/exterior of container */
   --filterdropshadowover: drop-shadow(4px 4px 10px rgb(var(--foreground)) );
   --filterdropshadowunder: drop-shadow(4px -4px 1px rgb(var(--background)));
-
-  --radial1:radial-gradient(at 52% 13%, hsla(215,77%,79%,1) 0px, transparent 50%),
-  radial-gradient(at 40% 33%, hsla(173,63%,76%,1) 0px, transparent 50%),
-  radial-gradient(at 15% 92%, hsla(166,97%,69%,1) 0px, transparent 50%),
-  radial-gradient(at 97% 78%, hsla(229,94%,76%,1) 0px, transparent 50%),
-  radial-gradient(at 19% 52%, hsla(27,99%,69%,1) 0px, transparent 50%),
-  radial-gradient(at 68% 16%, hsla(339,76%,78%,1) 0px, transparent 50%),
-  radial-gradient(at 25% 1%, hsla(202,73%,63%,1) 0px, transparent 50%);
   
   --change1: 0%;
   --change2: 100%;
@@ -86,7 +59,7 @@ h2:hover,h3:hover,h4:hover { text-shadow: 1px 1px 45px rgb(var(--near-black)); t
 h1,h2,h3,h4,a { color: rgb(var(--near-black)); font-weight: 600; 
   font-family: Courier New, Courier, Monaco, monospace, Helvetica, Arial, sans-serif;
 }
-
+ul{ padding-left: 10px; }
 li>p{margin:0px; display: inline;}
 a{ text-decoration: none; } 
 
@@ -131,44 +104,19 @@ details li {
   list-style: none;  
   margin-left:30px;
 }
+
 details li::before {
   color:rgb(var(--near-black));
   content: counter(my-counter) ". "; 
   position: absolute; 
   left: -30px; 
 }
-.details{ background: rgba(var(--background), 0.4); }
+
 details[open] > summary::marker { content: "💖"; }
 details > summary > * { display: inline; }
 summary::marker { content: "🧡"; } 
 
-ul{  
-  padding-left: 10px;
-}
-
 summary{ text-align: center; cursor: pointer; font-size:1.25em;padding: 12px 0px;}
 hr{ margin: 1px 1px 10px 1px; border-top: 1px solid rgba(var(--near-black), 0.1); }
 
-#toast-container {
-  display: flex;
-  bottom: 15%;
-  position: fixed;
-  transform: scale(0);
-  width: 100vw;
-  z-index: 1;
-  justify-content: center;
-}
-#toast-container >p{
-  padding:10px;
-  border-radius: 50px;
-  width:fit-content;
-  background: rgb(var(--near-black));
-  color:rgb(var(--foreground));
-}
-
-@keyframes toast {
-    0% { transform: scale(0); }
-    20% {transform: scale(1); }
-    80% {transform: scale(1); }
-    100% {transform: scale(0); }
-}
+.details{ background: rgba(var(--background), 0.4); }

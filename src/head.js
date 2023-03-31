@@ -89,7 +89,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
   } 
 
   // Onload Event
-  setTimeout(()=>{  
+  setTimeout(()=>{ 
     window.redirect?.(); 
     setTimeout(()=>{
       //document.querySelector("#sitemap").setAttribute("data-server-rendered", "true");
@@ -98,6 +98,12 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
         // https://pptr.dev/api/puppeteer.jshandle
         (e.asElement? e.asElement():e).removeAttribute('data-rh')
       });
+  
+      document.head.insertBefore(document.querySelector('meta[charset="UTF-8"]'), document.head.firstChild);
+
+      Array.from(document.getElementsByTagName("style")).forEach(style => { head.removeChild(style); head.appendChild(style); });
+
+      document.querySelector('link[rel="preconnect"][href="https://ping.charleskarpati.com"]')?.link.parentNode.removeChild?.(link);
     }, 20) 
 
   }, 20)
@@ -110,6 +116,8 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
         ) { 
             script.remove(); return; 
       }  
-  });      
+  });
+  
+  
 
 } )()

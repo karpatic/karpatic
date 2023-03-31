@@ -24,5 +24,5 @@ w.redirect = (async (event=false) =>{ event?.preventDefault?.()
 document.addEventListener('DOMContentLoaded', async () => { 
     addEventListener('popstate', redirect);         // Browser History 
     updateRedirectListeners();                      // Href ./ Link
-    w.sendPing();
+    // w.sendPing();
 })

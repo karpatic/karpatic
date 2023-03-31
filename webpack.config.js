@@ -30,9 +30,6 @@ const analyze = false;
 
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-// todo: https://webpack.js.org/configuration/cache/
-// https://github.com/webpack/webpack-dev-server
-
 module.exports = (env, args) => { 
   // process.env is different from env here
   const isDev = args.mode === 'development'
@@ -58,7 +55,6 @@ module.exports = (env, args) => {
       filename: (pathData) => {
         // [name] defers to id when it doesn't exist.
         // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', pathData)
-
         return pathData.runtime=='service-worker'?'service-worker.js':'[runtime].[id].[hash].js'
       },
       chunkFilename: 'chunk.[name].[chunkhash].js',

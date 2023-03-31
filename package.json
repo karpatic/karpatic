@@ -17,9 +17,7 @@
     "preloadImages": false,
     "asyncScriptTags": false,
     "removeScriptTags": false,
-    "include": [
-      "/index.html"
-    ],
+    "include": [ "/index.html" ],
     "minifyHtml": {
       "collapseWhitespace": true,
       "removeComments": true

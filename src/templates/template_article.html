@@ -21,8 +21,8 @@
 
 <div class="controls-container">
   <div> 
-    <input type="checkbox" id="lightmode"><label for="lightmode" id="light"></label>
-    <input type="checkbox" id="expandmode"><label for="expandmode" id="expand"></label>
+    <label for="lightmode" id="light"><input type="checkbox" id="lightmode"></label>
+    <label for="expandmode" id="expand"></label><input type="checkbox" id="expandmode"></label>
     <p id="music" title="Bauchamp - 127 bass with bug and perc.mp3"><span>
       <audio controls  controlsList="nodownload noplaybackrate" preload="none" loop  
         src="./audio/title.mp3"></audio>
@@ -43,6 +43,7 @@
 <script type="text/javascript">
 let w = window;
 var inDrag, dragStartX, dragStartY, objInitLeft, objInitTop = 0;
+
 function loadLazy() { w.loadOnce||((document.head||d).appendChild(document.createElement('script')).src='templates/template_article_lazy.js');  w.loadOnce=true; }
 function downFN(e) { loadLazy(); inDrag = true;
     objInitLeft = sitemap.offsetLeft; objInitTop = sitemap.offsetTop;
@@ -53,9 +54,9 @@ function scrollFN(){ let d = document.documentElement; loadLazy();
   w.tracer?.style.setProperty('--scrollPercent', (d.scrollTop) / (d.scrollHeight - d.clientHeight) * 100 + '%');
 }
 
-[ [["mousedown", "touchstart"], downFN], 
-  [["scroll"], scrollFN] 
-].forEach(evt => evt[0].forEach(type => sitemap.addEventListener(type, evt[1], { passive: false })));
+[ [["mousedown", "touchstart"], downFN, sitemap], 
+  [["scroll"], scrollFN, window ] 
+].forEach(evt => evt[0].forEach(type =>{ evt[2].addEventListener(type, evt[1], { passive: false }) } ));
 
 w.activeHeader = null
 const observer = new IntersectionObserver((entries) => { 

@@ -12,6 +12,7 @@ function moveFN(e) {
   [["mouseup", "touchend"], () => inDrag = false],
 ].forEach(evt => evt[0].forEach(type => sitemap.addEventListener(type, evt[1], { passive: false })));
 
+( async () => { document.body.insertAdjacentHTML('beforebegin', `<style>${await (await fetch(`./templates/template_article_lazy.css`)).text()}</style>`); } )(); 
 
 window.rir = (min, max) => Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min);
 
@@ -32,7 +33,7 @@ function updatePath() {
     document.documentElement.style.setProperty('--path2', pastPath || newPath);
     //Fix for Glitchy animation Otherwise flashes end of animation before starting again.
     footer.animation = "none"; 
-    setTimeout(()=>{ footer.animation = "clip-path-polygon 1000ms forwards"; }, 100)
+    setTimeout(()=>{ footer.animation = "footer-bars 1000ms forwards"; }, 100)
 }
 window.w=Math.min(window.innerWidth, 800); 
 updatePath(); setInterval(updatePath,1500);
