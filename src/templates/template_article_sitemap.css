@@ -17,9 +17,6 @@ body:has(#sitemap:focus-within) { overscroll-behavior-y: contain; } /* Prevent d
     box-shadow: 3px 2px 5px rgb(var(--background) ), -3px -2px 20px rgb(var(--near-white)), inset 0px 0 10px rgb(var(--near-white));
 }
 
-/* hide checkbox, but still expose it to screen readers.*/
-input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; white-space: nowrap; }
-
 /* Use Labels to trigger CSS Effects on checkbox checked */
 #toggle-sitemap{ visibility: hidden; }
 #toggle-sitemap:not(:checked) ~ #sitemap { animation: collapse 1s forwards, glow 6s linear infinite; }
@@ -49,6 +46,8 @@ input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; 
     overflow-x: hidden;
     max-height: calc(75vh - 6em);
 }
+
+
 
 /* triggers w observer on header and on hover */
 @keyframes shake {

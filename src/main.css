@@ -21,10 +21,8 @@ body {
   --near-black: 0, 72, 72; /* 180, 100%, 14% */
   /* --near-black: 0, 14, 42; darkblue - 220, 100%, 8% */
   --near-white: 226, 226, 238; /*light red -  0, 26%, 91% */
-
   --max-width: min(800px, 100vw);
-}
-:root {  
+
   /* phasing bg to show and hide cubes */
   --bggradient1:  rgb(var(--canvas));
   --bggradient2:  rgba(var(--canvas), 0.8);
@@ -65,6 +63,9 @@ a{ text-decoration: none; }
 
 summary:hover .anchor::after { content: '🔗'; height: .8em; }
 .anchor{position: absolute; left: 0px;}
+
+/* hide checkbox, but still expose it to screen readers.*/
+input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; white-space: nowrap; }
 
 /* Expanding hover effect */
 a::before {

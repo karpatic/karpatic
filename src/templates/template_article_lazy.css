@@ -7,7 +7,6 @@
     radial-gradient(at 68% 16%, hsla(339,76%,78%,1) 0px, transparent 50%),
     radial-gradient(at 25% 1%, hsla(202,73%,63%,1) 0px, transparent 50%);
 }
-
 #gradient_bg::before {
     animation: gradient-scroll 2s alternate infinite 2000ms; 
 }

@@ -59,7 +59,7 @@ h1>a{
   animation:spin-header 1s linear alternate infinite;
   transition-duration: 2s;
 } 
-#header:hover > #header_bg_wrapper > #header_bg{
+#header:hover > #header_bg{
   clip-path: polygon(0% 15%, 15% 15%, 15% 0%, 85% 0%, 85% 15%, 100% 15%, 100% 85%, 85% 85%, 85% 100%, 15% 100%, 15% 85%, 0% 85%);
 } 
 @keyframes spin-header{ 

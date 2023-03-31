@@ -35,7 +35,7 @@ export const handleRoute = async (route) => {
     // Load a template on route change or local init
     if ( newTemplate ){ 
         document.body.innerHTML = await (await fetch(`./templates/${window.meta.template}.html`)).text(); 
-        window.newSitemap && document.body.insertAdjacentHTML('beforebegin', `<style>${await (await fetch(`./templates/template_article_sitemap.css`)).text()}</style>`);
+        window.meta.sitemap && window.newSitemap && document.body.insertAdjacentHTML('beforebegin', `<style>${await (await fetch(`./templates/template_article_sitemap.css`)).text()}</style>`);
         document.body.insertAdjacentHTML('beforebegin', `<style>${await (await fetch(`./templates/${window.meta.template}.css`)).text()}</style>`);
         await loadScripts(); 
     } 
