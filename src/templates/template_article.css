@@ -128,9 +128,6 @@ h1>a{
 
 .twitter-tweet{ margin: auto; }
 
-
-
-
 #light,#expand,.notelbl { cursor:pointer; }
 #light::before {content: '🌜 Dark mode'; display: block;} 
 html:has(#lightmode:checked){ filter: invert(100%); }
@@ -157,10 +154,11 @@ aside {
   padding: 20px;  
   z-index:1; 
 }
+.notebox:checked ~  aside{ display: block;}
+.notebox:checked ~  .notelbl:after{content:' [X]'}
 aside, .notebox {display: none;}
 #expand::before {content: '➕ Expand notes';}
 body:has(#expandmode:checked) #expand::before {content: '➖ Collapse notes';}
-body:has(#expandmode:checked) .notelbl:after{content:' [X]'}
 body:has(#expandmode:checked) aside{ display: block;}
 
 
