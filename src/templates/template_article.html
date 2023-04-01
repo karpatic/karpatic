@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" id="svg_bg"></svg> 
 <!-- this checkbox holds state of whether modal is visible or not -->
 
-<input type="checkbox" id="toggle-sitemap">
+<input type="checkbox" id="toggle-sitemap" aria-label="sitemap">
 <div id="sitemap"> 
   <label role="button" tabindex="0" for="toggle-sitemap"><span>Hide</span> <span>Show </span>Sitemap</label>
 </div>
@@ -22,11 +22,8 @@
 <div class="controls-container">
   <div> 
     <label for="lightmode" id="light"><input type="checkbox" id="lightmode"></label>
-    <label for="expandmode" id="expand"></label><input type="checkbox" id="expandmode"></label>
-    <p id="music" title="Bauchamp - 127 bass with bug and perc.mp3"><span>
-      <audio controls  controlsList="nodownload noplaybackrate" preload="none" loop  
-        src="./audio/title.mp3"></audio>
-    </span> Musical loops</p>
+    <label id="expand"></label><input type="checkbox" id="expandmode"></label>
+    <p id="music" title="Bauchamp - 127 bass with bug and perc.mp3"><span> <audio controls  controlsList="nodownload noplaybackrate" preload="none" loop  src="./audio/title.mp3"></audio> </span> Musical loops</p>
   </div>
 </div>
 
