@@ -61,7 +61,7 @@ ul{ padding-left: 10px; }
 li>p{margin:0px; display: inline;}
 a{ text-decoration: none; } 
 
-summary:hover .anchor::after { content: '🔗'; height: .8em; }
+summary:hover .anchor::after { content: '🔗'; height: .8em;}
 .anchor{position: absolute; left: 0px;}
 
 /* hide checkbox, but still expose it to screen readers.*/
@@ -92,7 +92,7 @@ pre > code { color: var(--foreground) }
 blockquote{ 
   margin: 32px 24px;
   font-style:italic; background-color: rgb(var(--foreground)); 
-  color: var(--foreground); border-left:8px solid rgb(var(--foreground)); 
+  color: rgb(var(--foreground)); border-left:8px solid rgb(var(--foreground)); 
   position: relative; padding: 12px 5px 1px 5px; 
 }
 blockquote::before{ content: "\201C"; color: rgb(var(--foreground)); padding-top: 6px; font-size:4em; position: absolute; left: 10px; top:-10px; }

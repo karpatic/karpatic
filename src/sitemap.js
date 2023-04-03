@@ -9,7 +9,7 @@ const createNav = async () => {
     let sitemap = await (await fetch(`./posts/${loc}`)).json(); 
     // console.log('LOADING5', sitemap);
     window.lbl ||= ` 
-        <label role="button" tabindex="0" for="toggle-sitemap">
+        <label tabindex="0" for="toggle_sitemap">
             <div id='drag'>Drag me!</div>
             <span>&#x21e8;</span> Sitemap <span>&#x2715;</span>
         </label>
@@ -24,7 +24,7 @@ const createNav = async () => {
     )
     if(sm){ sm.className = loc; sm.innerHTML = `${lbl}<div id='sitemap-content'>${sitemap.join('')}</div>`; }
 } 
-const formatLink = (str) => str.trim().replaceAll(/[^a-zA-Z]/g, "").slice(0, 12)
+const formatLink = (str) => str.trim().replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "").slice(0, 12)
     .replace(/\b\w/g, (c) => c.toUpperCase()) + (str.length > 12 + 1 ? "..." : "");
 
 function addTocToSiteMap() {
@@ -42,7 +42,7 @@ function addTocToSiteMap() {
         .map((header) =>{ 
             const z=formatLink(header.innerText || header.textContent);
             const spaces = '&emsp;'.repeat(header.tagName.slice(1)-1)
-            return `${spaces}<a href='#${z}'>${z}</a>`
+            return `${spaces}<a href='#${z}'>${z.replaceAll("_", " ")}</a>`
         })
     .join('<br/>')
     tocNode = document.createElement('div'); tocNode.setAttribute('id', 'toc'); tocNode.innerHTML = toc; 
@@ -50,7 +50,7 @@ function addTocToSiteMap() {
 }
 
 window.toast = () => {
-    let e = document.getElementById('toast-container');
+    let e = document.getElementById('toast_container');
     e.style.animation = 'toast 3s';
     e.addEventListener('animationend', () => {e.style.animation ='none';}, { once: true });
 }
@@ -73,32 +73,35 @@ function addAnchorsToHeaders() {
 // - Populates 'sitemap' map 
 // - - if exists with sitemap.json file and newTemplate (set from handleRoute)
 // - - Populates the #currentPage TOC by scanning for H2s, H3s, etc.
-// - Else Runs 'pageTransitioneer' animation if it exists
+// - Else Runs 'page_transition' animation if it exists
 //
 window.addEventListener('refreshTemplate', async () => { 
     // console.log('~~~~~~~~~~> refreshTemplate');
-    document.querySelector('meta[name="robots"]')?.setAttribute('content', window.meta.robots||'index, follow')
+    document.querySelector('meta[name="robots"]')?.setAttribute('content', meta.robots||'index, follow')
     const replace = (id) => {
-        const el = document.getElementById(id); el.innerHTML = ''; 
+        if(!meta[id])return;
+        const el = document.getElementById(id); el.innerHTML = '';
         el.appendChild( document.createRange().createContextualFragment( meta[id] ));
     } 
     const populateTemplate = async () => { 
-        ['content', 'title', 'summary'].map((id) => replace( id ) )
-        addTocToSiteMap(); addAnchorsToHeaders();
-        !window.navEvent && ({ handleRoute: window.handleRoute, navEvent: window.navEvent } = await import(/* webpackChunkName: "router" */ './router.js')); 
-        window.updateRedirectListeners();
-        window.loadObserver();
+        console.log('POPULATING TEMPLATE', !!meta.breadcrumbs);
+        meta.breadcrumbs && (meta.breadcrumbs = meta.breadcrumbs.split('/').map((crumb) =>`<a href="./${(crumb=='home'&&' ')||(crumb+'.html')}">${!crumb&&' '||crumb}</a>`).join(' / ') );
+        ['content', 'title', 'summary','breadcrumbs'].map((id) => replace( id ) ) 
+        addTocToSiteMap(); addAnchorsToHeaders(); 
+        !navEvent && ({ handleRoute: window.handleRoute, navEvent: window.navEvent } = await import(/* webpackChunkName: "router" */ './router.js')); 
+        updateRedirectListeners(); 
+        loadObserver(); 
     } 
-    const pageT = document.getElementById('pageTransitioneer');
-    if(window.newSitemap){ await createNav(); }
+    const pageT = document.getElementById('page_transition');
+    await createNav();
     if(window.newTemplate){
             populateTemplate(), 
-            document.querySelectorAll('a').forEach((el) =>{ el.id = el.id || el.innerText + Math.floor(Math.random() * 1000000)}) 
+            document.querySelectorAll('a').forEach((el) =>{ el.id = el.id || formatLink(el.innerText) + Math.floor(Math.random() * 1000000)}) 
+
     }
     else if ( window.location.href.indexOf('#') == -1 && pageT ){
-        pageT.style.animation = 'pageTransitioneer 1s alternate 2, gradient 1s alternate 2'
+        pageT.style.animation = 'page_transition 1s alternate 2, gradient 1s alternate 2'
         pageT.addEventListener('animationend', () => {pageT.style.animation ='none';}, { once: true }); 
-    
 
         setTimeout( async ()=>{ populateTemplate(); }, 1100)
     }

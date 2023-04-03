@@ -1,25 +1,26 @@
 <div id="tracer"></div>
 <svg xmlns="http://www.w3.org/2000/svg" id="svg_bg"></svg> 
 <!-- this checkbox holds state of whether modal is visible or not -->
-
-<input type="checkbox" id="toggle-sitemap" aria-label="sitemap">
+<input type="checkbox" id="toggle_sitemap" aria-label="sitemap">
 <div id="sitemap"> 
-  <label role="button" tabindex="0" for="toggle-sitemap"><span>Hide</span> <span>Show </span>Sitemap</label>
+  <label tabindex="0" for="toggle_sitemap"><span>Hide</span> <span>Show </span>Sitemap</label>
 </div>
-<link id='template' class='template_article'>
-<div id='pageTransitioneer'><p>Don't Look! I'm changing!</p></div>
-<div id="toast-container"><p>URL Copied</p></div>
+
+<div id='page_transition'><p>Don't Look! I'm changing!</p></div>
+
+<div id="toast_container"><p>URL Copied</p></div>
+
 <div id="gradient_bg"> 
+
 </div>  
 <div id="header">
-  <div id="header_nav">
+  <div id="header_bg_wrapper"><div id="header_bg"></div></div> 
     <h1><a href="./">Charles Karpati</a> <span id="head_separator"> | </span> <a href="#title" id="title"></a></h1> 
     <p id="summary"></p>
-  </div>
-  <span id="header_bg_wrapper"><div id="header_bg"></div></span> 
 </div>
 
-<div class="controls-container">
+<div class="controls_container">
+  <div id="breadcrumbs">  </div>
   <div> 
     <label for="lightmode" id="light"><input type="checkbox" id="lightmode" aria-label="lightmode"></label>
     <label for="expandmode" id="expand"><input type="checkbox" id="expandmode"  aria-label="expandmode"></label>
@@ -27,33 +28,31 @@
   </div>
 </div>
 
-<div class='broider' id='content'>
-  <div id="outline"></div>
-  <div id="content"></div>
+<div class='broider' id="content">
 </div>
 <div id="footer">
   <p id="thanks">Thank's for visiting! - <a href='./legal.html'>Terms of use</a> </p>
-  <span id="footer_bg_wrapper"><div id="footer_bg"></div></span> 
+  <div id="footer_bg_wrapper"><div id="footer_bg"></div></div> 
 </div> 
-
-<!-- <link rel="stylesheet" type="text/css" href="/templates/template_article.css"></link>-->
+<style>h2{filter:url(#header)}</style>
 <script type="text/javascript">
 let w = window;
 var inDrag, dragStartX, dragStartY, objInitLeft, objInitTop = 0;
 
 function loadLazy() { w.loadOnce||((document.head||d).appendChild(document.createElement('script')).src='templates/template_article_lazy.js');  w.loadOnce=true; }
-function downFN(e) { loadLazy(); inDrag = true;
+function downFN(e) { inDrag = true;
     objInitLeft = sitemap.offsetLeft; objInitTop = sitemap.offsetTop;
     dragStartX = e.pageX || e.targetTouches[0].clientX; 
     dragStartY = e.pageY || e.targetTouches[0].clientY; 
 }
-function scrollFN(){ let d = document.documentElement; loadLazy();
+function scrollFN(){ let d = document.documentElement;
   w.tracer?.style.setProperty('--scrollPercent', (d.scrollTop) / (d.scrollHeight - d.clientHeight) * 100 + '%');
 }
 
-[ [["mousedown", "touchstart"], downFN, sitemap], 
+[ [["scroll", "mousedown", "touchstart"], loadLazy, window, { once: true }],
+  [["mousedown", "touchstart"], downFN, sitemap], 
   [["scroll"], scrollFN, window ] 
-].forEach(evt => evt[0].forEach(type =>{ evt[2].addEventListener(type, evt[1], { passive: false }) } ));
+].forEach(evt => evt[0].forEach(type =>{ evt[2].addEventListener(type, evt[1], evt[3]||{ passive: false }) } ));
 
 w.activeHeader = null
 const observer = new IntersectionObserver((entries) => { 
@@ -64,8 +63,9 @@ const observer = new IntersectionObserver((entries) => {
         if (!entry.isIntersecting){ el.animation == txt && (el.animation = ''); return; }
         el.animation = txt 
         if(pos<300 || pos>300){
-            w.activeHeader && (w.activeHeader.style.textDecoration='none')
-            let tocLink = document.getElementById('goto_'+e.id)
+            w.activeHeader && (w.activeHeader.style.textDecoration='none') // unset previous active header
+            // let tocLink = document.getElementById('#'+e.id) 
+            let tocLink = document.querySelector(`#sitemap a[href="#${e.id}"]`);
             tocLink && ( tocLink.style.animation = txt, tocLink.style.textDecoration='line-through' ) 
             w.activeHeader = tocLink
         }

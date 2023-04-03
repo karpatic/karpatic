@@ -26,7 +26,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
           <meta name="author"             content={hr.author}/>
           <meta name="description"        content={hr.description}/> 
 
-          <meta http-equiv="Cache-Control" content="no-cache, must-revalidate"/>
+          <meta http-equiv="Cache-Control" content="no-cache"/>
 
           { /*
           {forBlog && <link rel="manifest" href="/manifest.json"/> }

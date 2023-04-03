@@ -101,7 +101,7 @@ function convertNotes(str) {
         return `
             ${p1 + pStart + p2 + p4 + p5}
             <input type='checkbox' id='note${matchCount}' class='notebox'>
-            <label ${pStart} role="button" tabindex="0" for='note${matchCount}' class='notelbl'>[${matchCount}]</label>
+            <label ${pStart} tabindex="0" for='note${matchCount}' class='notelbl'>[${matchCount}]</label>
             <aside> <b>Note:</b> ${p3} </aside>
         `;
     };

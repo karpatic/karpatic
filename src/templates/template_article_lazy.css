@@ -37,7 +37,7 @@
     to { transform: translate3d(var(--endx), var(--endy), 0 ) } 
 }
 
-#pageTransitioneer {
+#page_transition {
     font-size:1.25em;
     top: 50%;
     left: 50%;
@@ -54,7 +54,7 @@
     color: rgb(var(--near-black));
 }
 
-@keyframes pageTransitioneer {
+@keyframes page_transition {
     0% {opacity:1; transform: translate(-50%, -50%) scale(0);}
     70% {opacity:1; transform: translate(-50%, -50%) scale(1);  }
     100% {opacity:1; transform: translate(-50%, -50%) scale(1); }

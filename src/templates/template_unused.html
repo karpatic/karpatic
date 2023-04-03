@@ -5,6 +5,16 @@
       <a href="https://twitter.com/CVMiniGames"><img src="https://img.shields.io/twitter/follow/CVMiniGames.svg?style=social" alt="Twitter Follow" /></a>
     </p>
 
+
+    transform: skew(4deg, 2deg);
+
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+      <filter id="header">
+          <feTurbulence baseFrequency="0.03"></feTurbulence> <!-- Create a plane of 'turbulance' -->
+          <feDisplacementMap in="SourceGraphic" scale="3"></feDisplacementMap> <!-- Cut out the plane along our text -->
+          <feComposite in="SourceGraphic" operator="atop"></feComposite> <!-- Paste the cutout atop the text -->
+      </filter>
+    </svg>
 <!--
   https://garden.bradwoods.io/notes/css/3d
   https://garden.bradwoods.io/notes/javascript/web-api/intersection-observer
@@ -80,14 +90,25 @@ https://opensource.apple.com/source/WebCore/WebCore-1889.1/css/mediaControls.css
 https://wicg.github.io/controls-list/html-output/multipage/embedded-content.html#attr-media-controlslist
 https://chromium.googlesource.com/chromium/blink/+/72fef91ac1ef679207f51def8133b336a6f6588f/Source/core/css/mediaControls.css?autodive=0%2F%2F%2F
 
-
+<svg height="0" width="0">
+  <defs>
+      <clipPath id="svgPath"><path d="M0,100L0,100C50,0,150,200,200,100C250,0,350,200,400,100C450,0,550,200,600,100C650,0,750,200,800,100L800,100z"/></clipPath>
+  </defs>
+</svg>
+details::after {
+  content: "";
+  display: block;
+  height: 100px;
+  background: rgba(var(--canvas), 0.4);
+  clip-path: url(#svgPath);
+}
 /*  bottom: calc(var(--a)*200px);  */
 
 
 # CSS
 
 /*
-var tsm = document.getElementById("toggle-sitemap");
+var tsm = document.getElementById("toggle_sitemap");
 tsm.checked = !w.innerWidth < 800
 var sm = document.getElementById("sitemap");
 var size = sm.offsetWidth;
@@ -248,4 +269,4 @@ mobile devices don’t have as much memory as desktops. For example, a not-so-ol
 // let chardin = new Chardin(document.querySelector('body'));
 // chardin.start();}
 
-if(window.isSmall){ document.getElementById('toggle-sitemap').checked=false; }
+if(window.isSmall){ document.getElementById('toggle_sitemap').checked=false; }

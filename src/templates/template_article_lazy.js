@@ -1,4 +1,4 @@
-// alternately toggle-sitemap if sitemap-content scroll behaviors is not good.
+// alternately toggle_sitemap if sitemap-content scroll behaviors is not good.
 function moveFN(e) {
     if (!inDrag) {return;} 
     e.preventDefault();
@@ -12,7 +12,11 @@ function moveFN(e) {
   [["mouseup", "touchend"], () => inDrag = false],
 ].forEach(evt => evt[0].forEach(type => sitemap.addEventListener(type, evt[1], { passive: false })));
 
-( async () => { document.body.insertAdjacentHTML('beforebegin', `<style>${await (await fetch(`./templates/template_article_lazy.css`)).text()}</style>`); } )(); 
+( async () => { 
+  w.loadStyleOnce||document.body.insertAdjacentHTML('beforeend',
+    `<style>${await (await fetch(`./templates/template_article_lazy.css`)).text()}</style>`
+  ); w.loadStyleOnce=true; 
+} )(); 
 
 window.rir = (min, max) => Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min);
 

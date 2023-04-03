@@ -28,18 +28,26 @@ export const handleRoute = async (route) => {
     
     window.oldMeta = window.meta || { template: window?.template?.className, sitemap: window?.sitemap?.className };
     window.meta = content.meta; meta.content = content.content; document.title = window.meta.title; 
+    window.meta.sitemap.includes('false') && (window.meta.sitemap = undefined);
     window.newSitemap =  window.oldMeta?.sitemap  !== window.meta.sitemap
     window.newTemplate = window.oldMeta?.template !== window.meta.template 
     // console.log('~~~~~~~~> handleRoute', {route, 'oldmeta':window.oldMeta, 'template':window.meta.template, 'newsitemap':window.newSitemap, 'newtemplate':window.newTemplate})
 
     // Load a template on route change or local init
     if ( newTemplate ){ 
+        // console.log(`./templates/${window.meta.template}_sitemap.css`)
         document.body.innerHTML = await (await fetch(`./templates/${window.meta.template}.html`)).text(); 
-        window.meta.sitemap && window.newSitemap && document.body.insertAdjacentHTML('beforebegin', `<style>${await (await fetch(`./templates/template_article_sitemap.css`)).text()}</style>`);
-        document.body.insertAdjacentHTML('beforebegin', `<style>${await (await fetch(`./templates/${window.meta.template}.css`)).text()}</style>`);
-        await loadScripts(); 
-    } 
+        
+        document.body.insertAdjacentHTML('beforeend', 
+            `<style>${ await (await fetch(`./templates/${window.meta.template}.css`)).text() }</style>`);
 
+        await loadScripts(); 
+    }
+    if(window.newSitemap && !document.querySelector(`style sitemap`)){
+        document.body.insertAdjacentHTML('beforeend', 
+            `<style>${ await (await fetch(`./templates/${window.meta.template}_sitemap.css`)).text() }</style>`);
+    }
+    
     // Dispatch pageLoaded event for template/ content hooks 
     // Listeners in template.html and | sitemap.js -> Populates window.newTemplate & updates toc. 
     window.dispatchEvent( new CustomEvent('refreshTemplate') ); 

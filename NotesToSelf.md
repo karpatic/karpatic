@@ -43,7 +43,7 @@ Manual TODOs operations:
 - Header.js -> CSP 
 - main.js -> main.CSS
 - sitemap.js -> ./posts/sitemap.json
-- sitemap.js -> pageTransitioneer
+- sitemap.js -> page_transition
 
 ## Design
 
@@ -56,7 +56,7 @@ Templates Contains:
 - > Scrollpos cube flows along the side of a clip path
 - > Animate text shadow on hover
 - > Glowing BG for Active-Page Link. Glowing Underline for TOC Anchor Link
-- > CSS Keyframe names used: gradient-scroll, gradient, glow, collapse, expand, reveal, dismiss, shake, spin-header, wiggle, pageTransitioneer, clip-path-polygon, cube-animation
+- > CSS Keyframe names used: gradient-scroll, gradient, glow, collapse, expand, reveal, dismiss, shake, spin-header, wiggle, page_transition, clip-path-polygon, cube-animation
 
 ## Design Rules
 
