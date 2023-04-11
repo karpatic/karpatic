@@ -7,26 +7,30 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 // Otherwise gets merged w/ any YAML frontmatter.
 // Each manifest must first be auto-generated once using webpack and copied to src/ before being conditionally imported (default no).
 
+
+
 (async () => {
-  const page = window.location.pathname.replace("/",'').replace('.html','') || 'index';
+  let page = window.location.pathname.replace("/",'').replace('.html','') || 'index';
 
   //let hr = JSON.parse((await import(`./header.json`) ).default)
+  let csp = "img-src 'self' https://charleskarpati.com/ data:; connect-src 'self';"
   let hr = await (await fetch((await import(`./header.json`) ).default)).json() 
-  try{
-    let get = ( hr.pwapages.split(',').some(x=>page==x)?'':'posts/')+page
-    let content = await (await fetch((await import( `./${ get}.json`) ).default)).json() 
+  try{ 
+    page = page.split('/').pop();  
+    let url = ( hr.pwapages.split(',').some(x=>page==x)?'':'posts/')+page; url = `/${ url}.json`;
+    let content = await (await fetch(url)).json(); 
     hr = {...hr, ...content.meta}
-  }catch(e){console.log('<~~~~~~~~~~~~~~~~~~~~~~~~NO CONFIG DATA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>',e)}
+    csp = hr.csp || csp 
+    console.log('Header: ', {url, hr})
+  }catch(e){console.error('<~~~~~~~~~~~~~~~~~~~~~~~~CONFIG DATA ERROR~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>',e)}
   let header = <HelmetProvider>
         <Helmet>    
           <meta charset="UTF-8"/>
-          <meta http-equiv="Content-Security-Policy" content="img-src 'self' https://charleskarpati.com/ data:; connect-src 'self' https://ping.charleskarpati.com/;"/>
+          <meta http-equiv="Content-Security-Policy" content={csp}/>
           <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
           <title>{hr.tab||hr.longName}</title>
           <meta name="author"             content={hr.author}/>
           <meta name="description"        content={hr.description}/> 
-
-          <meta http-equiv="Cache-Control" content="no-cache"/>
 
           { /*
           {forBlog && <link rel="manifest" href="/manifest.json"/> }
@@ -103,7 +107,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 
       Array.from(document.getElementsByTagName("style")).forEach(style => { head.removeChild(style); head.appendChild(style); });
 
-      document.querySelector('link[rel="preconnect"][href="https://ping.charleskarpati.com"]')?.link.parentNode.removeChild?.(link);
+      // document.querySelector('link[rel="preconnect"][href="https://ping.charleskarpati.com"]')?.link.parentNode.removeChild?.(link);
     }, 20) 
 
   }, 20)

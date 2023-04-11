@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkname=self.webpackChunkname||[]).push([[836],{836:function(e,n,s){e.exports=s.p+"aboutme.json"}}]);

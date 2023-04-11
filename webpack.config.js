@@ -37,10 +37,8 @@ module.exports = (env, args) => {
   let template = `
   <!DOCTYPE html>
   <html lang="en" dir="ltr">
-  <head id="head"></head>
-    <body>
-      <div id="body"></div>
-    </body>
+    <head id="head"></head>
+    <body></body>
   </html>`;
   return {
     cache: false,
@@ -283,7 +281,7 @@ module.exports = (env, args) => {
       },
       // watchFiles: ['src/**/*'],
       historyApiFallback: { disableDotRule: true },
-      proxy: { '/data/': 'http://localhost:80/PROJECTNAME/src/' }
+      proxy: { '/esp_lights/': 'http://localhost:8081/karpatic/esp_lights' }
     }
   }
 }

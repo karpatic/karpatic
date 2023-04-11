@@ -4,11 +4,10 @@ window.isLocal ||= !!!window.content?.innerHTML.trim()
 window.preRendering = /ReactSnap/.test(navigator.userAgent)
 
 export const navEvent = async (event) => {
-    // console.log('~~~~> navEvent')
-    let route = (event.target.href || event.target.location.href).replace(window.origin,'');  
+    let route = (window.location.href).replace(window.origin,'');  
     if (route.split("#")[0] != window.oldRoute.split("#")[0]){ await handleRoute( route ); window.oldRoute = route; }; 
     route.indexOf('#') == -1 && window.scrollTo({ top: 0, behavior: 'smooth' });
-    let t = document.getElementById(route.split('#')[1]); t?.scrollIntoView({ behavior: 'smooth' });
+    let t = document.getElementById(route.split('#')[1]); t?.scrollIntoView({ behavior: 'smooth' }); 
 };
 
 
@@ -16,36 +15,42 @@ export const navEvent = async (event) => {
 // 1) Get meta data from route. 2) Register service worker. 3) load template. 
 // 4) Load scripts 5) Dispatch event listeners. 6) Update route change event listeners
 export const handleRoute = async (route) => { 
+    route=="/" && (route = "index");
+    // Get the Upcoming Files Json Data  // IF IN DEV run the raw convert fn to get the json data. 
+    route = route.replaceAll('./','').replaceAll('../','').replace('.html','').replace(/^\//, ''); // console.log(route);
+
     // Client route change for first time.
     !window.meta && !isLocal && registerServiceWorker(); 
     await import(/* webpackChunkName: "sitemap" */ './sitemap.js'); 
 
-    // Get the Upcoming Files Json Data 
-    // IF IN DEV run the raw convert fn to get the json data.
-    let p = route.replace("/",'').replace('.html','') || 'index';
     let {ipynb_publish} = isLocal && await import(/* webpackChunkName: "convert" */ './convert.mjs') 
-    let content = await (isLocal ? ipynb_publish(`./ipynb/${p}.ipynb`) : (await fetch(`./posts/${p}.json`)).json() );
-    
-    window.oldMeta = window.meta || { template: window?.template?.className, sitemap: window?.sitemap?.className };
-    window.meta = content.meta; meta.content = content.content; document.title = window.meta.title; 
-    window.meta.sitemap.includes('false') && (window.meta.sitemap = undefined);
+    let content = await (isLocal ? ipynb_publish(`/ipynb/${route}.ipynb`) : (await fetch(`./posts/${route}.json`)).json() );
+    console.log('handleRoute: ', {url: isLocal ? `/ipynb/${route}.ipynb` : `./posts/${route}.json`, content});
+
+    // Swap YAML old and new; renew the bool.
+    window.oldMeta = window.meta; window.meta = content.meta; 
+    meta.content = content.content; document.title = window.meta.title; 
     window.newSitemap =  window.oldMeta?.sitemap  !== window.meta.sitemap
     window.newTemplate = window.oldMeta?.template !== window.meta.template 
-    // console.log('~~~~~~~~> handleRoute', {route, 'oldmeta':window.oldMeta, 'template':window.meta.template, 'newsitemap':window.newSitemap, 'newtemplate':window.newTemplate})
+
+    // Create a new meta element. Add the meta element to the document's head
+    var cspMeta = document.createElement('meta');
+    cspMeta.httpEquiv = 'Content-Security-Policy'; 
+    cspMeta.content = window.meta.csp;
+    window.meta.csp && document.head.appendChild(cspMeta);
 
     // Load a template on route change or local init
     if ( newTemplate ){ 
-        // console.log(`./templates/${window.meta.template}_sitemap.css`)
-        document.body.innerHTML = await (await fetch(`./templates/${window.meta.template}.html`)).text(); 
+        document.body.innerHTML = await (await fetch(`/templates/${window.meta.template}.html`)).text(); 
+        //console.log({newTemplate}, `/templates/${window.meta.template}.html`, document.body.innerHTML);
         
-        document.body.insertAdjacentHTML('beforeend', 
-            `<style>${ await (await fetch(`./templates/${window.meta.template}.css`)).text() }</style>`);
+        document.body.insertAdjacentHTML('beforeend',`<style>${ await (await fetch(`${w.location.origin}/templates/${window.meta.template}.css`)).text() }</style>`);
 
         await loadScripts(); 
     }
     if(window.newSitemap && !document.querySelector(`style sitemap`)){
-        document.body.insertAdjacentHTML('beforeend', 
-            `<style>${ await (await fetch(`./templates/${window.meta.template}_sitemap.css`)).text() }</style>`);
+        let txt  = await (await fetch(`${w.location.origin}/templates/${window.meta.template}_sitemap.css`)).text() 
+        document.body.insertAdjacentHTML('beforeend', `<style>${ txt }</style>`);
     }
     
     // Dispatch pageLoaded event for template/ content hooks 

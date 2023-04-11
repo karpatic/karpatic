@@ -14,7 +14,7 @@ function moveFN(e) {
 
 ( async () => { 
   w.loadStyleOnce||document.body.insertAdjacentHTML('beforeend',
-    `<style>${await (await fetch(`./templates/template_article_lazy.css`)).text()}</style>`
+    `<style>${await (await fetch(w.location.origin+`/templates/template_article_lazy.css`)).text()}</style>`
   ); w.loadStyleOnce=true; 
 } )(); 
 
@@ -22,7 +22,7 @@ window.rir = (min, max) => Math.floor(Math.random() * (Math.floor(max) - Math.ce
 
 // Footer Background Animation
 function generatePath(bars) { 
-    const h = 200; const addPath=(x,y)=>`L${Math.round(x*window.w/bars)},${y}`; 
+    const h = 200; const addPath=(x,y)=>`L${Math.round(x*window.width/bars)},${y}`; 
     const path=Array.from({length:bars},(y,x)=>{y=h-(rir(2,5)*40); return addPath(x,y)+addPath(x+1,y)});
     return ("M0,"+h+path.join('')+addPath(bars, h)+"L0," + h + "Z").replace('undefined', '');
 }
@@ -39,7 +39,7 @@ function updatePath() {
     footer.animation = "none"; 
     setTimeout(()=>{ footer.animation = "footer-bars 1000ms forwards"; }, 100)
 }
-window.w=Math.min(window.innerWidth, 800); 
+window.width=Math.min(window.innerWidth, 800); 
 updatePath(); setInterval(updatePath,1500);
 
 
@@ -50,7 +50,7 @@ updatePath(); setInterval(updatePath,1500);
 // create random # SVG's cubes w random# of sizes,colors,speeds, & positions
 // Steps: 0. loop steps 1,2 // 1. reset our svg with rir new cubes. // 2. Animate Cubes top-bottom
 createCube = () => {
-  const x = rir(0,200)+'vh'; const y = rir(0,100)+'vh'; const size = rir(40,80)
+  const x = rir(0,200)+'svh'; const y = rir(0,100)+'svh'; const size = rir(40,80)
   const cube = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
   cube.setAttribute('x', x); cube.setAttribute('y', y);
   cube.setAttribute('height', size); cube.setAttribute('width', size);
@@ -59,8 +59,8 @@ createCube = () => {
 };
 createCubes = () => { return Array(rir(8,15)).fill().map( () =>{c=window.createCube(); window.svg_bg.appendChild(c); return c});  };
 animateCubes = () => { [...document.querySelectorAll('.cube')].forEach(cube => { c = cube.style;
-    c.setProperty('--startx', `-${rir(0, 10)}vh`); c.setProperty('--endx', `${rir(0, 10)}vh`);
-    c.setProperty('--starty', `-${rir(100, 125)}vh`); c.setProperty('--endy', `${rir(100, 125)}vh`);
+    c.setProperty('--startx', `-${rir(0, 10)}svh`); c.setProperty('--endx', `${rir(0, 10)}svh`);
+    c.setProperty('--starty', `-${rir(100, 125)}svh`); c.setProperty('--endy', `${rir(100, 125)}svh`);
     cube.style.animation = `cube-animation ${duration}ms forwards`;
   }); 
 }; 

@@ -30,8 +30,8 @@
     100% { clip-path: var(--path1) }
 }
 
-#svg_bg{top:0px; width:100vw; height:100vh}
-.cube {--startx: 0; --starty: 0; --endx: -100vh; --endy: -120vh; will-change: transform;}
+#svg_bg{top:0px; width:100vw; height:100svh}
+.cube {--startx: 0; --starty: 0; --endx: -100svh; --endy: -120svh; will-change: transform;}
 @keyframes cube-animation { 
     from { transform: translate3d(var(--startx), var(--starty),0 ) }
     to { transform: translate3d(var(--endx), var(--endy), 0 ) } 

@@ -15,7 +15,6 @@ body {
 :root{
   --radial1:radial-gradient(at 52% 13%, hsla(215,77%,79%,1) 0px, transparent 50%);
   --canvas: 227, 227, 232;
-  --background-darker: 214, 214, 255; 
   --background: 209, 209, 250; 
   --foreground: 240, 240, 255;
   --near-black: 0, 72, 72; /* 180, 100%, 14% */
@@ -86,17 +85,16 @@ a:hover::before {
 span{ font-family: inherit;}
 p { word-break: break-word; }
 pre{ max-width: calc( var(--max-width) - 70px); background: rgb(var(--background)); padding: 12px; }
-pre > code { color: var(--foreground) }
-/* Instead of setting a page width use: li { max-width: 80ch; } */
+pre > code { color: var(--foreground); overflow-x: auto; } 
+
 /* Blockquote */
 blockquote{ 
   margin: 32px 24px;
-  font-style:italic; background-color: rgb(var(--foreground)); 
-  color: rgb(var(--foreground)); border-left:8px solid rgb(var(--foreground)); 
+  font-style:italic; background-color: rgb(var(--background)); 
+  border-left:8px solid rgb(var(--foreground)); 
   position: relative; padding: 12px 5px 1px 5px; 
 }
 blockquote::before{ content: "\201C"; color: rgb(var(--foreground)); padding-top: 6px; font-size:4em; position: absolute; left: 10px; top:-10px; }
-blockquote span{ color: rgb(var(--near-black)); font-style: normal; font-weight: bold; display: block; text-align: center; }
 
 /* Summary */
 details{counter-reset: my-counter;}

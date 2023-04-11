@@ -1,31 +1,43 @@
 // 5.
 //  
+// IPYNB Requires: {summary, filename, sitemap} Optionally: {tab} in the YAML header.
 const createNav = async () => {   
     // which sitemap to show is located in posts YAML.
-    loc = window.meta.sitemap; 
-    sm = window.sitemap 
-    sm && (sm.style.visibility = loc?'visible':'hidden'); 
-    if(!loc)return;  
-    let sitemap = await (await fetch(`./posts/${loc}`)).json(); 
-    // console.log('LOADING5', sitemap);
+    sm = window.meta.sitemap; 
+    let pageIsRoot = window.meta.filename == sm
+    smel = window.sitemap 
+    smel && (smel.style.visibility = sm?'visible':'hidden'); 
+    if(!sm)return;  
+    let url = `/posts/${sm}_map.json`; 
+    let sitemap = await (await fetch(url)).json(); 
+    console.log('createNav: ', {url, sitemap});
     window.lbl ||= ` 
         <label tabindex="0" for="toggle_sitemap">
             <div id='drag'>Drag me!</div>
             <span>&#x21e8;</span> Sitemap <span>&#x2715;</span>
         </label>
         <hr/>`
-    sitemap = sitemap.map((item) => `
-        <a id="${ item.tab==window.meta.tab?'currentPage':('link_'+item.tab)}" 
-            id='link_${item.tab }' 
-            href="./${item.filename}.html" 
-            title="${item.summary}">
-            ${item.tab}
+    let tab = (x) => x.tab || x.filename
+    url = (x) =>{
+        let linkIsRoot = x.filename == sm
+        let path = linkIsRoot ? `.${pageIsRoot ? '/' + sm : '/../' + sm}` : `./${pageIsRoot ? sm + '/' + x.filename : x.filename}`;
+        // console.log(pageIsRoot, linkIsRoot, path)
+        return path;
+    }
+    sitemap = sitemap.map((x) => `
+        <a id="${ tab(x)==window.meta.tab?'currentPage':('link_'+tab(x))}" 
+            id='link_${tab(x) }' 
+            href="${url(x)}" 
+            title="${x.summary}">
+            ${shorten(capitalize(tab(x).replaceAll("_", " ")),20)}
         </a>`
     )
-    if(sm){ sm.className = loc; sm.innerHTML = `${lbl}<div id='sitemap-content'>${sitemap.join('')}</div>`; }
+    if(smel){ smel.className = sm; smel.innerHTML = `${lbl}<div id='sitemap-content'>${sitemap.join('')}</div>`; }
 } 
-const formatLink = (str) => str.trim().replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "").slice(0, 12)
-    .replace(/\b\w/g, (c) => c.toUpperCase()) + (str.length > 12 + 1 ? "..." : "");
+
+const capitalize = (str) => str.replace(/\b\w/g, (c) => c.toUpperCase()) 
+const formatLink = (str) => shorten(capitalize(str.trim().replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "") ))
+const shorten = (str, len=12) => str.slice(0, len) + (str.length > len + 1 ? "..." : "");
 
 function addTocToSiteMap() {
     window.currentPage?.removeAttribute('id')
@@ -78,16 +90,33 @@ function addAnchorsToHeaders() {
 window.addEventListener('refreshTemplate', async () => { 
     // console.log('~~~~~~~~~~> refreshTemplate');
     document.querySelector('meta[name="robots"]')?.setAttribute('content', meta.robots||'index, follow')
-    const replace = (id) => {
-        if(!meta[id])return;
+    const replace = (id) => { 
+        if(!meta[id])return; 
         const el = document.getElementById(id); el.innerHTML = '';
         el.appendChild( document.createRange().createContextualFragment( meta[id] ));
     } 
     const populateTemplate = async () => { 
-        console.log('POPULATING TEMPLATE', !!meta.breadcrumbs);
-        meta.breadcrumbs && (meta.breadcrumbs = meta.breadcrumbs.split('/').map((crumb) =>`<a href="./${(crumb=='home'&&' ')||(crumb+'.html')}">${!crumb&&' '||crumb}</a>`).join(' / ') );
+        //console.log('POPULATING TEMPLATE');
+        // console.log({meta, location:window.location})
+        let file = window.meta.filename
+        let sitemap = window.meta.sitemap;
+        let crumbs ='home/' 
+        if(sitemap){crumbs=crumbs+sitemap+((sitemap==file?'':('/'+file)));}
+        else{ file!='index'&&(crumbs+=file) }
+        // console.log(crumbs)
+        crumbs && (window.meta.breadcrumbs = crumbs.split('/').map((crumb, i) =>{
+            let curDepth = window.location.pathname.split('/').length
+            let atDepth = curDepth-1-i;  
+            let base = Array(atDepth).fill('..').join('/'); base && (base += '/'); base= './'+base;
+            //console.log({curDepth, i, 'atDepth':atDepth, crumb, base});
+            let t = `<a href="${base}${crumb=="home"?'':crumb}">${capitalize(crumb.replaceAll("_", " "))}</a>`
+            // console.log({t})
+            return t; 
+        }).join(' / ') );
+        // console.log(window.meta.breadcrumbs, window.breadcrumbs);
         ['content', 'title', 'summary','breadcrumbs'].map((id) => replace( id ) ) 
         addTocToSiteMap(); addAnchorsToHeaders(); 
+        if(window.expand) window.expand.style.display = document.getElementsByTagName('aside').length > 0 ? 'block' : 'none';
         !navEvent && ({ handleRoute: window.handleRoute, navEvent: window.navEvent } = await import(/* webpackChunkName: "router" */ './router.js')); 
         updateRedirectListeners(); 
         loadObserver(); 

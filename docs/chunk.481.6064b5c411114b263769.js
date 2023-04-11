@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkname=self.webpackChunkname||[]).push([[481],{481:function(e,n,s){e.exports=s.p+"mapdatascience.json"}}]);

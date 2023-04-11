@@ -10,12 +10,16 @@ export async function ipynb_publish(file = 'index') {
     /*
     1. Publish ipynb to json or html.
     */
-   ///console.log(('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-   ///console.log(('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', '\n\n');
-   ///console.log(('START:', {saveto, file, type}, '\n');
+   ///console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    //console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', '\n\n');
+    //console.log('START:', {saveto, file, type}, '\n');
     let final = await nb2json(file);
     let { filename, ...meta } = final.meta;
-    filename = filename.toLowerCase().replaceAll(' ', '_');
+    //console.log(final)
+    try{ filename = filename?.toLowerCase().replaceAll(' ', '_'); }
+    catch(e){
+        console.log('ERROR: ', e); // Typically undefined
+    }
     final.meta = { filename, ...meta };
     file = filename
    ///console.log(('Saving ', final, '\n\n');
@@ -31,7 +35,7 @@ export async function nb2json(fname) {
         1a. Must be in directory of ipynb you want to convert to html.
     */
     if (typeof process !== 'undefined') { fname = `http://localhost:8085/${fname}.ipynb`; }
-    // console.log('- nb2json', fname, '\n');
+    else{ fname = 'http://localhost:8081' + fname }
     let ipynb = await fetch(fname, { headers: { 'Content-Type': 'application/json; charset=utf-8' } })
     const nb = await ( ipynb ).json();
     const meta = get_metadata(nb.cells[0]);
@@ -40,6 +44,7 @@ export async function nb2json(fname) {
     // console.log('- - content Ran ~~~~~~~~~~~', content, '~~~~~~~~~~~\n'); 
     const resp = replaceEmojis( content );
     // console.log('- - replaceEmojis Ran', '\n');
+    meta.filename = (fname.split('/')[fname.split('/').length -1]).replace('.ipynb', '')
     return { meta, content: resp };
 }
 
@@ -59,7 +64,7 @@ function get_metadata(data) {
         } 
         else if (x.startsWith('-')) {
             const key = x.slice(x.indexOf('- ') + 2, x.indexOf(': '));
-            const val = x.slice(x.indexOf(': ') + 2).replaceAll('\n', '');
+            const val = x.slice(x.indexOf(': ') + 2).replaceAll('\n', '').trim();
             y[key] = val;
         }
     }
@@ -194,7 +199,7 @@ function processSource(source, flags) {
     */
     // ///console.log('processSource... ', source);
     for (let lbl of flags) {
-      // ///console.log('processSource... ', lbl);
+        // console.log('processSource... ', lbl);
         source = source.replaceAll(lbl + '\r\n', '');
         source = source.replaceAll(lbl + '\n', ''); // Strip the Flag
         if (lbl == '#collapse_input_open') source = makeDetails(source, true);
@@ -225,9 +230,14 @@ function processOutput(source, flags) {
     else if (keys.includes('image/png')) { source = "<img src=\"data:image/png;base64," + source['data']['image/png'] + "\" alt='Image Alt Text'>"; } 
     else if (keys.includes('text/plain')) { source = !(/<Figure/.test(source['data']['text/plain'])) ?  source['data']['text/plain'] : '' }
 
-    for (let lbl of flags) {
-        source = source.replaceAll(lbl + '\r\n', '');
-        source = source.replaceAll(lbl + '\n', '');
+    for (let lbl of flags) { 
+        try{
+            source = source.replaceAll(lbl + '\r\n', '');
+            source = source.replaceAll(lbl + '\n', '');
+        }
+        catch{
+            console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111processOutput... ', typeof source, source)
+        }
         if (lbl == '#collapse_output_open') { source = makeDetails(source, true); }
         if (lbl == '#collapse_output') { source = makeDetails(source, false); }
         if (lbl == '#hide_output') { source = ''; }

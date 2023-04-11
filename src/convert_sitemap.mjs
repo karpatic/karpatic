@@ -18,29 +18,38 @@ server.listen(8085, () => {
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function cv_cli_nbs2html() {        
+async function cv_cli_nbs2html() {        
     const args = process.argv.slice(2);
-    console.log('cv_cli_nbs2html', args); 
-    const pathto = args[0];
-    const saveto = args[1];
-    const mapname = args[2];
-    const pages = args[3].split(',');
+    const section = args[0] || 'index';
+    const pathto = `./src/ipynb/${ args[0] ? args[0] + '/' : '' }`;
+    const saveto = './src/posts/';
+    let pages = args[1]?.split(',');
     
+    //  search the pathto directory for .ipynb files
+    const files = await fs.readdir(pathto); 
+    pages = files.filter(file => path.extname(file) === '.ipynb').map(file => path.parse(file).name); 
+
+    // console.log({pathto, saveto, mapname, pages})
     const pagePaths = pages.map(page => pathto + page);
-    generate_sitemap(pagePaths, saveto, mapname);
+    pagePaths.unshift(`./src/ipynb/${section}`);
+    generate_sitemap(pagePaths, saveto, section+'_map');
 }
 
 cv_cli_nbs2html();
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-async function generate_sitemap(pages, saveto = "../src/posts/", mapname='sitemap') {
+async function generate_sitemap(pages, saveto, mapname) {
     /* 
     0. Publish a set of pages and create a table of contents json file for em.
     Checks or creates sitemap.json and uses it to generate and update pages from the cmd line.
     */
-    ///console.log('\n generate_sitemap', pages, saveto, '\n\n');
+    console.log('\n generate_sitemap', pages, saveto, mapname, '\n\n');
     let links = [];
+    // console.log({pages, saveto, mapname})
+
+    // Reads a JSON file named "sitemap.json" from a directory, 
+    // then merges the unique filenames from the sitemap into the existing pages array
     /*
     try {
         const sitemapPath = path.join(saveto, "sitemap.json");
@@ -53,18 +62,19 @@ async function generate_sitemap(pages, saveto = "../src/posts/", mapname='sitema
 
     for (const page of pages) {
         const r = await ipynb_publish(page, saveto);
-        if (r.meta.hide === 'false') {
-            const { badges, keywords, comments, hide, image, toc, title, ...rest } = r.meta;
+        console.log(page,'----' ,r.meta);
+        if (r.meta.sitemap) {
+            const { csp, sitemap, breadcrumbs, badges, keywords, comments, hide, image, toc, title, ...rest } = r.meta;
             links.push(rest);
         }
     }
+    const sitemapPath = path.join(saveto, mapname+".json");
     try {
-        const sitemapPath = path.join(saveto, mapname+".json");
         await fs.writeFile(sitemapPath, JSON.stringify(links));
     } 
     catch (e) {
-        const sitemapPath = path.join(saveto, mapname+".json");
         await fs.writeFile(sitemapPath, "{}"); 
+        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~----ERROR:' ,r.meta);
     }
     server.close(() => {
         console.log('Server closed.');
@@ -77,16 +87,21 @@ async function ipynb_publish(file = 'index', saveto = "../src/posts/", type = 'j
     /*
     1. Publish ipynb to json or html.
     */
-   ///console.log(('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-   ///console.log(('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', '\n\n');
-   ///console.log(('START:', {saveto, file, type}, '\n');
+    // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', '\n\n');
     let final;
     if (type === 'html') { raw = await nb2html(file); file=/[^/]*$/.exec(file); } 
     else if (type === 'json') {
         const { nb2json } = await import('./convert.mjs?type=module', { type: 'module' } );
         final = await nb2json(file);
+        // console.log('START:', {saveto, file, type}, Object.keys(final.meta))
         let { filename, ...meta } = final.meta;
-        filename = filename.toLowerCase().replaceAll(' ', '_');
+        //console.log(final)
+        try{ filename = filename?.toLowerCase().replaceAll(' ', '_'); }
+        catch(e){
+            console.log('ERROR: ', e); // Typically undefined
+            filename = file.split('/')[file.split('/').length -1];
+        }
         final.meta = { filename, ...meta };
         file = filename
     }
