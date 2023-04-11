@@ -6,26 +6,39 @@ hello:
 
 pages:
 	make mainsitemap
-	make lightsmap
+	make lights
 	make webdev
-	make miscellaneous
-	make datascience
-	make remainder
+	make miscellaneous 
+	make dataguide
+	make dataplay
+	make datalabs
+	make sitemap
+	
+sitemap:
+	node ./src/create_sitemap.mjs
 	
 mainsitemap:
-	node ./src/convert_sitemap.mjs ./src/ipynb/ ./src/posts/ mapsitemap index,lights,miscellaneous,webdev,datascience
+    # Function: Creates a sitemap and the corresponding series of pages
+    # Args: input output mapname file,file,files..
+	node ./src/convert_sitemap.mjs 
 
-lightsmap:
-	node ./src/convert_sitemap.mjs ./src/ipynb/ ./src/posts/ maplights index,lights,aboutlights
+dataguide:
+	node ./src/convert_sitemap.mjs dataguide
+	
+datalabs:
+	node ./src/convert_sitemap.mjs datalabs
+
+dataplay:
+	node ./src/convert_sitemap.mjs dataplay
+
+lights:
+	node ./src/convert_sitemap.mjs lights
 
 miscellaneous:
-	node ./src/convert_sitemap.mjs ./src/ipynb/ ./src/posts/ mapmiscellaneous index,miscellaneous
+	node ./src/convert_sitemap.mjs miscellaneous
 
 webdev:
-	node ./src/convert_sitemap.mjs ./src/ipynb/ ./src/posts/ mapwebdev index,webdev
+	node ./src/convert_sitemap.mjs webdev
 
-datascience:
-	node ./src/convert_sitemap.mjs ./src/ipynb/ ./src/posts/ mapdatascience index,datascience
-
-remainder:
-	node ./src/convert_sitemap.mjs ./src/ipynb/ ./src/posts/ mapremainder legal,aboutmysite,aboutme,404
+blog:
+	node ./src/convert_sitemap.mjs blog
