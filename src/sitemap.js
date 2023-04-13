@@ -1,38 +1,45 @@
 // 5.
 //  
-// IPYNB Requires: {summary, filename, sitemap} Optionally: {tab} in the YAML header.
+// IPYNB Requires: {summary, filename, hide_sitemap} Optionally: {tab} in the YAML header.
 const createNav = async () => {   
     // which sitemap to show is located in posts YAML.
-    sm = window.meta.sitemap; 
-    let pageIsRoot = window.meta.filename == sm
-    smel = window.sitemap 
-    smel && (smel.style.visibility = sm?'visible':'hidden'); 
-    if(!sm)return;  
-    let url = `/posts/${sm}_map.json`; 
-    let sitemap = await (await fetch(url)).json(); 
-    console.log('createNav: ', {url, sitemap});
+    const show = !!!window.meta.hide_sitemap;
+    const sm_name = location.pathname.split('/')[1].replace('.html','')||'index';
+    const sm_el = window.sitemap; 
+    sm_el.style.visibility = show?'visible':'hidden';
+    if(show && sm_el){
+        // console.log(document.querySelector(`style sitemap`));
+        if(!document.querySelector(`style sitemap`)){
+            let txt  = await (await fetch(`${w.location.origin}/templates/${window.meta.template}_sitemap.css`)).text() 
+            document.body.insertAdjacentHTML('beforeend', `<style>${ txt }</style>`);
+        }
+    }
+    if(!show)return; 
+    
     window.lbl ||= ` 
         <label tabindex="0" for="toggle_sitemap">
             <div id='drag'>Drag me!</div>
             <span>&#x21e8;</span> Sitemap <span>&#x2715;</span>
         </label>
         <hr/>`
-    let tab = (x) => x.tab || x.filename
-    url = (x) =>{
-        let linkIsRoot = x.filename == sm
-        let path = linkIsRoot ? `.${pageIsRoot ? '/' + sm : '/../' + sm}` : `./${pageIsRoot ? sm + '/' + x.filename : x.filename}`;
-        // console.log(pageIsRoot, linkIsRoot, path)
-        return path;
+    let create_url = (x) =>{
+        let pageIsRoot = window.meta.filename == sm_name
+        let linkIsRoot = x.filename == sm_name
+        let path = linkIsRoot ? `.${pageIsRoot ? '/' + sm_name : '/../' + sm_name}` : `./${pageIsRoot ? sm_name + '/' + x.filename : x.filename}`;
+        return path+'.html';
     }
-    sitemap = sitemap.map((x) => `
+    tab = (x) => x.tab || x.filename
+    let url = `/posts/${sm_name}_map.json`
+    // console.log('createNav: ', url)
+    let content = (await (await fetch(url)).json()).map((x) => `
         <a id="${ tab(x)==window.meta.tab?'currentPage':('link_'+tab(x))}" 
             id='link_${tab(x) }' 
-            href="${url(x)}" 
+            href="${create_url(x)}" 
             title="${x.summary}">
             ${shorten(capitalize(tab(x).replaceAll("_", " ")),20)}
         </a>`
-    )
-    if(smel){ smel.className = sm; smel.innerHTML = `${lbl}<div id='sitemap-content'>${sitemap.join('')}</div>`; }
+    ).join('')
+    if(sm_el){ sm_el.className = sm_name; sm_el.innerHTML = `${lbl}<div id='sitemap-content'>${content}</div>`; }
 } 
 
 const capitalize = (str) => str.replace(/\b\w/g, (c) => c.toUpperCase()) 
@@ -83,7 +90,7 @@ function addAnchorsToHeaders() {
 // Dispatched from handleRoute
 // - Used to populate the template with window.meta data
 // - Populates 'sitemap' map 
-// - - if exists with sitemap.json file and newTemplate (set from handleRoute)
+// - - if exists with sitemap file and newTemplate (set from handleRoute)
 // - - Populates the #currentPage TOC by scanning for H2s, H3s, etc.
 // - Else Runs 'page_transition' animation if it exists
 //
@@ -92,19 +99,16 @@ window.addEventListener('refreshTemplate', async () => {
     document.querySelector('meta[name="robots"]')?.setAttribute('content', meta.robots||'index, follow')
     const replace = (id) => { 
         if(!meta[id])return; 
-        const el = document.getElementById(id); el.innerHTML = '';
+        const el = document.getElementById(id); el.innerHTML = ''; 
         el.appendChild( document.createRange().createContextualFragment( meta[id] ));
     } 
     const populateTemplate = async () => { 
         //console.log('POPULATING TEMPLATE');
         // console.log({meta, location:window.location})
-        let file = window.meta.filename
-        let sitemap = window.meta.sitemap;
-        let crumbs ='home/' 
-        if(sitemap){crumbs=crumbs+sitemap+((sitemap==file?'':('/'+file)));}
-        else{ file!='index'&&(crumbs+=file) }
-        // console.log(crumbs)
-        crumbs && (window.meta.breadcrumbs = crumbs.split('/').map((crumb, i) =>{
+        let file = window.meta.filename 
+        let crumbs = 'home'; file != 'index' && (crumbs+=window.location.pathname.replace('.html','') )
+        window.meta.breadcrumbs = ''
+        let t = crumbs.split('/').map((crumb, i) =>{
             let curDepth = window.location.pathname.split('/').length
             let atDepth = curDepth-1-i;  
             let base = Array(atDepth).fill('..').join('/'); base && (base += '/'); base= './'+base;
@@ -112,7 +116,7 @@ window.addEventListener('refreshTemplate', async () => {
             let t = `<a href="${base}${crumb=="home"?'':crumb}">${capitalize(crumb.replaceAll("_", " "))}</a>`
             // console.log({t})
             return t; 
-        }).join(' / ') );
+        }).join(' / ');
         // console.log(window.meta.breadcrumbs, window.breadcrumbs);
         ['content', 'title', 'summary','breadcrumbs'].map((id) => replace( id ) ) 
         addTocToSiteMap(); addAnchorsToHeaders(); 

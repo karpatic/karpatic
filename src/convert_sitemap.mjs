@@ -13,72 +13,75 @@ const server = httpServer.createServer({
 });
 
 server.listen(8085, () => {
-    console.log('Server running at http://localhost:8085');
+    // console.log('Server running at http://localhost:8085');
 });
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 async function cv_cli_nbs2html() {        
     const args = process.argv.slice(2);
-    const section = args[0] || 'index';
-    const pathto = `./src/ipynb/${ args[0] ? args[0] + '/' : '' }`;
-    const saveto = './src/posts/';
-    let pages = args[1]?.split(',');
-    
-    //  search the pathto directory for .ipynb files
-    const files = await fs.readdir(pathto); 
-    pages = files.filter(file => path.extname(file) === '.ipynb').map(file => path.parse(file).name); 
+    const directory = args[0]||'index';
 
-    // console.log({pathto, saveto, mapname, pages})
-    const pagePaths = pages.map(page => pathto + page);
-    pagePaths.unshift(`./src/ipynb/${section}`);
-    generate_sitemap(pagePaths, saveto, section+'_map');
+    // ipynb's input and json outputs have matching paths.  
+    let endPath = args[0] ? args[0] + '/' : ''
+
+    // Search the pathto directory for .ipynb files 
+    let pages = args[1]?.split(',') || (await fs.readdir(`./src/ipynb/${endPath}`)).filter(file => path.extname(file) === '.ipynb').map(file => path.parse(file).name)
+    
+    generate_sitemap(pages, endPath, directory);
 }
 
 cv_cli_nbs2html();
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-async function generate_sitemap(pages, saveto, mapname) {
+/*
+1. Reads from ./src/ipynb/DIR and saves to ./src/posts/DIR
+2. An IPYNB of name DIR must exist in ./src/ipynb/DIR/../
+3. sitemap created using 1 & 2 ipynbs only if not meta.hide 
+*/
+
+
+async function generate_sitemap(pages, endPath, directory) {
     /* 
     0. Publish a set of pages and create a table of contents json file for em.
     Checks or creates sitemap.json and uses it to generate and update pages from the cmd line.
     */
-    console.log('\n generate_sitemap', pages, saveto, mapname, '\n\n');
+    // console.log('\n generate_sitemap', pages, {directory, endPath}, '\n\n');
     let links = [];
-    // console.log({pages, saveto, mapname})
 
-    // Reads a JSON file named "sitemap.json" from a directory, 
-    // then merges the unique filenames from the sitemap into the existing pages array
-    /*
-    try {
-        const sitemapPath = path.join(saveto, "sitemap.json");
-        const sitemapJson = await fs.promises.readFile(sitemapPath, "utf8");
-        const sitemapArray = JSON.parse(sitemapJson);
-        pages = Array.from(new Set(pages.concat(sitemapArray.map(obj => obj.filename)
-            .filter(filename => !pages.some(val => filename.includes(val))))));
-    } catch (e) { }
-    */
+    // Convert the DIR.ipynb first 
+    let { csp, sitemap, breadcrumbs, badges, keywords, comments, hide, image, toc, title, ...rest } = (await ipynb_publish(`./src/ipynb/${directory}`, `./src/posts/`)).meta
+    links.push(rest)
 
-    for (const page of pages) {
-        const r = await ipynb_publish(page, saveto);
-        console.log(page,'----' ,r.meta);
-        if (r.meta.sitemap) {
+    // Convert each page in DIR/
+    let from = `./src/ipynb/${endPath}`;
+    let saveto = `./src/posts/${endPath}`
+
+    // Create saveto directory if it doesn't exist
+    try { await fs.access(saveto); } 
+    catch (error) {
+        if (error.code === 'ENOENT') {
+            try { await fs.mkdir(saveto, { recursive: true }); } 
+            catch (mkdirError) { console.error('Error creating directory:', mkdirError); }
+        } 
+        else { console.error('Error accessing directory:', error); }
+    }
+    
+    for (const page of pages) { 
+        // console.log('~~~~~~~~~~~~~~~~~~', {from:from+page, to});
+        const r = await ipynb_publish(from+page, saveto);
+        if (!!!r.meta.hide) {
             const { csp, sitemap, breadcrumbs, badges, keywords, comments, hide, image, toc, title, ...rest } = r.meta;
             links.push(rest);
         }
     }
-    const sitemapPath = path.join(saveto, mapname+".json");
-    try {
-        await fs.writeFile(sitemapPath, JSON.stringify(links));
-    } 
-    catch (e) {
-        await fs.writeFile(sitemapPath, "{}"); 
-        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~----ERROR:' ,r.meta);
-    }
-    server.close(() => {
-        console.log('Server closed.');
-    });
+
+
+    const sitemapPath = path.join(`./src/posts/`, directory+"_map.json");
+    try {await fs.writeFile(sitemapPath, JSON.stringify(links)); } 
+    catch (e) { await fs.writeFile(sitemapPath, "{}"); console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~----ERROR:' ,r.meta); }
+    server.close(() => { console.log('Server closed.'); });
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -112,3 +115,17 @@ async function ipynb_publish(file = 'index', saveto = "../src/posts/", type = 'j
     await fs.writeFile(t, type === 'json' ? JSON.stringify(final) : final);
     return final;
 }
+
+
+
+// Reads a JSON file named "sitemap.json" from a directory, 
+// then merges the unique filenames from the sitemap into the existing pages array
+/*
+try {
+    const sitemapPath = path.join(saveto, "sitemap.json");
+    const sitemapJson = await fs.promises.readFile(sitemapPath, "utf8");
+    const sitemapArray = JSON.parse(sitemapJson);
+    pages = Array.from(new Set(pages.concat(sitemapArray.map(obj => obj.filename)
+        .filter(filename => !pages.some(val => filename.includes(val))))));
+} catch (e) { }
+*/

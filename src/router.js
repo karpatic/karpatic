@@ -16,7 +16,7 @@ export const navEvent = async (event) => {
 // 4) Load scripts 5) Dispatch event listeners. 6) Update route change event listeners
 export const handleRoute = async (route) => { 
     route=="/" && (route = "index");
-    // Get the Upcoming Files Json Data  // IF IN DEV run the raw convert fn to get the json data. 
+    // Get the Upcoming Files Data  // IF IN DEV run the raw convert fn to get the data. 
     route = route.replaceAll('./','').replaceAll('../','').replace('.html','').replace(/^\//, ''); // console.log(route);
 
     // Client route change for first time.
@@ -24,8 +24,13 @@ export const handleRoute = async (route) => {
     await import(/* webpackChunkName: "sitemap" */ './sitemap.js'); 
 
     let {ipynb_publish} = isLocal && await import(/* webpackChunkName: "convert" */ './convert.mjs') 
-    let content = await (isLocal ? ipynb_publish(`/ipynb/${route}.ipynb`) : (await fetch(`./posts/${route}.json`)).json() );
-    console.log('handleRoute: ', {url: isLocal ? `/ipynb/${route}.ipynb` : `./posts/${route}.json`, content});
+
+    route = route.endsWith('/') ? (route.slice(0, -1)) : route; 
+
+    
+    let url = !preRendering ? `/ipynb/${route}.ipynb` : `/posts/${route}.json`
+    // console.log('~~~~~~~~~~~~~~~~ handleRoute: ', url);
+    let content = await (!preRendering ? ipynb_publish(url) : (await fetch(url)).json() );
 
     // Swap YAML old and new; renew the bool.
     window.oldMeta = window.meta; window.meta = content.meta; 
@@ -47,10 +52,6 @@ export const handleRoute = async (route) => {
         document.body.insertAdjacentHTML('beforeend',`<style>${ await (await fetch(`${w.location.origin}/templates/${window.meta.template}.css`)).text() }</style>`);
 
         await loadScripts(); 
-    }
-    if(window.newSitemap && !document.querySelector(`style sitemap`)){
-        let txt  = await (await fetch(`${w.location.origin}/templates/${window.meta.template}_sitemap.css`)).text() 
-        document.body.insertAdjacentHTML('beforeend', `<style>${ txt }</style>`);
     }
     
     // Dispatch pageLoaded event for template/ content hooks 

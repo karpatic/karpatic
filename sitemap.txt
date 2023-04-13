@@ -19,12 +19,6 @@ https://www.cvminigames.com/dataguide/06_nbdev.html
 https://www.cvminigames.com/dataguide/07_javascript_packages.html
 https://www.cvminigames.com/dataguide/08_cloud_functions.html
 https://www.cvminigames.com/dataguide/09_browser_extensions.html
-https://www.cvminigames.com/dataplay/01_download_and_load.html
-https://www.cvminigames.com/dataplay/02_merge_data.html
-https://www.cvminigames.com/dataplay/03_map_basics_intake_and_operations.html
-https://www.cvminigames.com/dataplay/04_nb_2_html.html
-https://www.cvminigames.com/dataplay/05_map_correlation_networks.html
-https://www.cvminigames.com/dataplay/06_timelapse_data_gifs.html
 https://www.cvminigames.com/datalabs/01_scooter_exploration.html
 https://www.cvminigames.com/datalabs/02_211_web_scraper.html
 https://www.cvminigames.com/datalabs/03_nbdev_create_clean_publish.html
@@ -35,3 +29,9 @@ https://www.cvminigames.com/datalabs/07_nb_2_html_tests.html
 https://www.cvminigames.com/datalabs/08_apis.html
 https://www.cvminigames.com/datalabs/09_looking at data.html
 https://www.cvminigames.com/lights/aboutlights.html
+https://www.cvminigames.com/dataplay/01_download_and_load.html
+https://www.cvminigames.com/dataplay/02_merge_data.html
+https://www.cvminigames.com/dataplay/03_map_basics_intake_and_operations.html
+https://www.cvminigames.com/dataplay/04_nb_2_html.html
+https://www.cvminigames.com/dataplay/05_map_correlation_networks.html
+https://www.cvminigames.com/dataplay/06_timelapse_data_gifs.html

@@ -1,1 +1,1 @@
-[{"filename":"aboutme","summary":"Who am I?","tab":"About Me","template":"template_article"},{"filename":"aboutmysite","summary":"Why and how I made my site.","tab":"My Site","template":"template_article"}]
+[{"filename":"blog","summary":"Why and how I made my site.","template":"template_article"},{"filename":"aboutme","summary":"Who am I?","tab":"About Me","template":"template_article","hide_sitemap":"true"},{"filename":"aboutmysite","summary":"Why and how I made my site.","tab":"My Site","template":"template_article","hide_sitemap":"true"}]

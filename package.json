@@ -6,11 +6,12 @@
   "version": "1.0.0",
   "scripts": {
     "start": "webpack serve --mode development --devtool eval-source-map --progress",
-    "build": "webpack --mode production --profile --progress",
-    "postbuild": "make pages && react-snap"
+    "build": "make pages && webpack --mode production --profile --progress",
+    "postbuild": "react-snap"
   },
   "reactSnap": {
     "puppeteerExecutablePath": "../latest_chromium/chrome.exe",
+    "concurrency": 4,
     "inlineCss": false,
     "source": "./docs",
     "removeStyleTags": false,

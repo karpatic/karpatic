@@ -9,8 +9,11 @@ import "./main.css";
 // Router handles the historyAPI, ServiceWorkers, Updating the Sitemap, and ReactSnap prerender logic. 
 //
 
-console.log('%c Like what you see?', 'font-weight: bold; font-size: 50px;color: red; text-shadow: 3px 3px 0 red , 6px 6px 0 green , 9px 9px 0 blue');   
-console.log("%c Contact me: charleskarpati@gmail.com","color: blue; font-family:sans-serif; font-size: 20px");
+window.preRendering = /ReactSnap/.test(navigator.userAgent) 
+window.preRendering  || (
+    console.log('%c Like what you see?', 'font-weight: bold; font-size: 50px;color: red; text-shadow: 3px 3px 0 red , 6px 6px 0 green , 9px 9px 0 blue'),
+    console.log("%c Contact me: charleskarpati@gmail.com","color: blue; font-family:sans-serif; font-size: 20px")
+);
 window.w = window
 w.sendPing = async (event=false) => { w.content && navigator.sendBeacon('https://ping.charleskarpati.com/', 
     `{"from":"${window.oldRoute||w.location.href}","to":"${event?.href||event?.target?.href||location.pathname}"}` ) }
@@ -18,7 +21,9 @@ w.sendPing = async (event=false) => { w.content && navigator.sendBeacon('https:/
 w.updateRedirectListeners = () => { document.querySelectorAll('a[href^="./"]')
     .forEach(l=>[l.removeEventListener,l.addEventListener].forEach(f=>f.call(l,'click',redirect))) }
 
-w.redirect = (async (event=false) =>{ event?.preventDefault?.() 
+// Called in head.js to trigger handleRoute
+w.redirect = (async (event=false) =>{ 
+    event?.preventDefault?.() 
     !w.navEvent && ({ handleRoute: w.handleRoute, navEvent: w.navEvent } = await import(/* webpackChunkName: "router" */ './router.js')); 
     event.type == 'click' ? ( history.pushState({}, '', event.target.href), navEvent(event) ) : handleRoute(location.pathname) 
 } ) 

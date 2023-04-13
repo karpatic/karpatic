@@ -13,6 +13,7 @@ pages:
 	make dataplay
 	make datalabs
 	make sitemap
+	make blog
 	
 sitemap:
 	node ./src/create_sitemap.mjs

@@ -15,14 +15,15 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
   //let hr = JSON.parse((await import(`./header.json`) ).default)
   let csp = "img-src 'self' https://charleskarpati.com/ data:; connect-src 'self';"
   let hr = await (await fetch((await import(`./header.json`) ).default)).json() 
+  page = page.endsWith('/') ? (page.slice(0, -1)) : page;
+  let url = ( hr.pwapages.split(',').some(x=>page==x)?'':'posts/')+page; url = `/${url}.json`;
   try{ 
-    page = page.split('/').pop();  
-    let url = ( hr.pwapages.split(',').some(x=>page==x)?'':'posts/')+page; url = `/${ url}.json`;
     let content = await (await fetch(url)).json(); 
     hr = {...hr, ...content.meta}
     csp = hr.csp || csp 
-    console.log('Header: ', {url, hr})
-  }catch(e){console.error('<~~~~~~~~~~~~~~~~~~~~~~~~CONFIG DATA ERROR~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>',e)}
+    // console.log('Header: ', url, {hr})
+  }
+  catch(e){console.error('<~~~~~~~~~~~~~~~~~~~~~~~~HEADER CONFIG DATA ERROR~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>',e, window.location.pathname, url)}
   let header = <HelmetProvider>
         <Helmet>    
           <meta charset="UTF-8"/>
@@ -92,9 +93,13 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
     ReactDOMServer.renderToString(header) 
   } 
 
-  // Onload Event
+  // Onload Event to Build
   setTimeout(()=>{ 
-    window.redirect?.(); 
+    
+    // Wait for main.js to load the router then trigger it to load the page.
+    window.redirect?.();
+
+    // Wait for the remainder of the page to load to trigger the clean up fns
     setTimeout(()=>{
       //document.querySelector("#sitemap").setAttribute("data-server-rendered", "true");
       document.querySelectorAll('[data-rh]').forEach(e=>{
@@ -102,15 +107,22 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
         // https://pptr.dev/api/puppeteer.jshandle
         (e.asElement? e.asElement():e).removeAttribute('data-rh')
       });
-  
+
+      //console.log('insertBefore - head')
       document.head.insertBefore(document.querySelector('meta[charset="UTF-8"]'), document.head.firstChild);
-
-      Array.from(document.getElementsByTagName("style")).forEach(style => { head.removeChild(style); head.appendChild(style); });
-
+      Array.from(document.getElementsByTagName("style")).forEach(style => {
+        const parentNode = style.parentNode;
+        if (parentNode) {
+          parentNode.removeChild(style);
+          document.head.appendChild(style);
+        }
+      });
+      //console.log('removeChild - head3')
+      
       // document.querySelector('link[rel="preconnect"][href="https://ping.charleskarpati.com"]')?.link.parentNode.removeChild?.(link);
-    }, 20) 
+    }, 100) 
 
-  }, 20)
+  }, 40)
 
   // Runs in Dev / React Snap. Removes prerender scripts
   Array.from(document.getElementsByTagName("script")).forEach(script => { 
