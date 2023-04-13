@@ -23,20 +23,26 @@ export const handleRoute = async (route) => {
     !window.meta && !isLocal && registerServiceWorker(); 
     await import(/* webpackChunkName: "sitemap" */ './sitemap.js'); 
 
-    let {ipynb_publish} = isLocal && await import(/* webpackChunkName: "convert" */ './convert.mjs') 
+    let {ipynb_publish} = isLocal && !preRendering ? await import(/* webpackChunkName: "convert" */ './convert.mjs') : (() => '');
 
     route = route.endsWith('/') ? (route.slice(0, -1)) : route; 
 
     
-    let url = !preRendering ? `/ipynb/${route}.ipynb` : `/posts/${route}.json`
-    // console.log('~~~~~~~~~~~~~~~~ handleRoute: ', url);
-    let content = await (!preRendering ? ipynb_publish(url) : (await fetch(url)).json() );
+    let url = isLocal && !preRendering ? `/ipynb/${route}.ipynb`:`/posts/${route}.json`
+    // console.log('~~~~~~~~~~~~~~~~ handleRoute: ', isLocal&& !preRendering? 'local' : 'remote', url);
+    let content = await (isLocal && !preRendering ? ipynb_publish(`/ipynb/${route}.ipynb`) : (await fetch(`/posts/${route}.json`)).json() );
 
     // Swap YAML old and new; renew the bool.
     window.oldMeta = window.meta; window.meta = content.meta; 
     meta.content = content.content; document.title = window.meta.title; 
     window.newSitemap =  window.oldMeta?.sitemap  !== window.meta.sitemap
-    window.newTemplate = window.oldMeta?.template !== window.meta.template 
+
+    // check if the old and new sitemap are the same
+    // if the page is live the initial sitemap is undefined which causes a problem... 
+    window.meta.template ||= 'template_article';
+    const curTemplate = window.meta.template;
+    const oldTemplate = window.oldMeta?.template === undefined ? document.body.getAttribute('data-template') : window.oldMeta.template;
+    window.newTemplate = oldTemplate !== curTemplate 
 
     // Create a new meta element. Add the meta element to the document's head
     var cspMeta = document.createElement('meta');
@@ -46,11 +52,12 @@ export const handleRoute = async (route) => {
 
     // Load a template on route change or local init
     if ( newTemplate ){ 
-        document.body.innerHTML = await (await fetch(`/templates/${window.meta.template}.html`)).text(); 
-        //console.log({newTemplate}, `/templates/${window.meta.template}.html`, document.body.innerHTML);
-        
-        document.body.insertAdjacentHTML('beforeend',`<style>${ await (await fetch(`${w.location.origin}/templates/${window.meta.template}.css`)).text() }</style>`);
-
+        // console.log({newTemplate}, oldTemplate, curTemplate);
+        document.body.innerHTML = await (await fetch(`/templates/${curTemplate}.html`)).text(); 
+        document.body.insertAdjacentHTML('beforeend',
+            `<style>${ await (await fetch(`${w.location.origin}/templates/${curTemplate}.css`)).text() }</style>`
+        );
+        document.body.setAttribute('data-template', curTemplate);
         await loadScripts(); 
     }
     

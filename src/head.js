@@ -14,13 +14,14 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 
   //let hr = JSON.parse((await import(`./header.json`) ).default)
   let csp = "img-src 'self' https://charleskarpati.com/ data:; connect-src 'self';"
+  csp = "img-src * data:; connect-src *;"
   let hr = await (await fetch((await import(`./header.json`) ).default)).json() 
   page = page.endsWith('/') ? (page.slice(0, -1)) : page;
   let url = ( hr.pwapages.split(',').some(x=>page==x)?'':'posts/')+page; url = `/${url}.json`;
   try{ 
     let content = await (await fetch(url)).json(); 
     hr = {...hr, ...content.meta}
-    csp = hr.csp || csp 
+    // csp = hr.csp || csp 
     // console.log('Header: ', url, {hr})
   }
   catch(e){console.error('<~~~~~~~~~~~~~~~~~~~~~~~~HEADER CONFIG DATA ERROR~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>',e, window.location.pathname, url)}

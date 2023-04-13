@@ -54,7 +54,9 @@ function addTocToSiteMap() {
     const currentPage = sitemap.querySelector(`a[title="${window.meta.summary}"]`)
     currentPage?.setAttribute('id', 'currentPage')
 
-    if (!('toc' in window.meta) || window.meta.toc != 'true') return;
+    console.log(window.meta, !('toc' in window.meta), window.meta.toc.toLowerCase() == 'false', !('toc' in window.meta) || window.meta.toc.toLowerCase() == 'false');
+    if (!('toc' in window.meta) || window.meta.toc.toLowerCase() == 'false') return;
+    console.log('success')
 
     // Find all headers and add them to the sitemap directly under the current page's link.
     let toc = [...document.querySelectorAll('h2, h3, h4')]
@@ -107,13 +109,12 @@ window.addEventListener('refreshTemplate', async () => {
         // console.log({meta, location:window.location})
         let file = window.meta.filename 
         let crumbs = 'home'; file != 'index' && (crumbs+=window.location.pathname.replace('.html','') )
-        window.meta.breadcrumbs = ''
-        let t = crumbs.split('/').map((crumb, i) =>{
+        window.meta.breadcrumbs = crumbs.split('/').map((crumb, i) =>{
             let curDepth = window.location.pathname.split('/').length
             let atDepth = curDepth-1-i;  
             let base = Array(atDepth).fill('..').join('/'); base && (base += '/'); base= './'+base;
-            //console.log({curDepth, i, 'atDepth':atDepth, crumb, base});
-            let t = `<a href="${base}${crumb=="home"?'':crumb}">${capitalize(crumb.replaceAll("_", " "))}</a>`
+            // console.log({curDepth, i, 'atDepth':atDepth, crumb, base});
+            let t = `<a href="${base}${crumb=="home"?'index':crumb}.html">${capitalize(crumb.replaceAll("_", " "))}</a>`
             // console.log({t})
             return t; 
         }).join(' / ');
@@ -130,7 +131,6 @@ window.addEventListener('refreshTemplate', async () => {
     if(window.newTemplate){
             populateTemplate(), 
             document.querySelectorAll('a').forEach((el) =>{ el.id = el.id || formatLink(el.innerText) + Math.floor(Math.random() * 1000000)}) 
-
     }
     else if ( window.location.href.indexOf('#') == -1 && pageT ){
         pageT.style.animation = 'page_transition 1s alternate 2, gradient 1s alternate 2'
