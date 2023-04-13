@@ -54,9 +54,7 @@ function addTocToSiteMap() {
     const currentPage = sitemap.querySelector(`a[title="${window.meta.summary}"]`)
     currentPage?.setAttribute('id', 'currentPage')
 
-    console.log(window.meta, !('toc' in window.meta), window.meta.toc.toLowerCase() == 'false', !('toc' in window.meta) || window.meta.toc.toLowerCase() == 'false');
     if (!('toc' in window.meta) || window.meta.toc.toLowerCase() == 'false') return;
-    console.log('success')
 
     // Find all headers and add them to the sitemap directly under the current page's link.
     let toc = [...document.querySelectorAll('h2, h3, h4')]
