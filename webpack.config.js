@@ -43,8 +43,8 @@ module.exports = (env, args) => {
   return {
     cache: false,
     entry: { 
-      head: './src/head.js', 
       main: './src/main.js',
+      head: './src/head.js', 
       'service-worker': './src/service-worker.js',
     },
     output: {
@@ -187,7 +187,7 @@ module.exports = (env, args) => {
       }),
       new HtmlWebpackPlugin({
         filename: 'index.html',
-        chunks: ['head','main'],
+        chunks: ['main', 'head'],
         excludeChunks: [ 'index'],
         templateContent: template,
         inlineSource: 'main.*.js$', 

@@ -1,21 +1,30 @@
 /* Basics */
-* {font-family: Georgia,TimesNewRoman,Times,Times New Roman,serif; }
-*{ user-select: text; box-sizing: border-box; position: relative;}
-html,p,::before{ 
-  font-size: 1.125em; 
+* {
+  font-family: Georgia, TimesNewRoman, Times, Times New Roman, serif;
+}
+* {
+  user-select: text;
+  box-sizing: border-box;
+  position: relative;
+}
+html,
+p,
+::before {
+  font-size: 1.125em;
   line-height: 1.625em;
   scroll-behavior: smooth;
-  transition : filter 500ms linear
-} 
-body { 
+  transition: filter 500ms linear;
+}
+body {
   margin: 0px;
   overflow-x: hidden;
 }
-::selection {  background: rgb(var(--background)); }
-:root{
-  --radial1:radial-gradient(at 52% 13%, hsla(215,77%,79%,1) 0px, transparent 50%);
+::selection {
+  background: rgb(var(--background));
+}
+:root {
   --canvas: 227, 227, 232;
-  --background: 209, 209, 250; 
+  --background: 209, 209, 250;
   --foreground: 240, 240, 255;
   --near-black: 0, 72, 72; /* 180, 100%, 14% */
   /* --near-black: 0, 14, 42; darkblue - 220, 100%, 8% */
@@ -23,99 +32,183 @@ body {
   --max-width: min(800px, 100vw);
 
   /* phasing bg to show and hide cubes */
-  --bggradient1:  rgb(var(--canvas));
-  --bggradient2:  rgba(var(--canvas), 0.8);
+  --bggradient1: rgb(var(--canvas));
+  --bggradient2: rgba(var(--canvas), 0.8);
 
   /*Foot and Header Gradients And Shadows */
-  --bggradientheader: linear-gradient(70deg, 
-          rgba(var(--background), .5), 
-          rgba(var(--foreground), .5), 
-          rgba(var(--background), .5) 
-  );  
-  --bggradientfooter: linear-gradient(70deg, 
-          rgba(var(--background), .6), 
-          rgba(var(--foreground), .6), 
-          rgba(var(--background), .6) 
+  --bggradientheader: linear-gradient(
+    70deg,
+    rgba(var(--background), 0.5),
+    rgba(var(--foreground), 0.5),
+    rgba(var(--background), 0.5)
+  );
+  --bggradientfooter: linear-gradient(
+    70deg,
+    rgba(var(--background), 0.6),
+    rgba(var(--foreground), 0.6),
+    rgba(var(--background), 0.6)
   );
   /* shadows should double blur than their y's */
   /* Borders should contrast both interior and int/exterior of container */
-  --filterdropshadowover: drop-shadow(4px 4px 10px rgb(var(--foreground)) );
+  --filterdropshadowover: drop-shadow(4px 4px 10px rgb(var(--foreground)));
   --filterdropshadowunder: drop-shadow(4px -4px 1px rgb(var(--background)));
-  
+
   --change1: 0%;
   --change2: 100%;
-  --path1:path('M 0 0 L 0 2 L 0 0');
-  --path2:0;
+  --path1: path("M 0 0 L 0 2 L 0 0");
+  --path2: 0;
 }
 /*
 raise lower letter spacing and line height for smaller text 
 -- text size multiples of 8. line height +8px.
 */
-h1,h2,h3,h4 {text-align: center; text-shadow: none; transition: all .3s ease-in-out;}
-h2:hover,h3:hover,h4:hover { text-shadow: 1px 1px 45px rgb(var(--near-black)); transition: all .4s ease-in-out;}
-h1,h2,h3,h4,a { color: rgb(var(--near-black)); font-weight: 600; 
+h1,
+h2 {
+  text-align: center;
+  text-shadow: none;
+  transition: all 0.3s ease-in-out;
+}
+h2:hover {
+  text-shadow: 1px 1px 45px rgb(var(--near-black));
+  transition: all 0.4s ease-in-out;
+}
+h1,
+h2,
+h3,
+h4,
+a {
+  color: rgb(var(--near-black));
+  font-weight: 600;
   font-family: Courier New, Courier, Monaco, monospace, Helvetica, Arial, sans-serif;
 }
-ul{ padding-left: 10px; }
-li>p{margin:0px; display: inline;}
-a{ text-decoration: none; } 
+h3,
+h4 {
+  font-size: 1.25em;
+}
 
-summary:hover .anchor::after { content: '🔗'; height: .8em;}
-.anchor{position: absolute; left: 0px;}
+a {
+  text-decoration: none;
+}
+
+summary:hover .anchor::after {
+  content: "🔗";
+  height: 0.8em;
+}
+.anchor {
+  position: absolute;
+  left: 0px;
+}
 
 /* hide checkbox, but still expose it to screen readers.*/
-input { position: absolute;  width: 1px; clip: rect(0 0 0 0); overflow: hidden; white-space: nowrap; }
+input {
+  position: absolute;
+  width: 1px;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  white-space: nowrap;
+}
 
 /* Expanding hover effect */
 a::before {
-  content: '';
+  content: "";
   background-color: rgb(var(--background));
   position: absolute;
-  left: 0; 
+  left: 0;
   width: 100%;
   height: 0px;
   z-index: -1;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 a:hover::before {
   height: 8px;
   bottom: 0;
   height: 100%;
 }
-span{ font-family: inherit;}
-p { word-break: break-word; }
-pre{ max-width: calc( var(--max-width) - 70px); background: rgb(var(--background)); padding: 12px; }
-pre > code { color: var(--foreground); overflow-x: auto; } 
+span {
+  font-family: inherit;
+}
+p {
+  word-break: break-word;
+}
+pre {
+  max-width: calc(var(--max-width) - 70px);
+  background: rgb(var(--background));
+  padding: 12px;
+  overflow: auto;
+  line-height: 1.2em;
+}
 
 /* Blockquote */
-blockquote{ 
+blockquote {
   margin: 32px 24px;
-  font-style:italic; background-color: rgb(var(--background)); 
-  border-left:8px solid rgb(var(--foreground)); 
-  position: relative; padding: 12px 5px 1px 5px; 
+  font-style: italic;
+  background-color: rgb(var(--background));
+  border-left: 8px solid rgb(var(--foreground));
+  position: relative;
+  padding: 12px 5px 1px 5px;
 }
-blockquote::before{ content: "\201C"; color: rgb(var(--foreground)); padding-top: 6px; font-size:4em; position: absolute; left: 10px; top:-10px; }
+blockquote::before {
+  content: "\201C";
+  color: rgb(var(--foreground));
+  padding-top: 6px;
+  font-size: 4em;
+  position: absolute;
+  left: 10px;
+  top: -12px;
+}
 
 /* Summary */
-details{counter-reset: my-counter;}
-details li {
-  counter-increment: my-counter;
-  list-style: none;  
-  margin-left:30px;
+ul {
+  padding: 0px;
+}
+ul ul {
+  padding-left: 10px;
 }
 
-details li::before {
-  color:rgb(var(--near-black));
-  content: counter(my-counter) ". "; 
-  position: absolute; 
-  left: -30px; 
+ul > li {
+  list-style-type: none;
+  display: flex;
+}
+ul > li::before {
+  content: "-";
+  margin-right: 10px;
+}
+details:nth-child(odd),
+.details details:nth-child(odd),
+details details:nth-child(even) {
+  background: rgba(var(--background), 0.4);
+}
+.details details:nth-child(even),
+details details:nth-child(odd) {
+  background: rgba(var(--canvas), 0.4);
 }
 
-details[open] > summary::marker { content: "💖"; }
-details > summary > * { display: inline; }
-summary::marker { content: "🧡"; } 
+details > summary {
+  list-style: none;
+  position: relative;
+}
 
-summary{ text-align: center; cursor: pointer; font-size:1.25em;padding: 12px 0px;}
-hr{ margin: 1px 1px 10px 1px; border-top: 1px solid rgba(var(--near-black), 0.1); }
+details > summary::before {
+  content: "⇨";
+  display: inline-block;
+  margin-right: 8px;
+  transition: transform 0.3s ease;
+}
 
-.details{ background: rgba(var(--background), 0.4); }
+details[open] > summary::before {
+  transform: rotate(90deg);
+}
+details > summary > * {
+  display: inline;
+}
+
+summary {
+  text-align: center;
+  cursor: pointer;
+  font-size: 1.25em;
+  padding: 12px 0px;
+}
+hr {
+  margin: 1px 1px 10px 1px;
+  border-top: 1px solid rgba(var(--near-black), 0.1);
+}

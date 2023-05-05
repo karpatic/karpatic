@@ -6,6 +6,8 @@ please visit the official [website](https://cvminigames.com/) for more informati
 
 ## Strategy
 
+- Need to install Make an place Chromium
+
 General
 - Compress pics w/ webP
 - Keep Init Page under 14Kb's 

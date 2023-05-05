@@ -1,74 +1,73 @@
 <div id="tracer"></div>
-<svg xmlns="http://www.w3.org/2000/svg" id="svg_bg"></svg> 
+<svg xmlns="http://www.w3.org/2000/svg" id="svg_bg"></svg>
 <!-- this checkbox holds state of whether modal is visible or not -->
-<input type="checkbox" id="toggle_sitemap" aria-label="sitemap">
-<div id="sitemap"> 
+<input type="checkbox" checked id="toggle_sitemap" aria-label="sitemap" />
+<div id="sitemap">
   <label tabindex="0" for="toggle_sitemap"><span>Hide</span> <span>Show </span>Sitemap</label>
 </div>
 
-<div id='page_transition'><p>Don't Look! I'm changing!</p></div>
+<div id="page_transition"><p>Don't Look! I'm changing!</p></div>
 
 <div id="toast_container"><p>URL Copied</p></div>
 
-<div id="gradient_bg"> 
-
-</div>  
+<div id="gradient_bg"></div>
 <div id="header">
-  <div id="header_bg_wrapper"><div id="header_bg"></div></div> 
-    <h1><a href="/">Charles Karpati</a> <span id="head_separator"> | </span> <a href="#title" id="title"></a></h1> 
-    <p id="summary"></p>
+  <div id="header_bg_wrapper"><div id="header_bg"></div></div>
+  <h1>
+    <a href="./../index.html">Charles Karpati</a>
+    <span id="head_separator"> | </span> <a href="#title" id="title"></a>
+  </h1>
+  <p id="summary"></p>
 </div>
 
 <div class="controls_container">
-  <div id="breadcrumbs">  </div>
-  <div> 
-    <label for="lightmode" id="light"><input type="checkbox" id="lightmode" aria-label="lightmode"></label>
-    <label for="expandmode" id="expand"><input type="checkbox" id="expandmode"  aria-label="expandmode"></label>
-    <p id="music" title="Bauchamp - 127 bass with bug and perc.mp3"><span> <audio controls  controlsList="nodownload noplaybackrate" preload="none" loop  src="./audio/title.mp3"></audio> </span> Musical loops</p>
+  <div id="breadcrumbs"></div>
+  <div>
+    <label for="lightmode" id="light"><input type="checkbox" id="lightmode" aria-label="lightmode" /></label>
+    <label for="expandmode" id="expand"><input type="checkbox" id="expandmode" aria-label="expandmode" /></label>
+    <p id="music" title="Bauchamp - 127 bass with bug and perc.mp3">
+      <span>
+        <audio controls controlsList="nodownload noplaybackrate" preload="none" loop src="./audio/title.mp3"></audio>
+      </span>
+      Musical loops
+    </p>
   </div>
 </div>
 
-<div class='broider' id="content">
-</div>
+<div class="broider" id="content"></div>
 <div id="footer">
-  <p id="thanks">Thank's for visiting! - <a href='/legal'>Terms of use</a> </p>
-  <div id="footer_bg_wrapper"><div id="footer_bg"></div></div> 
-</div> 
-<style>h2{filter:url(#header)}</style>
-<script type="text/javascript">
-var inDrag, dragStartX, dragStartY, objInitLeft, objInitTop = 0;
-function loadLazy() { w.loadOnce||((document.head||d).appendChild(document.createElement('script')).src=window.location.origin+'/templates/template_article_lazy.js');  w.loadOnce=true; }
-function downFN(e) { inDrag = true;
-    objInitLeft = sitemap.offsetLeft; objInitTop = sitemap.offsetTop;
-    dragStartX = e.pageX || e.targetTouches[0].clientX; 
-    dragStartY = e.pageY || e.targetTouches[0].clientY; 
-}
-function scrollFN(){ let d = document.documentElement;
-  w.tracer?.style.setProperty('--scrollPercent', (d.scrollTop) / (d.scrollHeight - d.clientHeight) * 100 + '%');
-}
+  <p id="thanks">Thank's for visiting! - <a href="./../legal.html">Terms of use</a></p>
+  <div id="footer_bg_wrapper"><div id="footer_bg"></div></div>
+</div>
+<script>
+  function loadLazy() {
+    (w.loadOnce && (w.loadOnce = true)) ||
+      ((document.head || d).appendChild(document.createElement("script")).src =
+        origin + "/templates/template_article_lazy.js");
+  }
 
-[ [["scroll", "mousedown", "touchstart"], loadLazy, w, { once: true }],
-  [["mousedown", "touchstart"], downFN, sitemap], 
-  [["scroll"], scrollFN, w ] 
-].forEach(evt => evt[0].forEach(type =>{ evt[2].addEventListener(type, evt[1], evt[3]||{ passive: false }) } ));
+  [[["scroll", "mousedown", "touchstart"], w, loadLazy, { once: true }]].forEach((evt) =>
+    evt[0].forEach((type) => evt[1].addEventListener(type, evt[2], evt[3] || { passive: false }))
+  );
 
-w.activeHeader = null
-w.observer = new IntersectionObserver((entries) => { 
-    entries.forEach((entry) => {let e=entry.target
-        let txt = "0.5s ease-in-out 0s 2 normal none running wiggle";
-        let pos = e.getBoundingClientRect().top
-        let el = (e.parentNode.nodeName == "SUMMARY" && e.parentNode.style || e.style ) 
-        if (!entry.isIntersecting){ el.animation == txt && (el.animation = ''); return; }
-        el.animation = txt 
-        if(pos<300 || pos>300){
-            w.activeHeader && (w.activeHeader.style.textDecoration='none') // unset previous active header
-            // let tocLink = document.getElementById('#'+e.id) 
-            let tocLink = document.querySelector(`#sitemap a[href="#${e.id}"]`);
-            tocLink && ( tocLink.style.animation = txt, tocLink.style.textDecoration='line-through' ) 
-            w.activeHeader = tocLink
-        }
+  w.activeHeader = null;
+  w.observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      let e = entry.target;
+      let txt = "0.5s ease-in-out 0s 2 normal none running wiggle";
+      let pos = e.getBoundingClientRect().top;
+      let el = (e.parentNode?.nodeName == "SUMMARY" && e.parentNode.style) || e.style;
+      el.animation = txt;
+      if (!entry.isIntersecting) return (el.animation = "");
+      if (pos < 300 || pos > 300) {
+        w.activeHeader && (w.activeHeader.style.textDecoration = "none"); // unset previous active header
+        let tocLink = document.querySelector(`#sitemap a[href="#${e.id}"]`);
+        tocLink && ((tocLink.style.animation = txt), (tocLink.style.textDecoration = "line-through"));
+        w.activeHeader = tocLink;
+      }
     });
-});
-w.loadObserver = (t) =>{ document.querySelectorAll('h2,h3,h4').forEach((el) => observer.observe(el) ) };  
-loadObserver();
+  });
+  (w.loadObserver = (t) => {
+    document.querySelectorAll("h2,h3,h4").forEach((el) => observer.observe(el));
+  })();
 </script>

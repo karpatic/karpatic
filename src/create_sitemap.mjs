@@ -7,8 +7,12 @@ let pages = [];
 
 async function processDirectory(directory, subdir = '') {
     const files = await fs.readdir(directory);
-    files.filter(file => path.extname(file) === '.ipynb').map(file => { pages.push(`https://www.cvminigames.com/${subdir ? subdir + '/' : ''}${path.parse(file).name}.html` ); });
-    await Promise.all( files.filter(file => !path.extname(file) && path.parse(file).name != 'notready').map(file => processDirectory(path.join(directory, path.parse(file).name), path.join(subdir, path.parse(file).name))) );
+    files.filter(file => path.extname(file) === '.ipynb').map(file => { 
+        pages.push(`https://www.cvminigames.com/${subdir ? subdir + '/' : ''}${path.parse(file).name}.html` ); 
+    });
+    await Promise.all( files.filter(file => !path.extname(file) && path.parse(file).name != 'notready').map(file => { 
+        processDirectory(path.join(directory, path.parse(file).name), path.join(subdir, path.parse(file).name))
+    }) );
 }
 
 (async () => {

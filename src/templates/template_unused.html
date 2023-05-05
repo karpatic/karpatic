@@ -1,20 +1,41 @@
+function scrollFN() { let d = document.documentElement; w.tracer?.style.setProperty("--scrollPercent", (d.scrollTop /
+(d.scrollHeight - d.clientHeight)) * 100 + "%"); } [["scroll"], w, scrollFN], // alternately toggle_sitemap if
+sitemap-content scroll behaviors is not good. function moveFN(e) { if (!inDrag) {return;} e.preventDefault();
+document.getElementById('drag').style.display='none'; dragToX = e.pageX || e.targetTouches[0].clientX; dragToY = e.pageY
+|| e.targetTouches[0].clientY; sitemap.style.left = (objInitLeft + dragToX-dragStartX) + "px"; sitemap.style.top =
+(objInitTop + dragToY-dragStartY) + "px"; } [ [["mousemove", "touchmove"], moveFN], [["mouseup", "touchend"], () =>
+inDrag = false], ].forEach(evt => evt[0].forEach(type => sitemap.addEventListener(type, evt[1], { passive: false })));
+var inDrag, dragStartX, dragStartY, objInitLeft, objInitTop = 0;
+
+<div id="drag">Drag me!</div>
+#drag{ position:absolute; color:rgb(var(--near-black)); top:-1.25em; left:-0.75em; font-size: 0.75em; animation:shake 1s
+linear alternate infinite; }
+
 <!-- Twitter Icons -->
-    <p>
-      <a href="https://twitter.com/intent/tweet?text=If%20you%20are%20a%20%20%40cryptovoxels%20CVilian%2C%20go%20and%20check%20out%20%40CVMiniGames%20website%20CVMiniGames.com%20as%20I%20found%20the%20content%20interesting%20enough%20to%20share%20%3C3%20Thanks!">
-        <img src="https://img.shields.io/twitter/url/https/github.com/CVMiniGames/CVMiniGames.github.io.svg?style=social" alt="Tweet" /></a>
-      <a href="https://twitter.com/CVMiniGames"><img src="https://img.shields.io/twitter/follow/CVMiniGames.svg?style=social" alt="Twitter Follow" /></a>
-    </p>
+<p>
+  <a
+    href="https://twitter.com/intent/tweet?text=If%20you%20are%20a%20%20%40cryptovoxels%20CVilian%2C%20go%20and%20check%20out%20%40CVMiniGames%20website%20CVMiniGames.com%20as%20I%20found%20the%20content%20interesting%20enough%20to%20share%20%3C3%20Thanks!">
+    <img
+      src="https://img.shields.io/twitter/url/https/github.com/CVMiniGames/CVMiniGames.github.io.svg?style=social"
+      alt="Tweet"
+  /></a>
+  <a href="https://twitter.com/CVMiniGames"
+    ><img src="https://img.shields.io/twitter/follow/CVMiniGames.svg?style=social" alt="Twitter Follow"
+  /></a>
+</p>
 
+transform: skew(4deg, 2deg);
 
-    transform: skew(4deg, 2deg);
-
-    <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
-      <filter id="header">
-          <feTurbulence baseFrequency="0.03"></feTurbulence> <!-- Create a plane of 'turbulance' -->
-          <feDisplacementMap in="SourceGraphic" scale="3"></feDisplacementMap> <!-- Cut out the plane along our text -->
-          <feComposite in="SourceGraphic" operator="atop"></feComposite> <!-- Paste the cutout atop the text -->
-      </filter>
-    </svg>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+  <filter id="header">
+    <feTurbulence baseFrequency="0.03"></feTurbulence>
+    <!-- Create a plane of 'turbulance' -->
+    <feDisplacementMap in="SourceGraphic" scale="3"></feDisplacementMap>
+    <!-- Cut out the plane along our text -->
+    <feComposite in="SourceGraphic" operator="atop"></feComposite>
+    <!-- Paste the cutout atop the text -->
+  </filter>
+</svg>
 <!--
   https://garden.bradwoods.io/notes/css/3d
   https://garden.bradwoods.io/notes/javascript/web-api/intersection-observer
@@ -23,275 +44,227 @@
   https://garden.bradwoods.io/notes/html/head/share-web-page
 -->
 
-/* CSS Not used onload => blockquote, blockquote span, blockquote::before, pre, pre>code */
-
-/* 
-more space between contrasts. 
-more or same vertical padding than horizontal.
-
-Give each color a distinct brightness value.
-use near-white or black (f2f2f2 or 222 if you aren't saturating) 
-- f2f2f2 is just 95% brightness 
-- 222222 is just 13% brightness 
-Saturate neutrals colors at least 5%.
-Layers get brighter. 
-- +12% more for dark interfaces,
-- +7% for light interfaces.
-
---canvas:                    hsl(0, 10%, 90%); 
---background:                hsl(0, 80%, 90%); 
---foreground:                rgb(255, 240, 240); 
-*/  
+/* CSS Not used onload => blockquote, blockquote span, blockquote::before, pre, pre>code */ /* more space between
+contrasts. more or same vertical padding than horizontal. Give each color a distinct brightness value. use near-white or
+black (f2f2f2 or 222 if you aren't saturating) - f2f2f2 is just 95% brightness - 222222 is just 13% brightness Saturate
+neutrals colors at least 5%. Layers get brighter. - +12% more for dark interfaces, - +7% for light interfaces. --canvas:
+hsl(0, 10%, 90%); --background: hsl(0, 80%, 90%); --foreground: rgb(255, 240, 240); */ function downFN(e) { inDrag =
+true; objInitLeft = sitemap.offsetLeft; objInitTop = sitemap.offsetTop; dragStartX = e.pageX ||
+e.targetTouches[0].clientX; dragStartY = e.pageY || e.targetTouches[0].clientY; } [["mousedown", "touchstart"], downFN,
+sitemap],
 
 <!-- Footer Shields -->
-    <div style="display: flex; justify-content: center;">
-      <div style="text-align: center; background-color: rgba(240, 248, 255, 0.75);">
-        <p>
-          <a href="https://mybinder.org/v2/gh/CVMiniGames/CVMiniGames.github.io/main"> <img src="./images/launch_binder.svg" alt="Binder" /> </a>
-          <a href="https://colab.research.google.com/github/CVMiniGames/CVMiniGames.github.io/blob/main/ipynb/{{filename}}"> <img src="https://pete88b.github.io/fastpages/assets/badges/colab.svg" alt="Binder" /></a>
-          <a href="https://github.com/CVMiniGames/CVMiniGames.github.io/blob/main/ipynb/{{filename}}"> <img src="https://pete88b.github.io/fastpages/assets/badges/github.svg" alt="Binder" /></a>
-        </p>
-        <p>
-          <a href="github.com/cvminigames/cvminigames"><img src="https://img.shields.io/github/last-commit/CVMiniGames/CVMiniGames.github.io.svg?label=Updated&style=flat&?labelColor=gray&color=green" alt="GitHub Last commit" /></a>
-          <img src="https://visitor-badge.laobi.icu/badge?page_id=CVMiniGames.CVMiniGames.github.io{{page}}&left_text=Visitor&left_color=green&right_color=gray" alt="Visitor">
-        </p>
-        <p>
-          <a href="https://github.com/CVMiniGames/CVMiniGames.github.io"><img src="https://img.shields.io/github/stars/CVMiniGames/CVMiniGames.github.io.svg?style=social&amp;label=Star" alt="GitHub stars" /></a>
-          <a href="https://github.com/CVMiniGames/CVMiniGames.github.io"><img src="https://img.shields.io/github/watchers/CVMiniGames/CVMiniGames.github.io.svg?style=social&amp;label=Watch" alt="GitHub watchers" /></a>
-          <a href="https://github.com/CVMiniGames/CVMiniGames.github.io"><img src="https://img.shields.io/github/forks/CVMiniGames/CVMiniGames.github.io.svg?style=social&amp;label=Fork" alt="GitHub forks" /></a>
-          <a href="https://github.com/CVMiniGames/CVMiniGames.github.io"><img src="https://img.shields.io/github/followers/CVMiniGames.svg?style=social&amp;label=Follow" alt="GitHub followers" /></a> 
-        </p>
-      </div>
-    </div>
+<div style="display: flex; justify-content: center">
+  <div style="text-align: center; background-color: rgba(240, 248, 255, 0.75)">
+    <p>
+      <a href="https://mybinder.org/v2/gh/CVMiniGames/CVMiniGames.github.io/main">
+        <img src="./images/launch_binder.svg" alt="Binder" />
+      </a>
+      <a href="https://colab.research.google.com/github/CVMiniGames/CVMiniGames.github.io/blob/main/ipynb/{{filename}}">
+        <img src="https://pete88b.github.io/fastpages/assets/badges/colab.svg" alt="Binder"
+      /></a>
+      <a href="https://github.com/CVMiniGames/CVMiniGames.github.io/blob/main/ipynb/{{filename}}">
+        <img src="https://pete88b.github.io/fastpages/assets/badges/github.svg" alt="Binder"
+      /></a>
+    </p>
+    <p>
+      <a href="github.com/cvminigames/cvminigames"
+        ><img
+          src="https://img.shields.io/github/last-commit/CVMiniGames/CVMiniGames.github.io.svg?label=Updated&style=flat&?labelColor=gray&color=green"
+          alt="GitHub Last commit"
+      /></a>
+      <img
+        src="https://visitor-badge.laobi.icu/badge?page_id=CVMiniGames.CVMiniGames.github.io{{page}}&left_text=Visitor&left_color=green&right_color=gray"
+        alt="Visitor" />
+    </p>
+    <p>
+      <a href="https://github.com/CVMiniGames/CVMiniGames.github.io"
+        ><img
+          src="https://img.shields.io/github/stars/CVMiniGames/CVMiniGames.github.io.svg?style=social&amp;label=Star"
+          alt="GitHub stars"
+      /></a>
+      <a href="https://github.com/CVMiniGames/CVMiniGames.github.io"
+        ><img
+          src="https://img.shields.io/github/watchers/CVMiniGames/CVMiniGames.github.io.svg?style=social&amp;label=Watch"
+          alt="GitHub watchers"
+      /></a>
+      <a href="https://github.com/CVMiniGames/CVMiniGames.github.io"
+        ><img
+          src="https://img.shields.io/github/forks/CVMiniGames/CVMiniGames.github.io.svg?style=social&amp;label=Fork"
+          alt="GitHub forks"
+      /></a>
+      <a href="https://github.com/CVMiniGames/CVMiniGames.github.io"
+        ><img
+          src="https://img.shields.io/github/followers/CVMiniGames.svg?style=social&amp;label=Follow"
+          alt="GitHub followers"
+      /></a>
+    </p>
+  </div>
+</div>
 -->
-
 
 <div class="unset">
   <style>
-  .unset{padding:0px;}
-  .unset p a img {
-    width: auto;
-  }
-  .unset p{ margin:10px;}
+    .unset {
+      padding: 0px;
+    }
+    .unset p a img {
+      width: auto;
+    }
+    .unset p {
+      margin: 10px;
+    }
   </style>
 
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/bnia/dataguide/main?filepath=%2Fnotebooks%2Findex.ipynb)
+  [![Binder](https://pete88b.github.io/fastpages/assets/badges/colab.svg)](https://colab.research.google.com/github/bnia/dataguide/blob/main/notebooks/index.ipynb)
+  [![Binder](https://pete88b.github.io/fastpages/assets/badges/github.svg)](https://github.com/bnia/dataguide/tree/main/notebooks/index.ipynb)
+  [![Open Source Love
+  svg3](https://badges.frapsoft.com/os/v3/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+  [![NPM
+  License](https://img.shields.io/npm/l/all-contributors.svg?style=flat)](https://github.com/bnia/dataguide/blob/main/LICENSE)
+  [![Active](http://img.shields.io/badge/Status-Active-green.svg)](https://bnia.github.io) [![GitHub last
+  commit](https://img.shields.io/github/last-commit/bnia/dataguide.svg?style=flat)]() [![GitHub
+  stars](https://img.shields.io/github/stars/bnia/dataguide.svg?style=social&label=Star)](https://github.com/bnia/dataguide)
+  [![GitHub
+  watchers](https://img.shields.io/github/watchers/bnia/dataguide.svg?style=social&label=Watch)](https://github.com/bnia/dataguide)
+  [![GitHub
+  forks](https://img.shields.io/github/forks/bnia/dataguide.svg?style=social&label=Fork)](https://github.com/bnia/dataguide)
+  [![GitHub
+  followers](https://img.shields.io/github/followers/bnia.svg?style=social&label=Follow)](https://github.com/bnia/dataguide)
+  [![Tweet](https://img.shields.io/twitter/url/https/github.com/bnia/dataguide.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20%E2%9C%A8%20colab%20by%20@bniajfi%20https://github.com/bnia/dataguide%20%F0%9F%A4%97)
+  [![Twitter Follow](https://img.shields.io/twitter/follow/bniajfi.svg?style=social)](https://twitter.com/bniajfi) #
+  Notes ## JS throttle(scroll, 50) function throttle(fn, wait) { let last, t; return function(...args) { const now =
+  Date.now(); clearTimeout(t); if (!last || now - last >= wait) { fn.apply(this, args); last = now;} else { t =
+  setTimeout(() => fn.apply(this, args), wait - (now - last)); } }; } // let content = JSON.parse((await
+  import(`./posts/${page||'index'}.json`) ).default) // let content = await (await fetch((await import(/*
+  webpackChunkName: "[request]" */ `./posts/${page}.json`) ).default)).json() // let content = await (await
+  fetch(`./posts/${route.replace("/",'').replace('.html','') || 'index'}.json`)).json();
+  element.insertAdjacentHTML('afterend', 'txt') toImage() / capture html canvas as gif/jpg/pdf
+  https://opensource.apple.com/source/WebCore/WebCore-1889.1/css/mediaControls.css.auto.html
+  https://wicg.github.io/controls-list/html-output/multipage/embedded-content.html#attr-media-controlslist
+  https://chromium.googlesource.com/chromium/blink/+/72fef91ac1ef679207f51def8133b336a6f6588f/Source/core/css/mediaControls.css?autodive=0%2F%2F%2F
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/bnia/dataguide/main?filepath=%2Fnotebooks%2Findex.ipynb)
-[![Binder](https://pete88b.github.io/fastpages/assets/badges/colab.svg)](https://colab.research.google.com/github/bnia/dataguide/blob/main/notebooks/index.ipynb)
-[![Binder](https://pete88b.github.io/fastpages/assets/badges/github.svg)](https://github.com/bnia/dataguide/tree/main/notebooks/index.ipynb)
-[![Open Source Love svg3](https://badges.frapsoft.com/os/v3/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
-
-[![NPM License](https://img.shields.io/npm/l/all-contributors.svg?style=flat)](https://github.com/bnia/dataguide/blob/main/LICENSE)
-[![Active](http://img.shields.io/badge/Status-Active-green.svg)](https://bnia.github.io) 
-[![GitHub last commit](https://img.shields.io/github/last-commit/bnia/dataguide.svg?style=flat)]()  
-
-[![GitHub stars](https://img.shields.io/github/stars/bnia/dataguide.svg?style=social&label=Star)](https://github.com/bnia/dataguide) 
-[![GitHub watchers](https://img.shields.io/github/watchers/bnia/dataguide.svg?style=social&label=Watch)](https://github.com/bnia/dataguide) 
-[![GitHub forks](https://img.shields.io/github/forks/bnia/dataguide.svg?style=social&label=Fork)](https://github.com/bnia/dataguide) 
-[![GitHub followers](https://img.shields.io/github/followers/bnia.svg?style=social&label=Follow)](https://github.com/bnia/dataguide) 
-
-[![Tweet](https://img.shields.io/twitter/url/https/github.com/bnia/dataguide.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20%E2%9C%A8%20colab%20by%20@bniajfi%20https://github.com/bnia/dataguide%20%F0%9F%A4%97) 
-[![Twitter Follow](https://img.shields.io/twitter/follow/bniajfi.svg?style=social)](https://twitter.com/bniajfi)
-
-
-
-# Notes
-
-## JS
-throttle(scroll, 50)
-function throttle(fn, wait) { 
-  let last, t; return function(...args) { const now = Date.now(); clearTimeout(t); 
-  if (!last || now - last >= wait) { fn.apply(this, args); last = now;} 
-  else { t = setTimeout(() => fn.apply(this, args), wait - (now - last)); } };
-}
-
-// let content = JSON.parse((await import(`./posts/${page||'index'}.json`) ).default)  
-// let content = await (await fetch((await import(/* webpackChunkName: "[request]" */ `./posts/${page}.json`) ).default)).json()  
-// let content = await (await fetch(`./posts/${route.replace("/",'').replace('.html','') || 'index'}.json`)).json(); 
-element.insertAdjacentHTML('afterend', 'txt')
-toImage() / capture html canvas as gif/jpg/pdf
-
-https://opensource.apple.com/source/WebCore/WebCore-1889.1/css/mediaControls.css.auto.html
-https://wicg.github.io/controls-list/html-output/multipage/embedded-content.html#attr-media-controlslist
-https://chromium.googlesource.com/chromium/blink/+/72fef91ac1ef679207f51def8133b336a6f6588f/Source/core/css/mediaControls.css?autodive=0%2F%2F%2F
-
-<svg height="0" width="0">
-  <defs>
-      <clipPath id="svgPath"><path d="M0,100L0,100C50,0,150,200,200,100C250,0,350,200,400,100C450,0,550,200,600,100C650,0,750,200,800,100L800,100z"/></clipPath>
-  </defs>
-</svg>
-details::after {
-  content: "";
-  display: block;
-  height: 100px;
-  background: rgba(var(--canvas), 0.4);
-  clip-path: url(#svgPath);
-}
-/*  bottom: calc(var(--a)*200px);  */
-
-
-# CSS
-
-/*
-var tsm = document.getElementById("toggle_sitemap");
-tsm.checked = !w.innerWidth < 800
-var sm = document.getElementById("sitemap");
-var size = sm.offsetWidth;
-var space = document.querySelector(".broider").getBoundingClientRect().left;
-*/
-// Onstart: Uncheck & Rollup for mobile Vs. Slide Left on Large Screens
-/*
-audio::-webkit-media-controls
-audio::-webkit-media-controls-enclosure
-audio::-webkit-media-controls-panel,
-audio::-webkit-media-controls-play-button,
-*/
-/*
-audio::-webkit-media-controls-panel {
-}
-audio::-webkit-media-controls-play-button {
-  audio::-webkit-media-controls-panel
-
-}
-audio::-webkit-media-controls-mute-button,
-audio::-webkit-media-controls-timeline-container,
-audio::-webkit-media-controls-timeline,
-audio::-webkit-media-controls-volume-slider-container{
-  display: none;
-}
-*/
-
-## Misc
-
-https://www.joshwcomeau.com/gradient-generator/
-https://www.colourlovers.com/api/palettes/top?jsonCallback=?
-https://www.vantajs.com/?effect=dots
-https://maxhodak.com/writings/index.html
- 
-https://blog.logrocket.com/css-before-after-custom-animations-transitions/#before-pseudo-element 
-https://tympanus.net/codrops/2013/05/22/examples-of-pseudo-elements-animations-and-transitions/
-https://cssanimation.rocks/pseudo-elements/
-
-## Techniques
-background image behind a blobby svg clip path 
-html-> image or div w/ text to crop w mask
-css-> animate background-x-position
-css-> background-image, -attachment: fixed, -size: cover, -position: center
-css-> -webikit-mask-image:(url) & -repeat: no-repeate; mask-type, -size, -position  
-mask-image: linear-gradient(to bottom, transaprent 10%, black) -> dampends image 
-animate inset box-shadow https://codepen.io/lonekorean/pen/KKVdQPX 
-
-Useful Articles
-https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_parallax_percent
-https://css-tricks.com/almanac/properties/m/mask-image/
-https://css-tricks.com/almanac/properties/s/shape-outside/
-https://css-tricks.com/almanac/properties/c/clip-path/
-https://css-tricks.com/animating-with-clip-path/
-https://css-irl.info/experimental-layouts/
-https://cssanimation.rocks/pseudo-elements/ 
-https://www.joshwcomeau.com/css/designing-shadows/
-https://www.joshwcomeau.com/css/make-beautiful-gradients/
-https://garden.bradwoods.io/notes/css/3d
-https://github.com/codrops/OnScrollPathAnimations/ 
-https://github.com/codrops/CaptionHoverEffects
-https://github.com/codrops/ShapeHoverEffectSVG
-https://blog.logrocket.com/css-before-after-custom-animations-transitions/#before-pseudo-element
-https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations 
-
-    Resources
-https://www.toptal.com/designers/htmlarrows/arrows/
-https://chromium.googlesource.com/chromium/blink/+/master/Source/core/css/html.css
-https://bennettfeely.com/clippy/
-https://animista.net/play/text/focus-in
-https://svg-path-visualizer.netlify.app/
-https://yqnn.github.io/svg-path-editor/
-https://cssbud.com/css-generator/css-glow-generator/#search-header
-https://getwaves.io/
-https://www.blobmaker.app/
-http://csshero.org/mesher/
-https://shadows.brumm.af/
-https://ui.glass/generator/#
-http://css3generator.com/
-http://www.cssfiltergenerator.com/
-https://maxbittker.github.io/broider/
-https://www.svgrepo.com/
-
-https://tympanus.net/codrops/2021/06/01/trigonometry-in-css-and-javascript-introduction-to-trigonometry/
-https://tympanus.net/codrops/2021/06/02/trigonometry-in-css-and-javascript-getting-creative-with-trigonometric-functions/
-https://tympanus.net/codrops/2021/06/04/trigonometry-in-css-and-javascript-beyond-triangles/
-https://tympanus.net/codrops/2021/12/07/coloring-with-code-a-programmatic-approach-to-design/
-
-https://css-tricks.com/animating-with-clip-path/
-clip-path can use, clip-paths(% relative), or a url to a SVG <clipPath> element
-clip-path CSS property can use the SVG Path attributes for animated transitions.
-The same number of vertices in the path cannot change but only manipulated when animating.
-
-transition-property
-
-transition: [property] [duration] [timing-function] [delay];
-transition-property
-The transition-property defines the CSS property where the transition over the element will be applied. 
-We can also apply a transition to a single property (e.g., background-color or transform) or to all the properties in the rule-set.
-div {transition-property: all; transition-property: transform; }
-
-https://blog.logrocket.com/understanding-animation-transition-timing-functions-css/#:~:text=There%20are%20two%20ways%20to,changes%20over%20a%20specific%20duration.
-There are two ways to animate web elements in CSS: the animation and transition properties.
-
-The animation property allows you to change the properties of an element over a specific duration, and needs @keyframes. 
-The transition property defines how an element changes over a specific duration.
-animation: <name> <duration> <timing-function>;
-transition: <property> <duration> <timing-function>;
-
-https://tympanus.net/codrops/2013/05/22/examples-of-pseudo-elements-animations-and-transitions/
-Only supported by modern browsers like Firefox, IE10 and recently Chrome (see this updated support table for more info)
-Does not work in mobile browsers yet
-Pseudo-elements cannot be identified by ID
-Pseudo-elements don’t appear in the DOM.
-Pseudo-elements can’t be animated with JavaScript
-
-https://cssanimation.rocks/pseudo-elements/
-double colon :: to denote pseudo-elements (as opposed to pseudo-classes like :hover, :first-child).
-When adding pseudo-elements, needs 'content' property before they can be made visible on the page. 
-
-button::after { content: ''; position: absolute; top: -50%; right: -50%; bottom: -50%; left: -50%;
-  background: linear-gradient(to bottom, rgba(229, 172, 142, 0), rgba(255,255,255,0.5) 50%, rgba(229, 172, 142, 0));
-  transform: rotateZ(60deg) translate(-5em, 7.5em);
-}
-button:hover::after, button:focus::after {animation: sheen 1s forwards;}
-@keyframes sheen {100% {transform: rotateZ(60deg) translate(1em, -9em);}}
-transform:translate(-50%, -50%); // center the element
-transform:translateX(-50%); // center the element horizontally 
-
-
-
-
-A little bit of both. The simplest way that I like use is by creating a seperate function that you want to run asynchronously, then linking it to a callback that is scheduled to run by the FreeRTOS scheduler: https://savjee.be/blog/multitasking-esp32-arduino-freertos/
-As long as you don't create too many long-running tasks and be mindful of which core is running what, it's been incredibly reliable in my experience.
-
-My biggest use case for this is keeping an active display, like those 64x64 RGB LED Panels, fed with pixel data from a display buffer using one core fully pegged to the task, then using the second core for wifi and display buffer updates. In Arduino land, since loop runs on a specific core, you can basically put your 'constantly running code' in the loop, and schedule the tasks to run on the other core in setup().
-
-https://www.smashingmagazine.com/2016/12/gpu-animation-doing-it-right/
-
-Reflowing and repainting the entire page at each step of the animation (even incrementally) sounds really slow, especially for a large and complex layout. It would be much more effective just to paint two separate images — one for the A element and one for the entire page without the A element — and then simply offset those images relative to each other. In other words, composing the images of cached elements would be faster.
-
-We stumble upon implicit composing, One or more non-composited elements that should appear above a composited one in the stacking order are promoted to composite layers,  much more often than you might think. A browser will promote an element to a compositing layer for many reasons, just a few of which are:
-
-3D transforms: translate3d, translateZ and so on;
-<video>, <canvas> and <iframe> elements;
-animation of transform and opacity via Element.animate();
-animation of transform and opacity via СSS transitions and animations;
-position: fixed;
-will-change;
-filter;
-
-
-mobile devices don’t have as much memory as desktops. For example, a not-so-old-yet iPhone 6 ships with 1 GB of shared memory (i.e. memory used for both RAM and VRAM). Considering that at least one third of this memory is used by the operating system and background processes, another third by the browser and the current page (a best-case scenario for a highly optimized page without a ton of frameworks), we’re left with about 200 to 300 MB for GPU effects, at most. And the iPhone 6 is a pretty expensive high-end device; more affordable phones contain much less memory on board.
-
-
-
-// window.isSmall&&{localStorage.setItem('displayChardin', 'false')
-// localStorage.getItem('displayChardin')
-// let chardin = new Chardin(document.querySelector('body'));
-// chardin.start();}
-
-if(window.isSmall){ document.getElementById('toggle_sitemap').checked=false; }
+  <svg height="0" width="0">
+    <defs>
+      <clipPath id="svgPath">
+        <path
+          d="M0,100L0,100C50,0,150,200,200,100C250,0,350,200,400,100C450,0,550,200,600,100C650,0,750,200,800,100L800,100z" />
+      </clipPath>
+    </defs>
+  </svg>
+  details::after { content: ""; display: block; height: 100px; background: rgba(var(--canvas), 0.4); clip-path:
+  url(#svgPath); } /* bottom: calc(var(--a)*200px); */ # CSS /* var tsm = document.getElementById("toggle_sitemap");
+  tsm.checked = !w.innerWidth < 800 var sm = document.getElementById("sitemap"); var size = sm.offsetWidth; var space =
+  document.querySelector(".broider").getBoundingClientRect().left; */ // Onstart: Uncheck & Rollup for mobile Vs. Slide
+  Left on Large Screens /* audio::-webkit-media-controls audio::-webkit-media-controls-enclosure
+  audio::-webkit-media-controls-panel, audio::-webkit-media-controls-play-button, */ /*
+  audio::-webkit-media-controls-panel { } audio::-webkit-media-controls-play-button {
+  audio::-webkit-media-controls-panel } audio::-webkit-media-controls-mute-button,
+  audio::-webkit-media-controls-timeline-container, audio::-webkit-media-controls-timeline,
+  audio::-webkit-media-controls-volume-slider-container{ display: none; } */ ## Misc
+  https://www.joshwcomeau.com/gradient-generator/ https://www.colourlovers.com/api/palettes/top?jsonCallback=?
+  https://www.vantajs.com/?effect=dots https://maxhodak.com/writings/index.html
+  https://blog.logrocket.com/css-before-after-custom-animations-transitions/#before-pseudo-element
+  https://tympanus.net/codrops/2013/05/22/examples-of-pseudo-elements-animations-and-transitions/
+  https://cssanimation.rocks/pseudo-elements/ ## Techniques background image behind a blobby svg clip path html-> image
+  or div w/ text to crop w mask css-> animate background-x-position css-> background-image, -attachment: fixed, -size:
+  cover, -position: center css-> -webikit-mask-image:(url) & -repeat: no-repeate; mask-type, -size, -position
+  mask-image: linear-gradient(to bottom, transaprent 10%, black) -> dampends image animate inset box-shadow
+  https://codepen.io/lonekorean/pen/KKVdQPX Useful Articles
+  https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_parallax_percent
+  https://css-tricks.com/almanac/properties/m/mask-image/ https://css-tricks.com/almanac/properties/s/shape-outside/
+  https://css-tricks.com/almanac/properties/c/clip-path/ https://css-tricks.com/animating-with-clip-path/
+  https://css-irl.info/experimental-layouts/ https://cssanimation.rocks/pseudo-elements/
+  https://www.joshwcomeau.com/css/designing-shadows/ https://www.joshwcomeau.com/css/make-beautiful-gradients/
+  https://garden.bradwoods.io/notes/css/3d https://github.com/codrops/OnScrollPathAnimations/
+  https://github.com/codrops/CaptionHoverEffects https://github.com/codrops/ShapeHoverEffectSVG
+  https://blog.logrocket.com/css-before-after-custom-animations-transitions/#before-pseudo-element
+  https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations Resources
+  https://www.toptal.com/designers/htmlarrows/arrows/
+  https://chromium.googlesource.com/chromium/blink/+/master/Source/core/css/html.css https://bennettfeely.com/clippy/
+  https://animista.net/play/text/focus-in https://svg-path-visualizer.netlify.app/
+  https://yqnn.github.io/svg-path-editor/ https://cssbud.com/css-generator/css-glow-generator/#search-header
+  https://getwaves.io/ https://www.blobmaker.app/ http://csshero.org/mesher/ https://shadows.brumm.af/
+  https://ui.glass/generator/# http://css3generator.com/ http://www.cssfiltergenerator.com/
+  https://maxbittker.github.io/broider/ https://www.svgrepo.com/
+  https://tympanus.net/codrops/2021/06/01/trigonometry-in-css-and-javascript-introduction-to-trigonometry/
+  https://tympanus.net/codrops/2021/06/02/trigonometry-in-css-and-javascript-getting-creative-with-trigonometric-functions/
+  https://tympanus.net/codrops/2021/06/04/trigonometry-in-css-and-javascript-beyond-triangles/
+  https://tympanus.net/codrops/2021/12/07/coloring-with-code-a-programmatic-approach-to-design/
+  https://css-tricks.com/animating-with-clip-path/ clip-path can use, clip-paths(% relative), or a url to a SVG
+  <clipPath>
+    element clip-path CSS property can use the SVG Path attributes for animated transitions. The same number of vertices
+    in the path cannot change but only manipulated when animating. transition-property transition: [property] [duration]
+    [timing-function] [delay]; transition-property The transition-property defines the CSS property where the transition
+    over the element will be applied. We can also apply a transition to a single property (e.g., background-color or
+    transform) or to all the properties in the rule-set. div {transition-property: all; transition-property: transform;
+    }
+    https://blog.logrocket.com/understanding-animation-transition-timing-functions-css/#:~:text=There%20are%20two%20ways%20to,changes%20over%20a%20specific%20duration.
+    There are two ways to animate web elements in CSS: the animation and transition properties. The animation property
+    allows you to change the properties of an element over a specific duration, and needs @keyframes. The transition
+    property defines how an element changes over a specific duration. animation:
+    <name>
+      <duration>
+        <timing-function
+          >; transition:
+          <property>
+            <duration>
+              <timing-function
+                >; https://tympanus.net/codrops/2013/05/22/examples-of-pseudo-elements-animations-and-transitions/ Only
+                supported by modern browsers like Firefox, IE10 and recently Chrome (see this updated support table for
+                more info) Does not work in mobile browsers yet Pseudo-elements cannot be identified by ID
+                Pseudo-elements don’t appear in the DOM. Pseudo-elements can’t be animated with JavaScript
+                https://cssanimation.rocks/pseudo-elements/ double colon :: to denote pseudo-elements (as opposed to
+                pseudo-classes like :hover, :first-child). When adding pseudo-elements, needs 'content' property before
+                they can be made visible on the page. button::after { content: ''; position: absolute; top: -50%; right:
+                -50%; bottom: -50%; left: -50%; background: linear-gradient(to bottom, rgba(229, 172, 142, 0),
+                rgba(255,255,255,0.5) 50%, rgba(229, 172, 142, 0)); transform: rotateZ(60deg) translate(-5em, 7.5em); }
+                button:hover::after, button:focus::after {animation: sheen 1s forwards;} @keyframes sheen {100%
+                {transform: rotateZ(60deg) translate(1em, -9em);}} transform:translate(-50%, -50%); // center the
+                element transform:translateX(-50%); // center the element horizontally A little bit of both. The
+                simplest way that I like use is by creating a seperate function that you want to run asynchronously,
+                then linking it to a callback that is scheduled to run by the FreeRTOS scheduler:
+                https://savjee.be/blog/multitasking-esp32-arduino-freertos/ As long as you don't create too many
+                long-running tasks and be mindful of which core is running what, it's been incredibly reliable in my
+                experience. My biggest use case for this is keeping an active display, like those 64x64 RGB LED Panels,
+                fed with pixel data from a display buffer using one core fully pegged to the task, then using the second
+                core for wifi and display buffer updates. In Arduino land, since loop runs on a specific core, you can
+                basically put your 'constantly running code' in the loop, and schedule the tasks to run on the other
+                core in setup(). https://www.smashingmagazine.com/2016/12/gpu-animation-doing-it-right/ Reflowing and
+                repainting the entire page at each step of the animation (even incrementally) sounds really slow,
+                especially for a large and complex layout. It would be much more effective just to paint two separate
+                images — one for the A element and one for the entire page without the A element — and then simply
+                offset those images relative to each other. In other words, composing the images of cached elements
+                would be faster. We stumble upon implicit composing, One or more non-composited elements that should
+                appear above a composited one in the stacking order are promoted to composite layers, much more often
+                than you might think. A browser will promote an element to a compositing layer for many reasons, just a
+                few of which are: 3D transforms: translate3d, translateZ and so on;
+                <video>
+                  ,
+                  <canvas>
+                    and
+                    <iframe>
+                      elements; animation of transform and opacity via Element.animate(); animation of transform and
+                      opacity via СSS transitions and animations; position: fixed; will-change; filter; mobile devices
+                      don’t have as much memory as desktops. For example, a not-so-old-yet iPhone 6 ships with 1 GB of
+                      shared memory (i.e. memory used for both RAM and VRAM). Considering that at least one third of
+                      this memory is used by the operating system and background processes, another third by the browser
+                      and the current page (a best-case scenario for a highly optimized page without a ton of
+                      frameworks), we’re left with about 200 to 300 MB for GPU effects, at most. And the iPhone 6 is a
+                      pretty expensive high-end device; more affordable phones contain much less memory on board. //
+                      window.isSmall&&{localStorage.setItem('displayChardin', 'false') //
+                      localStorage.getItem('displayChardin') // let chardin = new
+                      Chardin(document.querySelector('body')); // chardin.start();} if(window.isSmall){
+                      document.getElementById('toggle_sitemap').checked=false; }</iframe
+                    ></canvas
+                  >
+                </video></timing-function
+              ></duration
+            ></property
+          ></timing-function
+        ></duration
+      ></name
+    ></clipPath
+  >
+</div>
