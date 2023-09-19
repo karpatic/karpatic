@@ -7,39 +7,35 @@ hello:
 pages:
 	make mainsitemap
 	make lights
-	make webdev
-	make miscellaneous 
-	make dataguide
+	make software
+	make notes 
 	make dataplay
-	make datalabs
-	make sitemap
+	make labs
 	make blog
+	make sitemap 
 	
 sitemap:
-	node ./src/create_sitemap.mjs
+	node ./src/client/utils/create_sitemap.mjs
 	
 mainsitemap:
     # Function: Creates a sitemap and the corresponding series of pages
     # Args: input output mapname file,file,files..
-	node ./src/convert_sitemap.mjs 
-
-dataguide:
-	node ./src/convert_sitemap.mjs dataguide
+	node ./src/client/utils/convert_sitemap.mjs 
 	
-datalabs:
-	node ./src/convert_sitemap.mjs datalabs
+labs:
+	node ./src/client/utils/convert_sitemap.mjs labs
 
 dataplay:
-	node ./src/convert_sitemap.mjs dataplay
+	node ./src/client/utils/convert_sitemap.mjs dataplay
 
 lights:
-	node ./src/convert_sitemap.mjs lights
+	node ./src/client/utils/convert_sitemap.mjs lights
 
-miscellaneous:
-	node ./src/convert_sitemap.mjs miscellaneous
+notes:
+	node ./src/client/utils/convert_sitemap.mjs notes
 
-webdev:
-	node ./src/convert_sitemap.mjs webdev
+software:
+	node ./src/client/utils/convert_sitemap.mjs software
 
 blog:
-	node ./src/convert_sitemap.mjs blog
+	node ./src/client/utils/convert_sitemap.mjs blog

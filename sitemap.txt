@@ -1,10 +1,9 @@
 https://www.cvminigames.com/404.html
 https://www.cvminigames.com/blog.html
-https://www.cvminigames.com/dataguide.html
-https://www.cvminigames.com/datalabs.html
 https://www.cvminigames.com/dataplay.html
 https://www.cvminigames.com/index.html
+https://www.cvminigames.com/labs.html
 https://www.cvminigames.com/legal.html
 https://www.cvminigames.com/lights.html
-https://www.cvminigames.com/miscellaneous.html
-https://www.cvminigames.com/webdev.html
+https://www.cvminigames.com/notes.html
+https://www.cvminigames.com/software.html
