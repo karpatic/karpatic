@@ -120,7 +120,7 @@ function convertNotes(str) {
     ${lbl + p4 + p5}
     <aside>${lbl} ${p3} </aside> </div>
 `;
-    console.log({_,p1, p2, p3, p4, p5, fin})
+    // console.log({_,p1, p2, p3, p4, p5, fin})
     return fin
   };
   return str.replace(regex, replacement);
@@ -140,21 +140,21 @@ function processMarkdown(x){
   x.match(/\(\(\(([^:]+)::([^)]+)\)\)\)/g)?.forEach((match, key, value ) => {
     flag=true; 
   })
-  flag && console.log('1', {x})
+  // flag && console.log('1', {x})
  
   // replace with aside
   x = x.replace(/\(\(\(([^:]+)::(.*?)\)\)\)/g, function (match, key, value ) {   
     flag=true;
     // Create a div element with the appropriate style and inner text 
-    console.log('KEY VALUE', {match, key, value})
+    // console.log('KEY VALUE', {match, key, value})
     return `<aside class="${key}">${marked.parse(value)}</aside>`;
   }); 
 
-  flag && console.log('2', {x})
+  // flag && console.log('2', {x})
    
   x = marked.parse(x) 
 
-  flag && console.log('3', {x})
+  // flag && console.log('3', {x})
   // wrap li's in a div or p
   x = x.replace(/<li>(.*?)<\/li>/g, (match, innerContent) => {
     const containsBlockLevel = /<(p|div|blockquote|pre|hr|form)/.test(innerContent);  

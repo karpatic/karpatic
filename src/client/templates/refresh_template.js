@@ -92,7 +92,7 @@ const populateTemplate = async () => {
     (w.expand.style.display =
       document.getElementsByTagName("aside").length > 0 ? "block" : "none");
 
-  console.log(w.meta)
+  // console.log(w.meta)
   if(w.audio){
     w.audio.style.display = w.meta.tracklink ? "flex" : "none"
     w.audio.title = w.meta.trackname

@@ -12,7 +12,6 @@ pages:
 	make dataplay
 	make labs
 	make blog
-	make sitemap 
 	
 sitemap:
 	node ./src/client/utils/convert_sitemap.mjs

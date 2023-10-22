@@ -137,7 +137,7 @@ async function ipynb_publish(
   saveto = SAVETO,
   type = "json"
 ) {
-  console.log('ipynb_publish-',file, saveto, type)
+  // console.log('ipynb_publish-',file, saveto, type)
   /*
     1. Publish ipynb to json or html.
     */
