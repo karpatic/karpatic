@@ -15,7 +15,7 @@ pages:
 	make sitemap 
 	
 sitemap:
-	node ./src/client/utils/create_sitemap.mjs
+	node ./src/client/utils/convert_sitemap.mjs
 	
 mainsitemap:
     # Function: Creates a sitemap and the corresponding series of pages

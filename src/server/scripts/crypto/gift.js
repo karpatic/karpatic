@@ -2,7 +2,7 @@ require("dotenv").config();
 const API_KEY = process.env.POLYGON_MAINNET_API_KEY;
 const PRIVATE_KEY = process.env.RISKY_CLICK_PRIVATE_KEY;
 const PUBLIC_KEY = process.env.RISKY_CLICK_PUBLIC_KEY;
-const contract = require("../contracts/collectibles.json");
+const contract = require("../../contracts/collectibles.json");
 exports.ethers = hanldeEthers;
 async function hanldeEthers(req, res) {
   return res.json(giveGift(req.query));

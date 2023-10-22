@@ -101,11 +101,13 @@ export const handleRoute = async () => {
     }
     if (w.sm_name != sm) {
       w.sm_name = sm;
-      let url = `/client/posts/${sm_name}_map.json`
+      let url = `${location.origin}/posts/${sm_name}_map.json`
       console.log("~~~~~~> handleRoute: section_map ", url);
-      w.sitemap_content = await (
-        await fetch(url)
-      ).json();
+      try{
+      w.sitemap_content = await ( await fetch(url) ).json();
+      } catch (e) {
+        console.log("ERROR FETCHING: ", url, e)
+      }
     }
   }
 

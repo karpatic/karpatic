@@ -115,7 +115,7 @@ function convertNotes(str) {
     // console.log({p1}, p1.includes('p') ); 
     let pStart = ""// style='display:inline' ";
     let lbl = `<label ${pStart} tabindex="0" for='note${matchCount}' class='notelbl'>[${matchCount}]</label>`
-    let fin = `<div">
+    let fin = `<div>
     <input type='checkbox' id='note${matchCount}' class='notebox'>${p1 + pStart + p2  }
     ${lbl + p4 + p5}
     <aside>${lbl} ${p3} </aside> </div>

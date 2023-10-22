@@ -6,9 +6,9 @@ const {
   buildTxForApproveTradeWithRouter,
   web3,
   walletAddress,
-  privateKey,
-  one_inch_viable_tokens,
+  privateKey
 } = require("./trader_utils");
+const { one_inch_viable_tokens} = require("./tokens.js")
 
 const swapParams = {
   fromTokenAddress: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", // The address of the token you want to swap from (1INCH)

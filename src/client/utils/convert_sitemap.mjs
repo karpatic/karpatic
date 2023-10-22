@@ -30,7 +30,7 @@ async function cv_cli_nbs2html() {
   // Search the pathto directory for .ipynb files
   let pages =
     args[1]?.split(",") ||
-    (await fs.readdir(`./src/ipynb/${endPath}`))
+    (await fs.readdir(`${FROM}${endPath}`))
       .filter((file) => path.extname(file) === ".ipynb")
       .map((file) => path.parse(file).name);
 
@@ -48,6 +48,7 @@ cv_cli_nbs2html();
 */
 
 async function generate_sitemap(pages, endPath, directory) {
+  console.log('generate_sitemap-',pages, endPath, directory)
   /* 
     0. Publish a set of pages and create a table of contents json file for em.
     Checks or creates sitemap.json and uses it to generate and update pages from the cmd line.
@@ -68,7 +69,7 @@ async function generate_sitemap(pages, endPath, directory) {
     toc,
     title,
     ...rest
-  } = (await ipynb_publish(`${FROM}/${directory}`, SAVETO))
+  } = (await ipynb_publish(`${FROM}${directory}`, SAVETO))
     .meta; 
   // await csp && console.log("COMPLETE")
   links.push(rest);
@@ -112,6 +113,7 @@ async function generate_sitemap(pages, endPath, directory) {
       links.push(rest);
     }
   } 
+  console.log('links', links)
   const sitemapPath = path.join(SAVETO, directory + "_map.json"); 
  
   try {
@@ -125,9 +127,7 @@ async function generate_sitemap(pages, endPath, directory) {
       r.meta
     );
   }
-  server.close(() => {
-    console.log("Server closed.");
-  }); 
+  server.close(() => { console.log("Server closed."); }); 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,6 +137,7 @@ async function ipynb_publish(
   saveto = SAVETO,
   type = "json"
 ) {
+  console.log('ipynb_publish-',file, saveto, type)
   /*
     1. Publish ipynb to json or html.
     */
