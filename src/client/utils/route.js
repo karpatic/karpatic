@@ -25,7 +25,7 @@ export const navEvent = async () => {
 
 // Loads a route and it's dependencies via it's meta data obtained from it's path.
 export const handleRoute = async () => {
-  console.log("~~~~~~> handleRoute: START ");
+  console.log("~~~~~~> handleRoute:START... ");
 
   if (location.pathname.includes("undefined")) return;
 
@@ -49,16 +49,26 @@ export const handleRoute = async () => {
           .replace(/^\//, "")
           .replace(/\/$/, "");
 
-  // Create or Fetch Routes Metadata/ YAML
-  console.log("~~~~~~> handleRoute: w.meta ", "./convert.mjs");
-  let content = await (!isLocal || preRendering
-    ? (await fetch(`/posts/${route}.json`)).json()
-    : ( await (async () => {
-      console.log("FETCHING")
-        let x = await import(/* webpackChunkName: "convert" */ "./convert.mjs") 
-      return x
-      } )()
-      ).ipynb_publish(`../../ipynb/${route}.ipynb`));
+  // Create or Get Routes Metadata/ YAML
+  let url = !isLocal || preRendering ? `${location.origin}/posts/${route}.json` : `../../ipynb/${route}.ipynb`
+  let content = {}
+  try{
+    console.log("~~~~~~> handleRoute:getRouteContent:PATH:", url );
+    content = await (!isLocal || preRendering
+      ? ( await (async () => {
+          return (await fetch(url)).json() } )() 
+      )
+      : ( await (async () => {
+          let x = await import(/* webpackChunkName: "convert" */ "./convert.mjs") 
+          return x
+        } )()
+        ).ipynb_publish(url));
+  }
+  catch(err){ 
+    console.log("~~~~~~> handleRoute:getRouteContent:ERROR", url, err) 
+    console.log(err)
+  }
+
 
   // Swap Metadata old and new
   w.oldMeta = w.meta;
@@ -69,51 +79,57 @@ export const handleRoute = async () => {
   w.meta.template ||= "article";
   if (meta.template !== document.body.getAttribute("data-template")) {
     let url = `/templates/${meta.template}`;
-    console.log("~~~~~~> handleRoute: template ", url);
-    document.body.setAttribute("data-template", meta.template);
-    document.body.innerHTML = await (await fetch(`${url}.html`)).text();
+    try{
+      console.log("~~~~~~> handleRoute:templateUrl:URL:", url);
+      document.body.setAttribute("data-template", meta.template);
+      document.body.innerHTML = await (await fetch(`${url}.html`)).text();
 
-    // Add Basic Stylesheet ;
-    document.body.insertAdjacentHTML(
-      "beforeend",
-      `<style>${await (await fetch(`${url}.css`)).text()}</style>`
-    );
-
-    // Forceload scripts. Moves main.js to footer.
-    Array.from(document.getElementsByTagName("script")).forEach((script) => {
-      const newScript = document.createElement("script");
-      ["src", "type", "async", "textContent"].forEach(
-        (attr) => script[attr] && (newScript[attr] = script[attr])
+      // Add Basic Stylesheet ;
+      document.body.insertAdjacentHTML(
+        "beforeend",
+        `<style>${await (await fetch(`${url}.css`)).text()}</style>`
       );
-      document.body.appendChild(newScript);
-      script.parentNode.removeChild(script);
-    });
-  }
 
+      // Forceload scripts. Moves main.js to footer. 
+      Array.from(document.getElementsByTagName("script")).forEach((script) => {
+        
+        console.log("~~~~~~> handleRoute:templateUrl:injectScripts:SCRIPT: ", script['src']);
+        const newScript = document.createElement("script");
+        ["src", "type", "async", "textContent"].forEach(
+          (attr) => script[attr] && (newScript[attr] = script[attr])
+        );
+        document.body.appendChild(newScript);
+        script.parentNode.removeChild(script);
+      });
+    }
+    catch(err){ console.log('~~~~~~> handleRoute:templateUrl:ERROR:', err) }
+  }
   // Add Sitemap Stylesheet
   let sm = location.pathname.split("/")[1].replace(".html", "") || "index";
   if (w.sitemap && !w.meta.hide_sitemap) {
-    if (!w.sitemap_content) {  
-      let url = `${location.origin}/templates/${w.meta.template}_sitemap.css`;
-      console.log("~~~~~~> handleRoute: Sitemap Stylesheet ", url);
-      let txt = await (await fetch(url)).text();
-      document.body.insertAdjacentHTML("beforeend", `<style>${txt}</style>`);
-    }
-    if (w.sm_name != sm) {
-      w.sm_name = sm;
-      let url = `${location.origin}/posts/${sm_name}_map.json`
-      console.log("~~~~~~> handleRoute: section_map ", url);
-      try{
-      w.sitemap_content = await ( await fetch(url) ).json();
-      } catch (e) {
-        console.log("ERROR FETCHING: ", url, e)
+    let url = false
+    try{
+      if (!w.sitemap_content) { 
+        url = `${location.origin}/templates/${w.meta.template}_sitemap.css`;
+        console.log("~~~~~~> handleRoute:Sitemap:Stylesheet: ", url);
+        let txt = await (await fetch(url)).text();
+        document.body.insertAdjacentHTML("beforeend", `<style>${txt}</style>`);
       }
+      if (w.sm_name != sm) {
+        w.sm_name = sm;
+        url = `${location.origin}/posts/${sm_name}_map.json`
+        console.log("~~~~~~> handleRoute:Sitemap:JSON:", url);
+        w.sitemap_content = await ( await fetch(url) ).json();
+      }
+    } catch (e) {
+      console.log("~~~~~~> handleRoute:Sitemap:ERROR:", url, e)
     }
   }
 
   // Dispatch pageLoaded event for template/ content hooks
   // Listeners in template.html and | template.js -> Populates w.newTemplate & updates toc.
   w.dispatchEvent(new CustomEvent("refreshTemplate"));
+
 };
 
 const registerServiceWorker = async () => {
