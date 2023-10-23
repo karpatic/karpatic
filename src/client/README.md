@@ -51,13 +51,20 @@ The default snapshot delay is 50ms. It works with routing strategies using the H
 
 
 ## Todo 
-- npm export mainjs for convert fns
 - click2like
 - code line vs code block 
+- Dynamic Tables from py output
+- Footer Animated Blocks restarting not going backnforth
+- npm export mainjs for convert fns
 - https://x.st/spinning-diagrams-with-css/
 - webAuthn - firebase - termly - twilio - calendly 
 - sharing [pages](https://garden.bradwoods.io/notes/html/head/share-web-page) 
 - sized [images](https://www.stefanjudis.com/snippets/a-picture-element-to-load-correctly-resized-webp-images-in-html/)
+- ???
+- 'sitemap' should go home. 
+- Fix sitemap X animation.
+- Fix sitemap to default close + animate opacity to show/hide.
+- Fix dataplay library
 
 ### Maybe Todo
 

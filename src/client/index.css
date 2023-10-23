@@ -108,6 +108,9 @@ span {
 }
 p {
   word-break: break-word;
+  display: block;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
 }
 li p{
   margin-block: 0em; 
