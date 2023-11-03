@@ -59,7 +59,7 @@ Past Works:
   - A lot of what I worked on was in-game. I mostly fixed bugs and the UI, but put in a few features like video streaming, [POAP](https://poap.xyz/)'s, and user-user crypto payments.
   <figure align="center">
     <img style="height:100px; padding-right:15px;"  src="https://images.charleskarpati.com/voxels_logo_rainbow.svg"/>
-    <figcaption><a href='Voxels.com'>Voxels.com</a> Logo.</figcaption>
+    <figcaption><a href='https://Voxels.com'>Voxels.com</a> Logo.</figcaption>
   </figure>
   <figure align="center">
     <img style="height:100px; padding-right:15px;" src="https://images.charleskarpati.com/voxels_logo_cvminigames_400x400.jpg"/>

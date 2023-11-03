@@ -25,7 +25,7 @@ KARPATIC
 |- README
 |- package.json
 |- webpack.config.js
-|- Makefile: runs ipynb convert scripts
+|- Makefile: runs ipynb convert scripts + sitemap.txt
 |- docs - build script output for production
 |- src
 |  |- README: (you are here)
@@ -50,6 +50,9 @@ KARPATIC
 
 ## Misc
 The following are being used internally.
+
+- `make sitemap` - description within. files used by server but stored in client atm...
+
 ### Prettier
 
 - I use Prettier in Visual Studio Code. More [information](https://dev.to/gulshansaini/how-to-disable-prettier-in-vscode-for-a-specific-project-2a48).

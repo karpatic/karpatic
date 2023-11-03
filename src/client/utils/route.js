@@ -62,7 +62,7 @@ export const handleRoute = async () => {
           let x = await import(/* webpackChunkName: "convert" */ "./convert.mjs") 
           return x
         } )()
-        ).ipynb_publish(url));
+        ).nb2json(url));
   }
   catch(err){ 
     console.log("~~~~~~> handleRoute:getRouteContent:ERROR", url, err) 
@@ -121,6 +121,7 @@ export const handleRoute = async () => {
         console.log("~~~~~~> handleRoute:Sitemap:JSON:", url);
         w.sitemap_content = await ( await fetch(url) ).json();
       }
+      document.getElementById('toggle_sitemap').checked=false;
     } catch (e) {
       console.log("~~~~~~> handleRoute:Sitemap:ERROR:", url, e)
     }

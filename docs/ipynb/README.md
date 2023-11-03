@@ -22,13 +22,14 @@ Possible Key's: Sample Values
 - `hide ` 
 
 ```
+((note:footnote content))
 (((warning::Some warning message)))
 (((tip::Some tip message)))
 (((info::Some info message)))
 ```
 
 ## Text Decorators
-- `(((footnote content)))`
+- `(((note:: footnote content)))`
 - `(([blockquote content]))` 
 
 labs nb2html tests
