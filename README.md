@@ -79,7 +79,7 @@ Past Works:
   </figure>
 
   - I created, or modified just about everything in this [repository](https://github.com/bniajfi). It includes 150+ python scripts to process and raw data and create quality of life indicators, to scrape databases, websites, and more.
-  - I also taught data science and created pedagogical python libraries: [5](https://github.com/BNIA/dataplay), [7](https://github.com/BNIA/dataguide), [8](https://github.com/BNIA/datalabs). 
+  - I also taught data science and created pedagogical python libraries: [5](https://github.com/BNIA/dataplay), [7](https://github.com/BNIA/dataguide), [8](https://github.com/BNIA/labs). 
   - And managed or made countless analytical websites. References: [1](https://github.com/BNIA/VitalSigns), [2](https://geoloom.org), [3](https://bniajfi.org/bold/), [4](https://bniajfi.org/greenpatterns/)
   <figure align="center">
     <img src="https://images.charleskarpati.com/bnia_bniajfi.png"/>

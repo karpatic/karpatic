@@ -74,7 +74,7 @@ module.exports = (env, args) => {
             sourceMap: { url: "inline" },
             keep_classnames: true,
             keep_fnames: true,
-            nameCache: null, // when set to true it helps speed things up but can deliver outdated cache results
+            nameCache: false, // when set to true it helps speed things up but can deliver outdated cache results
           },
         }),
         new ImageMinimizerPlugin({

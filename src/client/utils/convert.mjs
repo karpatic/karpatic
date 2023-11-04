@@ -1,7 +1,7 @@
 // Uses ECMAScript modules for Browser and Node.js
 import { marked } from "marked";
 import fetch from "isomorphic-fetch";
-import {makeDetails, replaceEmojis, convertNotes, replaceAndLog} from './convert_util.js'
+import {makeDetails, replaceEmojis, convertNotes, replaceAndLog} from './convert_util.mjs'
 // const path = typeof process === 'undefined' ? false : (await import('path')).default;
 
 /*
@@ -17,25 +17,26 @@ Where processing happens
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // fname = ./src/ipynb/route/filename (wihout the .ipynb extension, when server calling it)
 // fname = /route/filename when from client
+// meta.filename = fname UNDERCASED WITH SPACES REPLACED WITH UNDERSCORES.
 let prettify = false;
-export async function nb2json(fname) {
+export async function nb2json(ipynbPath) {
   /* 
         1a. Must be in directory of ipynb you want to convert to html.
   */
   prettify = false;
+  let url = ipynbPath;
   if (typeof process !== "undefined") {
-    fname = `http://localhost:8085/${fname}.ipynb`;
-  }
-  //else{ fname = 'http://localhost:8081' + fname }
-  //console.log({fname})
+    url = `http://localhost:8085/${ipynbPath}.ipynb`;
+  } 
   
   // Get file
-  let ipynb = await fetch(fname, { headers: { "Content-Type": "application/json; charset=utf-8" } });
+  let ipynb = await fetch(url, { headers: { "Content-Type": "application/json; charset=utf-8" } });
   const nb = await ipynb.json();
 
   // Get Metadata
-  const meta = get_metadata(nb.cells[0]);
-  meta.filename = fname.split("/")[fname.split("/").length - 1].toLowerCase().replaceAll(" ", "_");
+  const meta = get_metadata(nb.cells[0]); 
+  // Strip PATH to IPYNB.
+  meta.filename = ipynbPath.split("/")[ipynbPath.split("/").length - 1].toLowerCase().replaceAll(" ", "_"); 
   // console.log('- get_metadata', meta, '\n');
 
   // Convert file 

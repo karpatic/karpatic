@@ -28,6 +28,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 
   // Merge to defaults
   try {
+    console.log('FETCHING', url)
     let rsp = await fetch(url);
     hr = { ...hr, ...(await (await fetch(url)).json()).meta };
   } catch (e) {

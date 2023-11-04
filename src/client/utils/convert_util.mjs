@@ -1,4 +1,4 @@
-export function makeDetails(content, open) {
+function makeDetails(content, open) {
   console.log("- makeDetails Running", content, open)
   /*
         7. Called by processOutput and processSource.
@@ -6,7 +6,7 @@ export function makeDetails(content, open) {
   return "<details " + (open ? "open" : "") + "> <summary>Click to toggle</summary> " + content + "</details>";
 }
 
-export function replaceEmojis(text) {
+function replaceEmojis(text) {
   // console.log('- replaceEmojis Running');
   /* 
         8. Convert emojis to html entities
@@ -21,7 +21,7 @@ export function replaceEmojis(text) {
   return text;
 }
 
-export function convertNotes(str) {
+function convertNotes(str) {
   let matchCount = 0;
   const regex = /(<p)(.*?)\(\(\((.*?)::(.*?)\)\)\)(.*?)(<\/p>)/g;
 
@@ -40,9 +40,14 @@ export function convertNotes(str) {
   return str.replace(regex, replacement);
 }
 
-export function replaceAndLog(text, input, output) {  
+function replaceAndLog(text, input, output) {  
   return text.replace(input, function(match, capture) {
     // output == '<li><div>$1</div></li>' && console.log('\n Caught: \n', {capture});
     return output.replace?.('$1', capture) || output(match, capture);
   });
 };
+
+export { makeDetails, replaceEmojis, convertNotes, replaceAndLog } // ES6 exports
+if (typeof module !== 'undefined' && module.exports) { // CommonJS exports
+  module.exports = { makeDetails, replaceEmojis, convertNotes, replaceAndLog };
+}

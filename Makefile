@@ -11,37 +11,38 @@ hello:
 # ipynb_publish uses convert.mjs?type=module if not meta.hide and converts the filename from/to yaml
 
 pages:
-	make mainsitemap
+	make mainpages
 	make lights
 	make software
 	make notes 
 	make dataplay
 	make labs
 	make blog
-	make node src/client/utils/create_sitemap.mjs
+	make sitemap
 	
 sitemap:
-	node ./src/client/utils/convert_section_map.mjs
+    # Final Step, creates sitemap.txt
+	node ./src/server/prerender.mjs sitemap
 	
-mainsitemap:
+mainpages:
     # Function: Creates a sitemap and the corresponding series of pages
     # Args: input output mapname file,file,files..
-	node ./src/client/utils/convert_section_map.mjs 
+	node ./src/server/prerender.mjs 
 	
 labs:
-	node ./src/client/utils/convert_section_map.mjs labs
+	node ./src/server/prerender.mjs labs
 
 dataplay:
-	node ./src/client/utils/convert_section_map.mjs dataplay
+	node ./src/server/prerender.mjs dataplay
 
 lights:
-	node ./src/client/utils/convert_section_map.mjs lights
+	node ./src/server/prerender.mjs lights
 
 notes:
-	node ./src/client/utils/convert_section_map.mjs notes
+	node ./src/server/prerender.mjs notes
 
 software:
-	node ./src/client/utils/convert_section_map.mjs software
+	node ./src/server/prerender.mjs software
 
 blog:
-	node ./src/client/utils/convert_section_map.mjs blog
+	node ./src/server/prerender.mjs blog
