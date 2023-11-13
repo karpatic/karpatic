@@ -172,13 +172,26 @@ async function ipynb_publish(
     // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
     // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', '\n\n');
     let final;
-    let name;
     if (type === "json") {
       const { nb2json } = await import("./../client/utils/convert.mjs?type=module", {
         type: "module",
       }); 
       final = await nb2json(filePath); 
     }
+    let pyCode = final.meta.pyCode;
+    if(pyCode?.length){
+      // save into folder by name of filePath+'.py'
+      let pathTo = `${FROM}${directory}/`;
+      let file = filePath.replace(pathTo, '') 
+      file = file.replace(/^\d{2}_/, ''); // rm path and XX_ prefix
+      file = final.meta.default_exp || file 
+      let pyCodeFilePath = `${FROM}${directory}/${directory}/${file}.py`
+      let txt = pyCode.join('\n').replace(/(^|\n) /g, '$1')
+      
+      console.log('pyCode',txt)
+      await fs.writeFile(pyCodeFilePath, txt);
+    }
+    delete final.meta.pyCode;
     ///console.log(('Saving ', final, '\n\n');
     ///console.log(('As: ', file, '\n')
     ///console.log(('To ', saveDir, '\n\n'); 
@@ -186,6 +199,13 @@ async function ipynb_publish(
     await fs.writeFile(t, type === "json" ? JSON.stringify(final) : final);
     return final;
 }
+async function createAudio() {
+  // imprt create_audio
+  const { speechFromDir } = await import('./../server/create_audio.mjs');
+  speechFromDir('./src/client/posts/','./src/client/audio/');
+}
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if (directory === 'sitemap') { createSitemap(); } else { cli_nbs2html(); }
+if (directory === 'sitemap') { createSitemap(); }
+else if(directory === 'audio') { createAudio(); }
+else{ cli_nbs2html();}

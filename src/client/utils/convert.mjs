@@ -19,7 +19,9 @@ Where processing happens
 // fname = /route/filename when from client
 // meta.filename = fname UNDERCASED WITH SPACES REPLACED WITH UNDERSCORES.
 let prettify = false;
+let pyCode = [];
 export async function nb2json(ipynbPath) {
+  pyCode = []
   /* 
         1a. Must be in directory of ipynb you want to convert to html.
   */
@@ -41,6 +43,9 @@ export async function nb2json(ipynbPath) {
 
   // Convert file 
   let content = convertNb(nb.cells.slice(1), meta).flat().join(" ");
+  console.log({pyCode});
+
+  meta.pyCode = pyCode;
 
   // 
   (meta.prettify || prettify) &&
@@ -185,13 +190,15 @@ function getFlags(source) {
     "%%capture",
     "%%javascript",
     "%%html",
+    "#export"
   ];
   const sourceFlags = source.split(/\s+/); // Split by whitespace
   return input_aug.filter((x) => sourceFlags.includes(x));
 }
 
 function processSource(source, flags, meta) {
-  /* 6b. Strip Flags from text, make details, hide all. */
+  /* 6b. Strip Flags from text, make details, hide all. Append to pyCode*/
+  if('#export' == flags[flags.length-1]){ pyCode.push(source); } 
   for (let lbl of flags) {  
     let skipList = ["#hide ","#hide_input", "%%javascript", "%%html", "%%capture"]  
     if( skipList.includes(lbl) ){ return "";}  

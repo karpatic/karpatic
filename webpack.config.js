@@ -206,6 +206,7 @@ module.exports = (env, args) => {
       new CopyWebpackPlugin({
         patterns: [
           { from: "./robots.txt", to: "robots.txt", toType: "file" },
+          { from: "./sitemap.txt", to: "sitemap.txt", toType: "file" },
           { from: "./CNAME", to: "CNAME", toType: "file" },
           // { from: './src/404.html', to: '404.html', toType: 'file' },
           {
@@ -227,6 +228,7 @@ module.exports = (env, args) => {
           { from: "./src/client/posts", to: "./posts", toType: "dir" },
           { from: "./src/client/images", to: "./images", toType: "dir" },
           { from: "./src/client/utils", to: "./utils", toType: "dir" },
+          { from: "./src/client/audio", to: "./audio", toType: "dir" },
           {
             from: "src/client/templates/*.css",
             to: "./templates/[name].css",

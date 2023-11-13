@@ -18,7 +18,10 @@ pages:
 	make dataplay
 	make labs
 	make blog
-	make sitemap
+	make sitemap 
+
+audio:
+	node ./src/server/prerender.mjs audio
 	
 sitemap:
     # Final Step, creates sitemap.txt
@@ -46,3 +49,6 @@ software:
 
 blog:
 	node ./src/server/prerender.mjs blog
+
+watchPages:
+	nodemon --watch 'src/ipynb/*' --exec make pages

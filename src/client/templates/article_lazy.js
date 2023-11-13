@@ -51,3 +51,4 @@ function updatePath() {
 window.width = Math.min(window.innerWidth, 800);
 updatePath();
 setInterval(updatePath, 1500);
+// TODO

@@ -80,7 +80,7 @@ const populateTemplate = async () => {
     anchor.setAttribute("aria-label", "Link to " + header.id);
     anchor.setAttribute(
       "onclick",
-      `navigator.clipboard.writeText('https://charleskarpati.com${
+      `event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com${
         location.pathname + location.hash
       }'); w.toast?.();`
     );
@@ -94,10 +94,10 @@ const populateTemplate = async () => {
 
   // console.log(w.meta)
   if(w.audio){
-    w.audio.style.display = w.meta.tracklink ? "flex" : "none"
-    w.audio.title = w.meta.trackname
+    w.audio.style.display = w.meta.audio ? "flex" : "none"
+    w.audio.title = w.meta.audio
     // get the nested audio element
-    w.audio.querySelector("audio").src = w.meta.tracklink
+    w.audio.querySelector("audio").src = w.meta.audio
   }
 
   // Restart Observer on new page if included in article_lazy
@@ -152,6 +152,11 @@ const createNav = async () => {
           </a>`
           )
           .join("")} </div>`;
+  // TODO
+  // Fix this up to be 
+  // <- NAV X
+  // HOME | TOC || BACK
+  // CONTENTS LISTED
 
   // Skip or Continue TOC creation
   if (!("toc" in w.meta) || w.meta.toc.toLowerCase() == "false") return;
