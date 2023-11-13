@@ -1,1 +1,0 @@
-async function textToSpeech(t,i){JSON.stringify({text:t,voice_settings:{stability:.5,similiarity_boost:.9}}),process.env.ELEVEN_API_KEY}
