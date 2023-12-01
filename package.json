@@ -3,7 +3,7 @@
   "description": "DESCRIPTION",
   "author": "Charles Karpati",
   "license": "MIT",
-  "version": "1.0.0",  
+  "version": "1.0.0",
   "main": "./src/main.js",
   "bin": {
     "karpatitoools": "./src/main.js"
@@ -11,13 +11,13 @@
   "scripts": {
     "start": "webpack serve --mode development --devtool eval-source-map --progress",
     "build": "webpack --mode production --profile --progress",
-    "postbuild": "react-snap", 
+    "postbuild": "react-snap",
     "server": "nodemon --optimize_for_size --max_old_space_size=460 src/server/index.js",
-    "test": "nodemon src/server/scripts/test.js", 
+    "test": "nodemon src/server/scripts/test.js",
     "watchPages": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'npm run makePages'",
     "makePages": "make pages",
     "makeAudio": "make audio",
-    "testPkg":"npm unlink karpatitoools; npm link --loglevel verbose; cls; karpatitoools test"
+    "testPkg": "npm unlink karpatitoools; npm link --loglevel verbose; cls; karpatitoools test"
   },
   "reactSnap": {
     "puppeteerExecutablePath": "../latest_chromium/chrome.exe",

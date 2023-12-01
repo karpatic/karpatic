@@ -51,31 +51,55 @@ The default snapshot delay is 50ms. It works with routing strategies using the H
 
 
 ## Todo 
+- text wrap balance
+- https://9elements.github.io/fancy-border-radius/ - unicycles and in blog
 - click2like
 - code line vs code block 
 - Dynamic Tables from py output
-- Footer Animated Blocks restarting not going backnforth
 - npm export mainjs for convert fns
 - https://x.st/spinning-diagrams-with-css/
 - webAuthn - firebase - termly - twilio - calendly 
 - sharing [pages](https://garden.bradwoods.io/notes/html/head/share-web-page) 
 - sized [images](https://www.stefanjudis.com/snippets/a-picture-element-to-load-correctly-resized-webp-images-in-html/)
 - Fix sitemap to default close + animate opacity to show/hide.
+- Fix nav to be (<- NAV X)(HOME | TOC || BACK) ( CONTENTS LISTED)
+- dllr project
+- pivot table
 
 ### Maybe Todo
 
 I've experimented with most of these:
 
-- initial-letter css
-- remove .html from url
 - curved details
+- initial-letter css
+- remove .html from url -> why?
 - svg filter effects
 - [3d](https://garden.bradwoods.io/notes/css/3d) effects
 - iconfont?
 - dns prefetch and preconnect
- - hunter's drll project
+- image map webpage
+- css_animations.ipynb
+ 
+https://developers.google.com/search/docs/appearance/structured-data/search-gallery
+https://play.ht/ 
+https://polypane.app/css-3d-transform-examples/https://validator.w3.org/nu/
 
 
+#https://bitsofco.de/styling-broken-images/
+img {  display: block;  font-family: sans-serif;  font-weight: 300;  height: auto;  line-height: 2;  position: relative;  text-align: center;  width: 100%; }
+Now add pseudo-elements rules to display a user message and URL reference of the broken image:
+img::before {  content: "We're sorry, the image below is broken :(";  display: block; margin-bottom: 10px;}
+img::after { content: "(url: " attr(src) ")";  display: block;  font-size: 12px;}
+
+# avoid mobile browsers (iOS Safari, et al.) from zooming in on HTML form elements when a <select> drop-down is tapped,
+input,button,select,textarea {  font: inherit;}
+
+# https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
+button:disabled { opacity: .5;  pointer-events: none;}
+
+# https://codepen.io/AllThingsSmitty/pen/XKgOZR
+:root {   font-size: calc(1vw + 1vh + .5vmin); }
+body {   font: 1rem/1.6 sans-serif; }
 
 
 

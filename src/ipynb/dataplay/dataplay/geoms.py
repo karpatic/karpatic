@@ -30,8 +30,9 @@ from IPython.display import clear_output
 from folium import plugins
 from folium.plugins import TimeSliderChoropleth 
 from folium.plugins import MarkerCluster
-from dataplay import intaker 
-from dataplay import merge
+from dataplay.intaker import Intake
+from dataplay.acs import retrieveAcsData
+from dataplay.merge import mergeDatasets
 #
 # Work With Geometry Data
 # Description: geomSummary, getPointsInPolygons, getPolygonOnPoints, mapPointsInPolygons, getCentroids
@@ -64,7 +65,7 @@ def workWithGeometryData(method=False, df=False, polys=False, ptsCoordCol=False,
           boundaries.append(poly_on_this_point)
           clear_output(wait=True)
 
-      # Add the number of points for each poly to the dataframe.
+      # Add the number of points for each poly to the dataframe..
       pts = pts.assign(CSA2010 = boundaries)
       if (interactive):
         print( 'Total Points: ', (pts.size / len(pts.columns) ) )
@@ -99,8 +100,8 @@ def workWithGeometryData(method=False, df=False, polys=False, ptsCoordCol=False,
         count += pts_in_this_poly
         clear_output(wait=True)
 
-    # Add the number of points for each poly to the dataframe.
-    polygons['pointsinpolygon'] = gpd.GeoSeries(pts_in_polys)
+    # Add the number of points for each poly to the dataframe.?
+    polygons['pointsinpolygon'] = pts_in_polys
     if (interactive):
       print( 'Total Points: ', total )
       print( 'Total Points in Polygons: ', count )
@@ -146,6 +147,7 @@ def readInGeometryData(url=False, porg=False, geom=False, lat=False, lng=False, 
     return geometry
 
   def readFile(url, geom, lat, lng, revgeocode, in_crs, out_crs):
+    # print("readInGeometryData-READFILE STARTING")
     df = False
     gdf = False
     ext = isinstance(url, pd.DataFrame)
@@ -196,7 +198,7 @@ def readInGeometryData(url=False, porg=False, geom=False, lat=False, lng=False, 
           if not lat: lat = input("Please enter the column name where the latitude coordinate is stored: " );
           if not lng: lng = input("Please enter the column name where the longitude cooridnate is stored: (Could be same as the lat) " );
       elif porg=='g':
-        if not geom: geom = input("Please enter column name where the geometry data is stored: (*optional, skip if unkown)" );
+        if not geom: geom = input("Please enter column name where the geometry data is stored: (*optional, skip if unknown)" );
       else: return getGeoParams(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs)
 
     if not out_crs: out_crs=in_crs
@@ -205,6 +207,7 @@ def readInGeometryData(url=False, porg=False, geom=False, lat=False, lng=False, 
 
   # This function uses all the other functions
   def main(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs):
+    # print("READINGEOMETRYDATA-MAIN STARTING")
 
     # Check for missing values. retrieve them
     if (isinstance(url, pd.DataFrame)): print('Converting DF to GDF')
@@ -212,9 +215,8 @@ def readInGeometryData(url=False, porg=False, geom=False, lat=False, lng=False, 
         not (porg == 'p' or porg == 'g') ) or (
         porg == 'g' and not geom) or (
         porg == 'p' and (not (lat and lng) ) ):
-      return readInGeometryData( *getGeoParams(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs) );
-
-    # print(f"RECIEVED url: {url}, \r\n porg: {porg}, \r\n geom: {geom}, \r\n lat: {lat}, \r\n lng: {lng}, \r\n revgeocode: {revgeocode}, \r\n in_crs: {in_crs}, \r\n out_crs: {out_crs}")
+      # return readInGeometryData( *getGeoParams(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs) );
+        url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs = getGeoParams(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs)
 
     # Quit if the Columns dont exist -> CSV Only
     # status = checkColumns(url, geom, lat, lng)
@@ -262,7 +264,12 @@ def map_points(data, lat_col='POINT_Y', lon_col='POINT_X', zoom_start=11, plot_p
     # add points to map
     if plot_points:
       for _, row in df.iterrows():
-        # print([row[lat_col], row[lon_col]], row[popup])
+        if pd.isna(row[lat_col]) or pd.isna(row[lon_col]):
+            continue
+        if( row[lat_col] != row[lat_col] ):
+           print("Invalid coordinates, skipping marker:", row)
+           continue
+
         folium.CircleMarker([row[lat_col], row[lon_col]],
           radius=pt_radius,
           popup=row[popup],
@@ -271,7 +278,14 @@ def map_points(data, lat_col='POINT_Y', lon_col='POINT_X', zoom_start=11, plot_p
     if cluster_points:
       marker_cluster = MarkerCluster().add_to(curr_map)
       for index, row in df.iterrows():
-        folium.Marker( location=[row[lat_col],row[lon_col]], popup=row[popup], icon=None ).add_to(marker_cluster)
+        if pd.isna(row[lat_col]) or pd.isna(row[lon_col]):
+            continue
+        popup_html = '<div>' + '<br>'.join([f'<b>{col}</b>: {row[col]}' for col in popup]) + '</div>' 
+        folium.Marker(
+            location=[row[lat_col], row[lon_col]],
+            popup=folium.Popup(popup_html, max_width=450),
+            icon=None
+        ).add_to(marker_cluster)
 
     # add heatmap
     if draw_heatmap:

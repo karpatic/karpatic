@@ -31,7 +31,7 @@ function generatePath(bars) {
     "Z"
   ).replace("undefined", "");
 }
-function updatePath() {
+function updatePath() { 
   const newPath = "path('" + generatePath(6) + "')";
   const footer = document.getElementById("footer_bg").style;
   // set css var --path2 to --path1's computed value and update --path1 with new path(d)
@@ -51,4 +51,3 @@ function updatePath() {
 window.width = Math.min(window.innerWidth, 800);
 updatePath();
 setInterval(updatePath, 1500);
-// TODO

@@ -52,9 +52,10 @@
 </div>
 <script>
   function loadLazy() {
-    (w.loadOnce && (w.loadOnce = true)) ||
-      ((document.head || d).appendChild(document.createElement("script")).src =
-        origin + "/templates/article_lazy.js");
+    w.loadOnce || (
+      ( (document.head || d).appendChild(document.createElement("script")).src = origin + "/templates/article_lazy.js" )
+      && (w.loadOnce=true)
+    );
   }
 
   [

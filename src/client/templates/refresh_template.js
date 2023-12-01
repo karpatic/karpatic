@@ -20,7 +20,7 @@ const displayLink = (str) => shorten(capitalize(str.replaceAll("_", " ")), 20);
 w.addEventListener(
   "refreshTemplate",
   async () => {
-    console.log("~~~~~~~~> refreshTemplate");
+    console.log("~~~~~~~~> EVENT:refreshTemplate");
     document.title = w.meta.title;
     // Delay populateTemplate iff refresh not for an anchor link
     const pageT = w.page_transition;
@@ -31,18 +31,23 @@ w.addEventListener(
         "animationend",
         async () => (pageT.style.animation = "none"),
         { once: true }
-      );
-      setTimeout(async () => populateTemplate(), 1100);
-    } else {
-      populateTemplate();
-    }
+      ); 
+      setTimeout(async () => {
+        console.log("~~~~~~~~~~> populateTemplate: createNav1.1");
+        let resp = await populateTemplate()
+        resp && console.log("~~~~~~~~~~> populateTemplate: createNav1.2");
+      
+      }, 1100); 
+    } else { 
+      populateTemplate(); 
+    } 
   },
-  { passive: true }
+  { passive: true } 
 );
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const populateTemplate = async () => {
-  console.log("~~~~~~~~~~> populateTemplate");
+  console.log("~~~~~~~~~~> populateTemplate2.1");
 
   // Create relative hyperlinks for each
   // location.pathname.split("/").split("/").slice(1).map( (x,i) => {return '../'.repeat(i)+x } )
@@ -63,13 +68,14 @@ const populateTemplate = async () => {
   ].join("/");
   ["content", "title", "summary", "breadcrumbs"].map((id) => {
     if (!meta[id]) return;
+    console.log("id", id, meta[id])
     const el = document.getElementById(id);
     el.innerHTML = "";
     el.appendChild(document.createRange().createContextualFragment(meta[id]));
   });
 
   // Populate Floating Sitemap
-  await createNav();
+  await createNav(); 
 
   // Give headers an anchor tag.
   [...document.querySelectorAll("h2, h3, h4")].forEach((header) => {
@@ -116,17 +122,20 @@ const populateTemplate = async () => {
       [l.removeEventListener, l.addEventListener].forEach((f) =>
         f.call(l, "click", redirect)
       )
-    );
+    ); 
+    
+    console.log("~~~~~~~~~~> populateTemplate: createNav2.2");
+    return true
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // IPYNB Requires: {summary, filename} Optionally: {hide_sitemap, tab} in the YAML header.
-const createNav = async () => {
+const createNav = async () => { 
   console.log("~~~~~~~~~~~~> createNav: sitemap"); 
-  let currentTab = w.meta.tab||w.meta.filename
-  sitemapLabel = (x) => x.tab || x.filename;
-  console.log("\n\n", {currentTab, sitemap_content:w.sitemap_content} )
+  let currentTab = w.meta.tab||w.meta.filename 
+  sitemapLabel = (x) => x.tab || x.filename; 
+  console.log("\n\n", {currentTab, sitemap_content:w.sitemap_content} ) 
 
   // Skip or Continue sitemap creation
   const skip = w.meta.hide_sitemap;
@@ -152,11 +161,6 @@ const createNav = async () => {
           </a>`
           )
           .join("")} </div>`;
-  // TODO
-  // Fix this up to be 
-  // <- NAV X
-  // HOME | TOC || BACK
-  // CONTENTS LISTED
 
   // Skip or Continue TOC creation
   if (!("toc" in w.meta) || w.meta.toc.toLowerCase() == "false") return;
@@ -174,12 +178,13 @@ const createNav = async () => {
     .join("<br/>");
 
   const currentPage = w.sitemap.querySelector(`a[title="${sitemapLabel(w.meta)}"]`);
-  currentPage?.parentNode.insertBefore(tocNode, currentPage.nextSibling);
+  currentPage?.parentNode.insertBefore(tocNode, currentPage.nextSibling); 
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // Relative Links comparing URI, current Meta, the desired post's Meta
+// Use in populate template and create nav
 let create_url = (link, sitemap) => {
   let fromSubpath = location.pathname.split("/").length >= 3;
   let toSubpath = link != sitemap;

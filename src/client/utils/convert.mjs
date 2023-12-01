@@ -50,7 +50,7 @@ export async function nb2json(ipynbPath) {
   // 
   (meta.prettify || prettify) &&
     (content += `
-  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <link rel="stylesheet" href="https://cdn.rawgit.com/google/code-prettify/master/styles/desert.css"/>
   `);
 

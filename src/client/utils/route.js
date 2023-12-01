@@ -59,10 +59,13 @@ export const handleRoute = async () => {
           return (await fetch(url)).json() } )() 
       )
       : ( await (async () => {
+          console.log('about to call')
           let x = await import(/* webpackChunkName: "convert" */ "./convert.mjs") 
+          console.log('about to call')
+          
           return x
         } )()
-        ).nb2json(url));
+        ).nb2json(url)); 
   }
   catch(err){ 
     console.log("~~~~~~> handleRoute:getRouteContent:ERROR", url, err) 

@@ -146,6 +146,7 @@ def readInGeometryData(url=False, porg=False, geom=False, lat=False, lng=False, 
     return geometry
 
   def readFile(url, geom, lat, lng, revgeocode, in_crs, out_crs):
+    print("READFILE STARTING")
     df = False
     gdf = False
     ext = isinstance(url, pd.DataFrame)
@@ -196,7 +197,7 @@ def readInGeometryData(url=False, porg=False, geom=False, lat=False, lng=False, 
           if not lat: lat = input("Please enter the column name where the latitude coordinate is stored: " );
           if not lng: lng = input("Please enter the column name where the longitude cooridnate is stored: (Could be same as the lat) " );
       elif porg=='g':
-        if not geom: geom = input("Please enter column name where the geometry data is stored: (*optional, skip if unkown)" );
+        if not geom: geom = input("Please enter column name where the geometry data is stored: (*optional, skip if unknown)" );
       else: return getGeoParams(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs)
 
     if not out_crs: out_crs=in_crs
@@ -205,6 +206,7 @@ def readInGeometryData(url=False, porg=False, geom=False, lat=False, lng=False, 
 
   # This function uses all the other functions
   def main(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs):
+    print("MAIN STARTING")
 
     # Check for missing values. retrieve them
     if (isinstance(url, pd.DataFrame)): print('Converting DF to GDF')
@@ -212,9 +214,8 @@ def readInGeometryData(url=False, porg=False, geom=False, lat=False, lng=False, 
         not (porg == 'p' or porg == 'g') ) or (
         porg == 'g' and not geom) or (
         porg == 'p' and (not (lat and lng) ) ):
-      return readInGeometryData( *getGeoParams(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs) );
-
-    # print(f"RECIEVED url: {url}, \r\n porg: {porg}, \r\n geom: {geom}, \r\n lat: {lat}, \r\n lng: {lng}, \r\n revgeocode: {revgeocode}, \r\n in_crs: {in_crs}, \r\n out_crs: {out_crs}")
+      # return readInGeometryData( *getGeoParams(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs) );
+        url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs = getGeoParams(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs)
 
     # Quit if the Columns dont exist -> CSV Only
     # status = checkColumns(url, geom, lat, lng)

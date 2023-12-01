@@ -12,6 +12,11 @@ blockquote, blockquote span, blockquote::before, pre, pre>code
   --near-white: 226, 226, 238; /*light red -  0, 26%, 91% */
   --max-width: min(800px, 100vw);
 }
+/*
+// RESPONSIVE SIZING
+:root {   font-size: calc(1vw + 1vh + .5vmin); }
+body {   font: 1rem/1.6 sans-serif; }
+*/
 * {
   font-family: Georgia, TimesNewRoman, Times, Times New Roman, serif;
   user-select: text;

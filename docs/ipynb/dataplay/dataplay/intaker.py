@@ -15,16 +15,16 @@ class Intake:
     if (str(url).lower() in escapeQuestionFlags ): return False
     if interactive: print('Getting Data From: ', url)
     try:
+      isGeom = False
       if  ('csv' in url): 
         df = pd.read_csv( url )
         # check if 'geometry' is a column
         if (Intake.checkColumn(df, 'geometry')): 
-          from dataplay import geoms
-          df = geoms.readInGeometryData(url=url, porg=False, geom='geometry', lat=False, lng=False, revgeocode=False,  save=False, in_crs=2248, out_crs=False)
-      if ([ele for ele in ['pgeojson', 'shp', 'geojson'] if(ele in url)]):
+          isGeom = True
+      if (isGeom or [ele for ele in ['pgeojson', 'shp', 'geojson'] if(ele in url)]):
         print('importing geoms', url)
         from dataplay import geoms
-        print('using readInGeometryData')
+        print(f'using readInGeometryData using args: url=${url}, porg=False, geom=\'geometry\', lat=False, lng=False, revgeocode=False,  save=False, in_crs=2248, out_crs=False' )
         df = geoms.readInGeometryData(url=url, porg=False, geom='geometry', lat=False, lng=False, revgeocode=False,  save=False, in_crs=2248, out_crs=False)
       return df
     except:
