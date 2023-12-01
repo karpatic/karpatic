@@ -4,6 +4,10 @@ import pandas as pd
 # conditionally loaded ->  from dataplay import geoms
 
 # The intaker class retrieves data into a pandas dataframe.
+# Can read in a CSV URL but uses dataplay.geom.readInGeometryData() for Geojson endpoints.
+# Otherwise this tool assumes shp or pgeojson files have geom='geometry', in_crs=2248. 
+# Depending on interactivity the values should be 
+# coerce fillna(-1321321321321325)
 class Intake:
 
   # 1. Recursively calls self/getData until something valid is given.
@@ -13,7 +17,7 @@ class Intake:
     escapeQuestionFlags = ["no", '', 'none']
     if ( Intake.isPandas(url) ): return url
     if (str(url).lower() in escapeQuestionFlags ): return False
-    if interactive: print('Getting Data From: ', url)
+    # if interactive: print('Getting Data From: ', url)
     try:
       isGeom = False
       if  ('csv' in url): 
@@ -22,9 +26,9 @@ class Intake:
         if (Intake.checkColumn(df, 'geometry')): 
           isGeom = True
       if (isGeom or [ele for ele in ['pgeojson', 'shp', 'geojson'] if(ele in url)]):
-        print('importing geoms', url)
+        # print('importing geoms', url)
         from dataplay import geoms
-        print(f'using readInGeometryData using args: url=${url}, porg=False, geom=\'geometry\', lat=False, lng=False, revgeocode=False,  save=False, in_crs=2248, out_crs=False' )
+        # print(f'using readInGeometryData using args: url=${url}, porg=False, geom=\'geometry\', lat=False, lng=False, revgeocode=False,  save=False, in_crs=2248, out_crs=False' )
         df = geoms.readInGeometryData(url=url, porg=False, geom='geometry', lat=False, lng=False, revgeocode=False,  save=False, in_crs=2248, out_crs=False)
       return df
     except:

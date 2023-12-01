@@ -1,7 +1,4 @@
 from dataplay.intaker import Intake
-# @title Run: Import Modules
-
-# These imports will handle everything
 import numpy as np
 import pandas as pd
 #@ title Run: Create mergeDatasets()
@@ -11,8 +8,8 @@ import pandas as pd
 def mergeDatasets(left_ds=False, right_ds=False, crosswalk_ds=False,
                   left_col=False, right_col=False,
                   crosswalk_left_col = False, crosswalk_right_col = False,
-                  merge_how=False, # left right or columnname to retrieve
-                  interactive=True):
+                  merge_how='outer', # 'left', 'right', 'outer', 'inner' or "retrieveThisColumn"
+                  interactive=False):
   # Interactive will ask if use_crosswalk unless crosswalk_ds == 'no'
 
   # 1. Used on Right Dataset in case merge_how is a column to pull. Returns False or Col
@@ -96,21 +93,29 @@ def mergeDatasets(left_ds=False, right_ds=False, crosswalk_ds=False,
     # cw = cw.sort_values(by=how, ascending=True)
     return df
 
-  # 0. Retrieve the left and right dataset.
-  if (interactive): print('---Handling Left Dataset Options---');
-  left_ds, left_col = Intake.getAndCheck(left_ds, left_col, interactive)
-  if (interactive): print('Left column:', left_col)
 
-  if (interactive): print('\n---Handling Right Dataset Options---');
+  if (not hasattr(left_ds, 'shape') and not interactive): return pd.DataFrame()
+  if (not hasattr(right_ds, 'shape') and not interactive): return pd.DataFrame()
+  if (not hasattr(left_col, 'shape') and not interactive): return pd.DataFrame()
+  if (not hasattr(right_col, 'shape') and not interactive): return pd.DataFrame()
+
+  # 0. Retrieve the left and right dataset.
+  if (interactive): print('---Handling Left Dataset Options---\n');
+  left_ds, left_col = Intake.getAndCheck(left_ds, left_col, interactive)
+  if (interactive): 
+    print('Left column:', left_col)
+    if( left_col == False ): return pd.DataFrame()
+
+  if (interactive): print('\n---Handling Right Dataset Options---\n');
   right_ds, right_col  = Intake.getAndCheck(right_ds, right_col, interactive)
   if (interactive): print('Right column:', left_col)
 
-  if (interactive): print(f"\n---Ensuring Compatability Between merge_how (val: '{merge_how}') and the Right Dataset---");
+  if (interactive): print(f"\n---Ensuring Compatability Between merge_how (val: '{merge_how}') and the Right Dataset---\n");
   merge_how = checkMergeHow(right_ds, merge_how, interactive)
-  if (interactive): print("Column or ['inner','left','right','outer'] value: ", merge_how)
+  if (interactive): print("\nColumn or ['inner','left','right','outer'] value: {merge_how} \n")
 
   # 1. Retrieve the crosswalk dataset: check left-cw, right-cw. try coercing.
-  if (interactive): print(f'\n---Checking Crosswalk Dataset Options---')
+  if (interactive): print(f'\n---Checking Crosswalk Dataset Options---\n')
   # if its a df
   if (not Intake.isPandas(crosswalk_ds)):
     default = str(crosswalk_ds).lower() == 'false'
@@ -125,18 +130,18 @@ def mergeDatasets(left_ds=False, right_ds=False, crosswalk_ds=False,
   # 3. Coerce all datasets for Merge.
   if ( Intake.isPandas(crosswalk_ds) ):
     print('crosswalk_left_col',crosswalk_left_col)
-    left_ds, crosswalk_ds, crosswalk_left_col, status = coerceForMerge( 'Left->Crosswalk', left_ds, crosswalk_ds, left_col, crosswalk_left_col, interactive )
-    right_ds, crosswalk_ds, crosswalk_right_col, status = coerceForMerge( 'Right->Crosswalk',right_ds, crosswalk_ds, right_col, crosswalk_right_col, interactive )
+    left_ds, crosswalk_ds, crosswalk_left_col, status = coerceForMerge( 'Left->Crosswalk\n', left_ds, crosswalk_ds, left_col, crosswalk_left_col, interactive )
+    right_ds, crosswalk_ds, crosswalk_right_col, status = coerceForMerge( 'Right->Crosswalk\n',right_ds, crosswalk_ds, right_col, crosswalk_right_col, interactive )
   else:
-    left_ds, right_ds, right_col, status = coerceForMerge('Left->Right', left_ds, right_ds, left_col, right_col, interactive )
+    left_ds, right_ds, right_col, status = coerceForMerge('Left->Right\n', left_ds, right_ds, left_col, right_col, interactive )
 
-  if (interactive): print('\n---All checks complete. Status: ', status, '---\n');
+  if (interactive): print('\n---All checks complete. Status: \n', status, '---\n');
   if ( not status ):
-    if (interactive):print('Merge Incomplete. Thank you!');
+    if (interactive):print('\nMerge Incomplete. Thank you!\n');
     return False;
   else:
     if (Intake.isPandas(crosswalk_ds)):
-      left_ds = mergeAndFilter('LEFT->CROSSWALK', left_ds, crosswalk_ds, left_col, crosswalk_left_col, crosswalk_right_col, interactive)
+      left_ds = mergeAndFilter('\nLEFT->CROSSWALK\n', left_ds, crosswalk_ds, left_col, crosswalk_left_col, crosswalk_right_col, interactive)
       left_col = crosswalk_right_col
-    left_ds = mergeAndFilter('LEFT->RIGHT', left_ds, right_ds, left_col, right_col, merge_how, interactive)
+    left_ds = mergeAndFilter('\nLEFT->RIGHT\n', left_ds, right_ds, left_col, right_col, merge_how, interactive)
   return left_ds

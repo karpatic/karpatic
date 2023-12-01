@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import warnings
 warnings.filterwarnings('ignore')
-from dataplay import merge
-from dataplay import intaker
+from dataplay.merge import mergeDatasets
+from dataplay.intaker import Intake
 
 # this example is from the Geek for Geeks link above
 def average_clustering(G, trials=1000): 
