@@ -43,7 +43,7 @@ export async function nb2json(ipynbPath) {
 
   // Convert file 
   let content = convertNb(nb.cells.slice(1), meta).flat().join(" ");
-  console.log({pyCode});
+  // pyCode.length && console.log({pyCode});
 
   meta.pyCode = pyCode;
 
@@ -127,6 +127,7 @@ function processMarkdown(x){
 
   // replace code blocks with pre.prettyprint
   x = replaceAndLog(x, /<pre><code>([\s\S]*?)<\/code><\/pre>/g, ()=>{prettify=true; "<pre class='prettyprint'>$1</pre>"});
+  x = replaceAndLog(x, /<code>([\s\S]*?)<\/code>/g, ()=>{prettify=true; "<pre class='prettyprint'>$1</pre>"});
 
   // local redirects pingServer
   x = replaceAndLog(x, /<a\s+(?:[^>]*?\s+)?href="(.*?)"/g, (match, href) => {
@@ -198,14 +199,14 @@ function getFlags(source) {
 
 function processSource(source, flags, meta) {
   /* 6b. Strip Flags from text, make details, hide all. Append to pyCode*/
-  if('#export' == flags[flags.length-1]){ pyCode.push(source); } 
-  for (let lbl of flags) {  
-    let skipList = ["#hide ","#hide_input", "%%javascript", "%%html", "%%capture"]  
+  if('#export' == flags[flags.length-1]){ pyCode.push(source); }  
+  for (let lbl of flags) {   
+    let skipList = ["#hide","#hide_input", "%%javascript", "%%html", "%%capture"]  
     if( skipList.includes(lbl) ){ return "";}  
   }
   if(meta.prettify){ source = `<pre class='prettyprint'>${source}</pre>`;} 
   let flagg = flags && !!flags.includes('#collapse_input_open') 
-  if (flagg) { console.log(flags) }
+  // if (flagg) { console.log(flags) }
   for (let lbl of flags) {   
     source = source.replaceAll(lbl + "\r\n", "");
     source = source.replaceAll(lbl + "\n", ""); // Strip the Flag  
@@ -246,7 +247,7 @@ function processOutput(source, flags) {
       source = source.replaceAll(lbl + "\r\n", "");
       source = source.replaceAll(lbl + "\n", "");
     } catch {
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!processOutput... ", typeof source, source);
+      // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!processOutput... ", typeof source, source);
     }
     if (lbl == "#collapse_output_open") {
       source = makeDetails(source, true);
@@ -257,7 +258,7 @@ function processOutput(source, flags) {
     if (lbl == "#hide_output") {
       source = "";
     }
-    if (lbl == "#hide ") {
+    if (lbl == "#hide") {
       source = "";
     }
   }

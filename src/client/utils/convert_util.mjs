@@ -1,5 +1,5 @@
 function makeDetails(content, open) {
-  console.log("- makeDetails Running", content, open)
+  // console.log("- makeDetails Running", content, open)
   /*
         7. Called by processOutput and processSource.
     */

@@ -19,7 +19,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
   // Defaults
   let hr = await (await fetch((await import(`./header.json`)).default)).json();
 
-  // console.log({ url, page, pathname: location.pathname });
+  // console.log('HEAD:', { url, page, pathname: location.pathname });
 
   // Path to it's YAML or Manifest
   const url = `/${
@@ -28,7 +28,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 
   // Merge to defaults
   try {
-    console.log('FETCHING', url)
+    console.log('HEAD:FETCHING:', url)
     let rsp = await fetch(url);
     hr = { ...hr, ...(await (await fetch(url)).json()).meta };
   } catch (e) {

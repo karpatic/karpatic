@@ -20,7 +20,7 @@ const displayLink = (str) => shorten(capitalize(str.replaceAll("_", " ")), 20);
 w.addEventListener(
   "refreshTemplate",
   async () => {
-    console.log("~~~~~~~~> EVENT:refreshTemplate");
+    console.log("~~~~~~~~>refreshTemplate:EVENT:refreshTemplate");
     document.title = w.meta.title;
     // Delay populateTemplate iff refresh not for an anchor link
     const pageT = w.page_transition;
@@ -68,7 +68,7 @@ const populateTemplate = async () => {
   ].join("/");
   ["content", "title", "summary", "breadcrumbs"].map((id) => {
     if (!meta[id]) return;
-    console.log("id", id, meta[id])
+    // console.log("id", id, meta[id])
     const el = document.getElementById(id);
     el.innerHTML = "";
     el.appendChild(document.createRange().createContextualFragment(meta[id]));
@@ -132,10 +132,10 @@ const populateTemplate = async () => {
 
 // IPYNB Requires: {summary, filename} Optionally: {hide_sitemap, tab} in the YAML header.
 const createNav = async () => { 
-  console.log("~~~~~~~~~~~~> createNav: sitemap"); 
+  console.log("~~~~~~~~~~~~> refreshTemplate: createNav: sitemap"); 
   let currentTab = w.meta.tab||w.meta.filename 
   sitemapLabel = (x) => x.tab || x.filename; 
-  console.log("\n\n", {currentTab, sitemap_content:w.sitemap_content} ) 
+  console.log('refreshTemplate:', "\n\n", {currentTab, sitemap_content:w.sitemap_content} ) 
 
   // Skip or Continue sitemap creation
   const skip = w.meta.hide_sitemap;
@@ -185,12 +185,12 @@ const createNav = async () => {
 
 // Relative Links comparing URI, current Meta, the desired post's Meta
 // Use in populate template and create nav
-let create_url = (link, sitemap) => {
+let create_url = (link, sitemap) => { 
   let fromSubpath = location.pathname.split("/").length >= 3;
   let toSubpath = link != sitemap;
   let t = `./${
     (fromSubpath && !toSubpath && "../") ||
-    (!fromSubpath && toSubpath && sitemap + "/") ||
+    (!fromSubpath && toSubpath && !!sitemap && sitemap + "/") ||
     ""
   }${link}`;
   // console.log({ fromSubpath, toSubpath, link, sitemap, t });

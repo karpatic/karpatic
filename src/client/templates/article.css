@@ -193,6 +193,9 @@ h2 {
   max-width: -webkit-fill-available;
 }
 
+details > details > summary { 
+  text-align: left;
+}
 details > details,
 #content > div > *,
 #content > * {

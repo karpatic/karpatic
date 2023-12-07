@@ -1,4 +1,5 @@
 from dataplay.intaker import Intake
+from dataplay.acs import retrieveAcsData
 import numpy as np
 import pandas as pd
 #@ title Run: Create mergeDatasets()
@@ -92,12 +93,11 @@ def mergeDatasets(left_ds=False, right_ds=False, crosswalk_ds=False,
     df.dropna(subset=[how], inplace=True)
     # cw = cw.sort_values(by=how, ascending=True)
     return df
-
-
-  if (not hasattr(left_ds, 'shape') and not interactive): return pd.DataFrame()
-  if (not hasattr(right_ds, 'shape') and not interactive): return pd.DataFrame()
-  if (not hasattr(left_col, 'shape') and not interactive): return pd.DataFrame()
-  if (not hasattr(right_col, 'shape') and not interactive): return pd.DataFrame()
+ 
+  if (not hasattr(left_ds, 'shape') and not isinstance(left_ds, str) ) and not interactive:    return pd.DataFrame()
+  if (not hasattr(right_ds, 'shape') and not isinstance(right_ds, str) ) and not interactive:    return pd.DataFrame()
+  if not isinstance(left_col, str) and not interactive:    return pd.DataFrame()
+  if not  isinstance(right_col, str) and not interactive:    return pd.DataFrame()
 
   # 0. Retrieve the left and right dataset.
   if (interactive): print('---Handling Left Dataset Options---\n');
@@ -129,7 +129,6 @@ def mergeDatasets(left_ds=False, right_ds=False, crosswalk_ds=False,
 
   # 3. Coerce all datasets for Merge.
   if ( Intake.isPandas(crosswalk_ds) ):
-    print('crosswalk_left_col',crosswalk_left_col)
     left_ds, crosswalk_ds, crosswalk_left_col, status = coerceForMerge( 'Left->Crosswalk\n', left_ds, crosswalk_ds, left_col, crosswalk_left_col, interactive )
     right_ds, crosswalk_ds, crosswalk_right_col, status = coerceForMerge( 'Right->Crosswalk\n',right_ds, crosswalk_ds, right_col, crosswalk_right_col, interactive )
   else:
@@ -137,8 +136,9 @@ def mergeDatasets(left_ds=False, right_ds=False, crosswalk_ds=False,
 
   if (interactive): print('\n---All checks complete. Status: \n', status, '---\n');
   if ( not status ):
-    if (interactive):print('\nMerge Incomplete. Thank you!\n');
-    return False;
+    if (interactive):
+      print('\nMerge Incomplete. Thank you!\n');
+    return False
   else:
     if (Intake.isPandas(crosswalk_ds)):
       left_ds = mergeAndFilter('\nLEFT->CROSSWALK\n', left_ds, crosswalk_ds, left_col, crosswalk_left_col, crosswalk_right_col, interactive)

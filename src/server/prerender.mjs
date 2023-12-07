@@ -61,7 +61,7 @@ async function processDirectory(directory, subdir = '') {
 
 async function cli_nbs2html() {            
   // Search the pathto directory for .ipynb files
-    console.log( `\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ START cli_nbs2html: ${FROM}${directory}/ \n\n`) 
+  console.log( `\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ cli_nbs2html: start: ${FROM}${directory}/`) 
   let pages =
       args[1]?.split(",") ||
       (await fs.readdir(`${FROM}${directory}/`))
@@ -71,7 +71,7 @@ async function cli_nbs2html() {
 }
 
 async function generate_sectionmap(pages, directory) {
-    console.log('generate_sectionmap-',pages, directory)
+    console.log(`\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ cli_nbs2html: generate_sectionmap: `,pages, directory)
     const server = httpServer.createServer({
         root: "./",
         cors: true,
@@ -188,7 +188,7 @@ async function ipynb_publish(
       let pyCodeFilePath = `${FROM}${directory}/${directory}/${file}.py`
       let txt = pyCode.join('\n').replace(/(^|\n) /g, '$1')
       
-      console.log('pyCode',txt)
+      // console.log('pyCode',txt)
       await fs.writeFile(pyCodeFilePath, txt);
     }
     delete final.meta.pyCode;

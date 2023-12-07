@@ -11,6 +11,7 @@
   "scripts": {
     "start": "webpack serve --mode development --devtool eval-source-map --progress",
     "build": "webpack --mode production --profile --progress",
+    "deploy": "make pages; npm run build",
     "postbuild": "react-snap",
     "server": "nodemon --optimize_for_size --max_old_space_size=460 src/server/index.js",
     "test": "nodemon src/server/scripts/test.js",
@@ -31,6 +32,9 @@
     "include": [
       "/index.html"
     ],
+    "puppeteer": {
+      "cache": false
+    },
     "minifyHtml": {
       "collapseWhitespace": true,
       "removeComments": true

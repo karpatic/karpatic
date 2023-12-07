@@ -29,7 +29,7 @@ w.preRendering ||
 
 // Simple analytics
 w.pingServer = async (event = false) => {
-  w.content && console.log('sending beacon') &&
+  w.content && console.log('INDEX:pingServer') &&
     navigator.sendBeacon(
       "https://ping.charleskarpati.com/",
       `{"from":"${oldRoute || location.href}","to":"${
@@ -41,13 +41,13 @@ w.pingServer = async (event = false) => {
 
 // Called in head.js to trigger handleRoute
 w.redirect = async (event = false) => {
-  console.log("POPSTATE",)
+  console.log("INDEX:redirect",)
   event?.preventDefault?.(); 
   !w.navEvent &&
     ({ handleRoute: w.handleRoute, navEvent: w.navEvent } = await import(
       /* webpackChunkName: "route" */ "./utils/route.js"
     ));
-  console.log(event)
+  // console.log('INDEX:',event)
   event.type == "click"
     ? (history.pushState({}, "", event.target.href), navEvent())
     : handleRoute();

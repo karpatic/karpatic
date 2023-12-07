@@ -44,7 +44,6 @@ raise lower letter spacing and line height for smaller text
 */
 h1,
 h2 {
-  text-align: center;
   text-shadow: none;
   transition: all 0.3s ease-in-out;
 }
@@ -56,6 +55,8 @@ h1,
 h2,
 h3,
 h4 {
+  align-items: center; 
+  justify-content: space-between;
   color: rgb(var(--near-black));
   font-weight: 600;
   /* font-family: Courier New, Courier, Monaco, monospace, Helvetica, Arial,
