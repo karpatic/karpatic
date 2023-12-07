@@ -115,14 +115,7 @@ const populateTemplate = async () => {
       el.id || formatLink(el.innerText) + Math.floor(Math.random() * 1000000);
   });
 
-  // updateRedirectListeners for relative hyperlinks
-  document
-    .querySelectorAll('a[href^="./"]')
-    .forEach((l) =>
-      [l.removeEventListener, l.addEventListener].forEach((f) =>
-        f.call(l, "click", redirect)
-      )
-    ); 
+  w.updateRedirectListeners?.();
     
     console.log("~~~~~~~~~~> populateTemplate: createNav2.2");
     return true

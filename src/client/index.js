@@ -23,7 +23,7 @@ w.preRendering ||
     "font-weight: bold; font-size: 50px;color: red; text-shadow: 3px 3px 0 red , 6px 6px 0 green , 9px 9px 0 blue"
   ),
   console.log(
-    "%c Contact me: charleskarpati@gmail.com",
+    "%c Contact me@charleskarpati.com",
     "color: blue; font-family:sans-serif; font-size: 20px"
   ));
 
@@ -53,3 +53,15 @@ w.redirect = async (event = false) => {
     : handleRoute();
 };
 addEventListener("popstate", redirect);
+
+w.updateRedirectListeners = () => {
+  // updateRedirectListeners for relative hyperlinks
+  document
+    .querySelectorAll('a[href^="./"]')
+    .forEach((l) =>
+      [l.removeEventListener, l.addEventListener].forEach((f) =>
+        f.call(l, "click", redirect)
+      )
+    );
+};
+updateRedirectListeners(); 

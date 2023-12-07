@@ -233,6 +233,48 @@ def readInGeometryData(url=False, porg=False, geom=False, lat=False, lng=False, 
     return gdf
 
   return main(url, porg, geom, lat, lng, revgeocode, save, in_crs, out_crs)
+def maps_points(df, lat_col='POINT_Y', lon_col='POINT_X', zoom_start=11, \
+                plot_points=False, pt_radius=15, \
+                draw_heatmap=True, heat_map_weights_col=None, \
+                heat_map_weights_normalize=True, heat_map_radius=15):
+    """Creates a map given a dataframe of points. Can also produce a heatmap overlay
+    Arg:
+        df: dataframe containing points to maps
+        lat_col: Column containing latitude (string) 
+    """
+
+    ## center map in the middle of points center in
+    middle_lat = df[lat_col].median()
+    middle_lon = df[lon_col].median()
+
+    curr_map = folium.Map(location=[middle_lat, middle_lon],
+                          zoom_start=zoom_start)
+
+    # add points to map
+    if plot_points:
+        for _, row in df.iterrows():
+            folium.CircleMarker([row[lat_col], row[lon_col]],
+                                radius=pt_radius,
+                                popup=row['name'],
+                                fill_color="#3db7e4", # divvy color
+                               ).add_to(curr_map)
+
+    # add heatmap
+    if draw_heatmap:
+        # convert to (n, 2) or (n, 3) matrix format
+        if heat_map_weights_col is None:
+            stations = zip(df[lat_col], df[lon_col])
+        else:
+            # if we have to normalize
+            if heat_map_weights_normalize:
+                df[heat_map_weights_col] = \
+                    df[heat_map_weights_col] / df[heat_map_weights_col].sum()
+
+            stations = zip(df[lat_col], df[lon_col], df[heat_map_weights_col])
+
+        curr_map.add_child(plugins.HeatMap(stations, radius=heat_map_radius))
+
+    return curr_map
 # draw_heatmap, cluster_points, plot_points,
 def map_points(data, lat_col='POINT_Y', lon_col='POINT_X', zoom_start=11, plot_points=True, cluster_points=False,
                pt_radius=15, draw_heatmap=False, heat_map_weights_col=None, heat_map_weights_normalize=True,

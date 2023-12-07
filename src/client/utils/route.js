@@ -35,7 +35,7 @@ export const handleRoute = async () => {
   // Import template Once
   w.toast ||
     (await import(
-      /* webpackChunkName: "template" */ "../templates/refresh_template.js"
+      /* webpackChunkName: "template" */ "./refresh_template.js"
     ));
 
   // Get Route
