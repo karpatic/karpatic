@@ -3,13 +3,13 @@ window.w = window;
 //
 // main.redirect -> (navEvent or handleRoute)
 // navEvent -> handleRoute
-// handleRoute -> registerServiceWorker, loadScripts, 'refreshTemplates' dispatch (sitemap.js)
+// handleRoute -> registerServiceWorker, loadScripts, 'rfrshTmplate' dispatch (sitemap.js)
 //
 
-// User Clicked: Scroll up and reload or scroll to an anchor.
+// User Clicked a Relative Link: Scroll up and reload or scroll to an anchor.
 // Browser Back/FWD remembers prior scrollbar position and does not call this fn.
 export const navEvent = async () => {
-  console.log("~~~~> navEvent");
+  console.log("~~~> navEvent");
 
   let href = location.href;
 
@@ -25,7 +25,7 @@ export const navEvent = async () => {
 
 // Loads a route and it's dependencies via it's meta data obtained from it's path.
 export const handleRoute = async () => {
-  console.log("~~~~~~> handleRoute:START... ");
+  console.log("~~~~~~> HANDLE_ROUTE");
 
   if (location.pathname.includes("undefined")) return;
 
@@ -53,22 +53,20 @@ export const handleRoute = async () => {
   let url = !isLocal || preRendering ? `${location.origin}/posts/${route}.json` : `../../ipynb/${route}.ipynb`
   let content = {}
   try{
-    console.log("~~~~~~> handleRoute:getRouteContent:PATH:", url );
+    console.log("~~~~~~> GET_CONTENT"); //:PATH:", url );
     content = await (!isLocal || preRendering
       ? ( await (async () => {
           return (await fetch(url)).json() } )() 
       )
-      : ( await (async () => {
-          console.log('about to call')
-          let x = await import(/* webpackChunkName: "convert" */ "./convert.mjs") 
-          console.log('about to call')
+      : ( await (async () => { 
+          let x = await import(/* webpackChunkName: "convert" */ "./convert.mjs")  
           
           return x
         } )()
         ).nb2json(url)); 
   }
   catch(err){ 
-    console.log("~~~~~~> handleRoute:getRouteContent:ERROR", url, err) 
+    console.log("~~~~~~~~~> handleRoute:GET_CONTENT:ERROR", url, err) 
     console.log(err)
   }
 
@@ -78,61 +76,9 @@ export const handleRoute = async () => {
   w.meta = content.meta;
   meta.content = content.content;
 
-  // Load a template on route change or local init
-  w.meta.template ||= "article";
-  if (meta.template !== document.body.getAttribute("data-template")) {
-    let url = `/templates/${meta.template}`;
-    try{
-      console.log("~~~~~~> handleRoute:templateUrl:URL:", url);
-      document.body.setAttribute("data-template", meta.template);
-      document.body.innerHTML = await (await fetch(`${url}.html`)).text();
-
-      // Add Basic Stylesheet ;
-      document.body.insertAdjacentHTML(
-        "beforeend",
-        `<style>${await (await fetch(`${url}.css`)).text()}</style>`
-      );
-
-      // Forceload scripts. Moves main.js to footer. 
-      Array.from(document.getElementsByTagName("script")).forEach((script) => {
-        
-        console.log("~~~~~~> handleRoute:templateUrl:injectScripts:SCRIPT: ", script['src']);
-        const newScript = document.createElement("script");
-        ["src", "type", "async", "textContent"].forEach(
-          (attr) => script[attr] && (newScript[attr] = script[attr])
-        );
-        document.body.appendChild(newScript);
-        script.parentNode.removeChild(script);
-      });
-    }
-    catch(err){ console.log('~~~~~~> handleRoute:templateUrl:ERROR:', err) }
-  }
-  // Add Sitemap Stylesheet
-  let sm = location.pathname.split("/")[1].replace(".html", "") || "index";
-  if (w.sitemap && !w.meta.hide_sitemap) {
-    let url = false
-    try{
-      if (!w.sitemap_content) { 
-        url = `${location.origin}/templates/${w.meta.template}_sitemap.css`;
-        console.log("~~~~~~> handleRoute:Sitemap:Stylesheet: ", url);
-        let txt = await (await fetch(url)).text();
-        document.body.insertAdjacentHTML("beforeend", `<style>${txt}</style>`);
-      }
-      if (w.sm_name != sm) {
-        w.sm_name = sm;
-        url = `${location.origin}/posts/${sm_name}_map.json`
-        console.log("~~~~~~> handleRoute:Sitemap:JSON:", url);
-        w.sitemap_content = await ( await fetch(url) ).json();
-      }
-      document.getElementById('toggle_sitemap').checked=false;
-    } catch (e) {
-      console.log("~~~~~~> handleRoute:Sitemap:ERROR:", url, e)
-    }
-  }
-
   // Dispatch pageLoaded event for template/ content hooks
   // Listeners in template.html and | template.js -> Populates w.newTemplate & updates toc.
-  w.dispatchEvent(new CustomEvent("refreshTemplate"));
+  w.dispatchEvent(new CustomEvent("load_template"));
 
 };
 

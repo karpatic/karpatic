@@ -42,7 +42,7 @@
     </p>
   </div>
 </div>
-
+<div id='toc'></div>
 <div id="content"></div>
 <div id="footer">
   <p id="thanks">
@@ -66,6 +66,7 @@
     )
   );
 
+  // Intersection Observer for TOC lin-through and Scroll-shaking
   w.activeHeader = null;
   w.observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -78,7 +79,7 @@
       if (!entry.isIntersecting) return (el.animation = "");
       if (pos < 300 || pos > 300) {
         w.activeHeader && (w.activeHeader.style.textDecoration = "none"); // unset previous active header
-        let tocLink = document.querySelector(`#sitemap a[href="#${e.id}"]`);
+        let tocLink = document.querySelector(`#toc a[href="#${e.id}"]`);
         tocLink &&
           ((tocLink.style.animation = txt),
           (tocLink.style.textDecoration = "line-through"));

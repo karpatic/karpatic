@@ -41,7 +41,7 @@ w.pingServer = async (event = false) => {
 
 // Called in head.js to trigger handleRoute
 w.redirect = async (event = false) => {
-  console.log("INDEX:redirect",)
+  console.log("Event:POPSTATE",)
   event?.preventDefault?.(); 
   !w.navEvent &&
     ({ handleRoute: w.handleRoute, navEvent: w.navEvent } = await import(

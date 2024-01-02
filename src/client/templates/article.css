@@ -284,7 +284,7 @@ aside,
 .notebox {
   display: none;
 }
-.tip,.info,.warning{display:flex; align-items:center;
+.tip,.info,.warning{display:inline-flex; align-items:center;
   border: black; color:rgb(var(--near-white));
   border-radius: 5% 5% 5% 5%;
 }
