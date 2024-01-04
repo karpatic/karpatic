@@ -22,9 +22,9 @@ def pivot_init():
             loadNext();
         }}
         window.scripts = [
-            "http://localhost:8080/ipynb/dataplay/sortable.js",
+            "https://api.charleskarpati.com/vanillapivottable/sortable.js",
             "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js",
-            "http://localhost:8080/ipynb/dataplay/pivottable.js"
+            "https://api.charleskarpati.com/vanillapivottable/pivottable.js"
         ];
         loadScripts(scripts);
     </script>

@@ -51,10 +51,10 @@ def init(usePivot=True):
             "http://localhost:8080/ipynb/dataplay/renderer_pivottable.js",
         window.scripts = [
             "https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js", 
-            "http://localhost:8080/ipynb/dataplay/sortable.js",
+            "https://api.charleskarpati.com/vanillapivottable/sortable.js",
             "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js",
-            "http://localhost:8080/ipynb/dataplay/pivottable.js",
-            "http://localhost:8080/ipynb/dataplay/renderer_pivottable_copy.js",
+            "https://api.charleskarpati.com/vanillapivottable/pivottable.js",
+            "https://api.charleskarpati.com/vanillapivottable/renderer_pivottable_copy.js",
         ];
         loadScripts(scripts);
     """
