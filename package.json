@@ -22,7 +22,7 @@
   },
   "reactSnap": {
     "puppeteerExecutablePath": "../latest_chromium/chrome.exe",
-    "concurrency": 1,
+    "concurrency": 6,
     "inlineCss": false,
     "source": "./docs",
     "removeStyleTags": false,

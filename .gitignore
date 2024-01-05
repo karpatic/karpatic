@@ -1,6 +1,7 @@
 # My Files
+
+_*\.ipynb
 src/ipynb/notready
-docs/ipynb/notready
 esp_lights/.pio
 esp_lights/.vscode/.browse.c_cpp.db*
 esp_lights/.vscode/c_cpp_properties.json

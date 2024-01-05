@@ -224,7 +224,7 @@ module.exports = (env, args) => {
             to: "templates/article_lazy.js",
             toType: "file",
           },
-          { from: "./src/ipynb", to: "./ipynb", toType: "dir" },
+          // { from: "./src/ipynb", to: "./ipynb", toType: "dir" },
           { from: "./src/client/posts", to: "./posts", toType: "dir" },
           { from: "./src/client/images", to: "./images", toType: "dir" },
           { from: "./src/client/utils", to: "./utils", toType: "dir" },

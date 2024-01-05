@@ -1,7 +1,7 @@
 // Uses ECMAScript modules for Browser and Node.js
 import { marked } from "marked";
 import fetch from "isomorphic-fetch";
-import {makeDetails, replaceEmojis, convertNotes, replaceAndLog} from './convert_util.mjs'
+import { makeDetails, replaceEmojis, convertNotes, replaceAndLog } from './convert_util.mjs'
 // const path = typeof process === 'undefined' ? false : (await import('path')).default;
 
 /*
@@ -29,16 +29,16 @@ export async function nb2json(ipynbPath) {
   let url = ipynbPath;
   if (typeof process !== "undefined") {
     url = `http://localhost:8085/${ipynbPath}.ipynb`;
-  } 
-  
+  }
+
   // Get file
   let ipynb = await fetch(url, { headers: { "Content-Type": "application/json; charset=utf-8" } });
   const nb = await ipynb.json();
 
   // Get Metadata
-  const meta = get_metadata(nb.cells[0]); 
+  const meta = get_metadata(nb.cells[0]);
   // Strip PATH to IPYNB.
-  meta.filename = ipynbPath.split("/")[ipynbPath.split("/").length - 1].toLowerCase().replaceAll(" ", "_"); 
+  meta.filename = ipynbPath.split("/")[ipynbPath.split("/").length - 1].toLowerCase().replaceAll(" ", "_");
   // console.log('- get_metadata', meta, '\n');
 
   // Convert file 
@@ -80,7 +80,7 @@ function get_metadata(data) {
         .slice(line.indexOf(": ") + 2)
         .replaceAll("\n", "")
         .trim();
-        returnThis[key] = val;
+      returnThis[key] = val;
     }
   }
   return returnThis;
@@ -111,23 +111,23 @@ function cleanCell(cell, meta) {
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function processMarkdown(x){
+function processMarkdown(x) {
   // check if matches regex: (((key1::value1))) and replace with aside
-  x = x.replace(/\(\(\((.*?)::(.*?)\)\)\)/g, function (match, key, value ) { 
+  x = x.replace(/\(\(\((.*?)::(.*?)\)\)\)/g, function (match, key, value) {
     if (key == 'note') { return match }
     return `<aside class="${key}">${value}</aside>`;
   });
-  x = marked.parse(x)  
+  x = marked.parse(x)
   // wrap li's in a div or p
   x = x.replace(/<li>(.*?)<\/li>/g, (match, innerContent) => {
-    const containsBlockLevel = /<(p|div|blockquote|pre|hr|form)/.test(innerContent);  
-    let returnThis =  `<li>${containsBlockLevel ? `<div>${innerContent}</div>` : `<p>${innerContent}</p>`}</li>` 
+    const containsBlockLevel = /<(p|div|blockquote|pre|hr|form)/.test(innerContent);
+    let returnThis = `<li>${containsBlockLevel ? `<div>${innerContent}</div>` : `<p>${innerContent}</p>`}</li>`
     return returnThis;
   });
 
   // replace code blocks with pre.prettyprint
-  x = replaceAndLog(x, /<pre><code>([\s\S]*?)<\/code><\/pre>/g, ()=>{prettify=true; "<pre class='prettyprint'>$1</pre>"});
-  x = replaceAndLog(x, /<code>([\s\S]*?)<\/code>/g, ()=>{prettify=true; "<pre class='prettyprint'>$1</pre>"});
+  x = replaceAndLog(x, /<pre><code>([\s\S]*?)<\/code><\/pre>/g, () => { prettify = true; "<pre class='prettyprint'>$1</pre>" });
+  x = replaceAndLog(x, /<code>([\s\S]*?)<\/code>/g, () => { prettify = true; "<pre class='prettyprint'>$1</pre>" });
 
   // local redirects pingServer
   x = replaceAndLog(x, /<a\s+(?:[^>]*?\s+)?href="(.*?)"/g, (match, href) => {
@@ -139,7 +139,7 @@ function processMarkdown(x){
   });
 
   x = convertNotes(x);
-  
+
   return x
 }
 
@@ -156,8 +156,8 @@ function processCode(cell, meta) {
     let source = cell["source"];
     flags = getFlags(source[0]);
     ///console.log('- - - - - Flags: ', flags);
-    if(flags.length > 0) { source = source.slice(1) }
-    source = processSource(source.join(" "), flags, meta); 
+    if (flags.length > 0) { source = source.slice(1) }
+    source = processSource(source.join(" "), flags, meta);
     x.push(source);
   }
   // output
@@ -199,20 +199,20 @@ function getFlags(source) {
 
 function processSource(source, flags, meta) {
   /* 6b. Strip Flags from text, make details, hide all. Append to pyCode*/
-  if('#export' == flags[flags.length-1]){ pyCode.push(source); }  
-  for (let lbl of flags) {   
-    let skipList = ["#hide","#hide_input", "%%javascript", "%%html", "%%capture"]  
-    if( skipList.includes(lbl) ){ return "";}  
+  if ('#export' == flags[flags.length - 1]) { pyCode.push(source); }
+  for (let lbl of flags) {
+    let skipList = ["#hide", "#hide_input", "%%javascript", "%%html", "%%capture"]
+    if (skipList.includes(lbl)) { return ""; }
   }
-  if(meta.prettify){ source = `<pre class='prettyprint'>${source}</pre>`;} 
-  let flagg = flags && !!flags.includes('#collapse_input_open') 
+  if (meta.prettify) { source = `<pre class='prettyprint'>${source}</pre>`; }
+  let flagg = flags && !!flags.includes('#collapse_input_open')
   // if (flagg) { console.log(flags) }
-  for (let lbl of flags) {   
+  for (let lbl of flags) {
     source = source.replaceAll(lbl + "\r\n", "");
     source = source.replaceAll(lbl + "\n", ""); // Strip the Flag  
     if (lbl == "#collapse_input_open") source = makeDetails(source, true);
-    else if (lbl == "#collapse_input") source = makeDetails(source, false);  
-  } 
+    else if (lbl == "#collapse_input") source = makeDetails(source, false);
+  }
   return source;
 }
 

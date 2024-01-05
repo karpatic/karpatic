@@ -43,30 +43,31 @@ export const handleRoute = async () => {
     location.pathname == "/"
       ? "index"
       : location.pathname
-          .replaceAll("./", "")
-          .replaceAll("../", "")
-          .replace(".html", "")
-          .replace(/^\//, "")
-          .replace(/\/$/, "");
+        .replaceAll("./", "")
+        .replaceAll("../", "")
+        .replace(".html", "")
+        .replace(/^\//, "")
+        .replace(/\/$/, "");
 
   // Create or Get Routes Metadata/ YAML
   let url = !isLocal || preRendering ? `${location.origin}/posts/${route}.json` : `../../ipynb/${route}.ipynb`
   let content = {}
-  try{
+  try {
     console.log("~~~~~~> GET_CONTENT"); //:PATH:", url );
     content = await (!isLocal || preRendering
-      ? ( await (async () => {
-          return (await fetch(url)).json() } )() 
+      ? (await (async () => {
+        return (await fetch(url)).json()
+      })()
       )
-      : ( await (async () => { 
-          let x = await import(/* webpackChunkName: "convert" */ "./convert.mjs")  
-          
-          return x
-        } )()
-        ).nb2json(url)); 
+      : (await (async () => {
+        let x = await import(/* webpackChunkName: "convert" */ "../../server/convert.mjs")
+
+        return x
+      })()
+      ).nb2json(url));
   }
-  catch(err){ 
-    console.log("~~~~~~~~~> handleRoute:GET_CONTENT:ERROR", url, err) 
+  catch (err) {
+    console.log("~~~~~~~~~> handleRoute:GET_CONTENT:ERROR", url, err)
     console.log(err)
   }
 
