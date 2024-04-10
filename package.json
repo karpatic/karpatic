@@ -3,11 +3,6 @@
   "description": "DESCRIPTION",
   "author": "Charles Karpati",
   "license": "MIT",
-  "version": "1.0.0",
-  "main": "./src/main.js",
-  "bin": {
-    "karpatitoools": "./src/main.js"
-  },
   "scripts": {
     "start": "webpack serve --mode development --devtool eval-source-map --progress",
     "build": "webpack --mode production --profile --progress",
@@ -17,12 +12,10 @@
     "test": "nodemon src/server/scripts/test.js",
     "watchPages": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'npm run makePages'",
     "makePages": "make pages",
-    "makeAudio": "make audio",
-    "testPkg": "npm unlink karpatitoools; npm link --loglevel verbose; cls; karpatitoools test"
+    "makeAudio": "make audio"
   },
   "reactSnap": {
-    "puppeteerExecutablePath": "../latest_chromium/chrome.exe",
-    "concurrency": 6,
+    "concurrency": 1,
     "inlineCss": false,
     "source": "./docs",
     "removeStyleTags": false,
@@ -85,9 +78,9 @@
     "sass": "^1.30.0",
     "sass-loader": "^10.1.0",
     "sharp": "^0.31.3",
-    "webpack": "^5.11.1",
+    "webpack": "^5.89.0",
     "webpack-bundle-analyzer": "^4.8.0",
-    "webpack-cli": "^5.0.1",
+    "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.11.1",
     "webpack-pwa-manifest": "^4.3.0"
   },

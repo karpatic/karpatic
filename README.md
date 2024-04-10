@@ -124,3 +124,23 @@ Past Works:
   <img src="https://images.charleskarpati.com/photos/ReadyPlayerMe-Avatar.png"/>
   <caption>A VRM I made of myself.</caption>
 </figure> 
+
+cd ./node_modules/react-snap
+npm install puppeteer@latest
+puppeteer_utils.js:215 - await page._client.send("ServiceWorker.disable");
+to
+const client = await page.target().createCDPSession();
+await client.send('ServiceWorker.disable');
+
+
+// process.removeListener("SIGINT", onSigint);
+process.off('SIGINT', onSigint);
+// process.removeListener("unhandledRejection", onUnhandledRejection);
+process.off('unhandledRejection', onUnhandledRejection);
+
+// page.removeListener("request", onStarted);
+page.off("request", onStarted);
+// page.removeListener("requestfinished", onFinished);
+page.off("requestfinished", onFinished);
+// page.removeListener("requestfailed", onFinished);
+page.off("requestfailed", onFinished);

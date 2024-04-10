@@ -1,0 +1,15 @@
+{
+    "name": "dataplayjs",
+    "description": "Crossfilter Pivot Table and Charts",
+    "author": "Charles Karpati",
+    "license": "MIT",
+    "version": "1.0.0",
+    "main": "./main.js",
+    "bin": {
+      "dataplayjs": "./main.js"
+    },
+    "scripts": {
+      "testPkg": "npm unlink dataplayjs; npm link --loglevel verbose; cls; dataplayjs test"
+    }
+  }
+  

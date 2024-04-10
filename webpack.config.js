@@ -224,7 +224,9 @@ module.exports = (env, args) => {
             to: "templates/article_lazy.js",
             toType: "file",
           },
-          // { from: "./src/ipynb", to: "./ipynb", toType: "dir" },
+          { from: "./src/ipynb", to: "./ipynb", toType: "dir" }, 
+          { from: "./src/music", to: "./music", toType: "dir" },
+          { from: "./src/client/cdn", to: "./cdn", toType: "dir" },
           { from: "./src/client/posts", to: "./posts", toType: "dir" },
           { from: "./src/client/images", to: "./images", toType: "dir" },
           { from: "./src/client/utils", to: "./utils", toType: "dir" },
@@ -245,65 +247,65 @@ module.exports = (env, args) => {
         ],
       }),
       !addPwa
-        ? () => {}
+        ? () => { }
         : new WebpackPwaManifest({
-            name: hr.longName,
-            short_name: hr.shortName,
-            description: hr.description,
-            background_color: "#ff55ff",
-            crossorigin: "use-credentials", //inject:false glitches and results in the icons not being included..
-            fingerprints: false,
-            start_url: "./",
-            display: "standalone",
-            theme_color: hr.themecolor,
-            dir: "rtl",
-            lang: "ar",
-            icons: [
-              {
-                src: path.resolve("src/images/icon512.png"),
-                sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
-                destination: "docs/images",
-                type: "image/webp",
-              },
-              {
-                src: path.resolve("src/images/icon512.png"),
-                size: "512x512",
-                destination: "docs/images",
-                purpose: "maskable",
-              },
-            ],
-          }),
+          name: hr.longName,
+          short_name: hr.shortName,
+          description: hr.description,
+          background_color: "#ff55ff",
+          crossorigin: "use-credentials", //inject:false glitches and results in the icons not being included..
+          fingerprints: false,
+          start_url: "./",
+          display: "standalone",
+          theme_color: hr.themecolor,
+          dir: "rtl",
+          lang: "ar",
+          icons: [
+            {
+              src: path.resolve("src/images/icon512.png"),
+              sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+              destination: "docs/images",
+              type: "image/webp",
+            },
+            {
+              src: path.resolve("src/images/icon512.png"),
+              size: "512x512",
+              destination: "docs/images",
+              purpose: "maskable",
+            },
+          ],
+        }),
       isDev
-        ? () => {}
+        ? () => { }
         : new HtmlMinimizerPlugin({
-            minimizerOptions: { minifyJS: true },
-            // test: /template_article\.html$/,
-            exclude: [/tables/, /maps/],
-          }),
-      isDev ? () => {} : new WebpWebpackPlugin(),
-      !analyze ? () => {} : new BundleAnalyzerPlugin(),
+          minimizerOptions: { minifyJS: true },
+          // test: /template_article\.html$/,
+          exclude: [/tables/, /maps/, /music/],
+        }),
+      isDev ? () => { } : new WebpWebpackPlugin(),
+      !analyze ? () => { } : new BundleAnalyzerPlugin(),
       isDev || !compress
-        ? () => {}
+        ? () => { }
         : new CompressionPlugin({
-            filename: "[path][base].br",
-            algorithm: "brotliCompress",
-            test: /\.(ico|js|css|html|svg)$/,
-            compressionOptions: { level: 11 },
-            threshold: 10240,
-            minRatio: 0.8,
-            deleteOriginalAssets: false,
-          }),
+          filename: "[path][base].br",
+          algorithm: "brotliCompress",
+          test: /\.(ico|js|css|html|svg)$/,
+          compressionOptions: { level: 11 },
+          threshold: 10240,
+          minRatio: 0.8,
+          deleteOriginalAssets: false,
+        }),
       isDev || !compress
-        ? () => {}
+        ? () => { }
         : new CompressionPlugin({
-            filename: "[path][base].gz",
-            algorithm: "gzip",
-            test: /\.(ico|js|css|html|svg)$/,
-            compressionOptions: { level: 9 },
-            threshold: 10240,
-            minRatio: 0.8,
-            deleteOriginalAssets: false,
-          }),
+          filename: "[path][base].gz",
+          algorithm: "gzip",
+          test: /\.(ico|js|css|html|svg)$/,
+          compressionOptions: { level: 9 },
+          threshold: 10240,
+          minRatio: 0.8,
+          deleteOriginalAssets: false,
+        }),
     ],
     devServer: {
       open: true,
@@ -319,6 +321,7 @@ module.exports = (env, args) => {
   };
 };
 
+// Converts images in output to webp
 class WebpWebpackPlugin {
   apply(compiler) {
     compiler.hooks.afterEmit.tap("WebpWebpackPlugin", (compilation) => {

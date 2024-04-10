@@ -21,34 +21,34 @@ pages:
 	make sitemap 
 
 audio:
-	node ./src/server/prerender.mjs audio
+	node ./src/server/ipynb2web/bin/ipynb2web.cli.cjs audio
 	
 sitemap:
     # Final Step, creates sitemap.txt
-	node ./src/server/prerender.mjs sitemap
+	node ./src/server/ipynb2web/src/cli.js sitemap
 	
 mainpages:
     # Function: Creates a sitemap and the corresponding series of pages
     # Args: input output mapname file,file,files..
-	node ./src/server/prerender.mjs 
+	node ./src/server/ipynb2web/src/cli.js 
 	
 labs:
-	node ./src/server/prerender.mjs labs
+	node ./src/server/ipynb2web/src/cli.js labs
 
 dataplay:
-	node ./src/server/prerender.mjs dataplay
+	node ./src/server/ipynb2web/src/cli.js dataplay
 
 lights:
-	node ./src/server/prerender.mjs lights
+	node ./src/server/ipynb2web/src/cli.js lights
 
 notes:
-	node ./src/server/prerender.mjs notes
+	node ./src/server/ipynb2web/src/cli.js notes
 
 software:
-	node ./src/server/prerender.mjs software
+	node ./src/server/ipynb2web/src/cli.js software
 
 blog:
-	node ./src/server/prerender.mjs blog
+	node ./src/server/ipynb2web/src/cli.js blog
 
 watchPages:
 	nodemon --watch 'src/ipynb/*' --exec make pages

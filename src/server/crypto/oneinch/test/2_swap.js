@@ -1,0 +1,19 @@
+// 
+// 
+// 
+let {getNonce, buildTxForSwap, signTransaction, sendSignedTransaction, exampleParams} = require('../trader_utils.js');
+
+(async () => {
+  /*
+    const allowance = await checkAllowance( exampleParams.fromTokenAddress, exampleParams.fromAddress );
+    console.log("Allowance: ", allowance);
+  */
+  let nonce = getNonce();
+  const transactionForSign = await buildTxForSwap( exampleParams );
+  console.log("Transaction for approve: ", transactionForSign);
+  transactionForSign.nonce = await getNonce();
+  transactionForSign.from = exampleParams.fromTokenAddress; 
+  const approveTxHash = await signTransaction(transactionForSign);
+  const sentTxHash = await sendSignedTransaction(approveTxHash);
+  console.log("Approve tx hash: ", {approveTxHash, sentTxHash});
+})();

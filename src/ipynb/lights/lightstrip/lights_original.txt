@@ -1,0 +1,355 @@
+// Include Libraries
+#include <Arduino.h>
+#include <WiFi.h>
+#include <esp_now.h>
+
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
+#include <BLE2902.h>
+
+#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c3319123"
+#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b2623"
+#define ESPNAME "Music Strip"
+
+// #include <Adafruit_NeoPixel.h>
+#define PIXEL_PIN 15   // Digital IO pin connected to the NeoPixels.
+#define PIXEL_COUNT 50 // Number of NeoPixels -> 30 14 50 60 300
+
+// Stub for swipe function
+void swipe()
+{
+    // TODO: Add implementation
+}
+
+// Stub for rainbowCycle function
+void rainbowCycle(uint8_t wait)
+{
+    // TODO: Add implementation
+}
+
+// Stub for rainbow function
+void rainbow(uint8_t wait)
+{
+    // TODO: Add implementation
+}
+
+// Stub for theaterChaseRainbow function
+void theaterChaseRainbow(uint8_t wait)
+{
+    // TODO: Add implementation
+}
+
+// Stub for theaterChase function
+void theaterChase(uint32_t c, uint8_t wait)
+{
+    // TODO: Add implementation
+}
+
+// Stub for swipeRandom function
+void swipeRandom()
+{
+    // TODO: Add implementation
+}
+
+// Stub for colorWipe function
+void colorWipe(uint32_t c, uint8_t wait)
+{
+    // TODO: Add implementation
+}
+
+// Stub for Wheel function
+uint32_t Wheel(byte WheelPos)
+{
+    // TODO: Add implementation
+    return 0; // Placeholder return value
+}
+
+// Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
+int mode = 0; // Currently-active animation mode, 0-9
+
+BLEServer *pServer = NULL;
+BLECharacteristic *pCharacteristic = NULL;
+String COMMAND;
+bool deviceConnected = false;
+
+// Define LED and pushbutton state booleans
+bool buttonDown = false;
+bool ledOn = false;
+
+#ifndef LED_BUILTIN
+#define LED_BUILTIN 2
+#endif
+
+typedef struct struct_message
+{
+    char a[32];
+    int b;
+    float c;
+    bool d;
+} struct_message;
+
+struct_message myData;
+
+void formatMacAddress(const uint8_t *macAddr, char *buffer, int maxLength)
+{
+    snprintf(buffer, maxLength, "%02x:%02x:%02x:%02x:%02x:%02x", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
+}
+
+// esp_now_init - store in myData then notify if gateway
+void receiveCallback(const uint8_t *mac, const uint8_t *incomingData, int len)
+{
+    Serial.print(F("ReceiveCallback: "));
+    memcpy(&myData, incomingData, sizeof(myData));
+    Serial.print(F("Data received: "));
+    Serial.println(len);
+    Serial.print(F("Character Value: "));
+    Serial.println(myData.a);
+    int result = strcmp(myData.a, "OFF");
+    if (result)
+    {
+        ledOn = true;
+    }
+    else
+    {
+        ledOn = false;
+    }
+    digitalWrite(LED_BUILTIN, ledOn);
+
+    if (deviceConnected)
+    {
+        // char txString[8];
+        // dtostrf(touchValue, 1, 2, txString);
+        pCharacteristic->setValue("TRIGGERED");
+        pCharacteristic->notify();
+    }
+}
+
+// esp_now
+void sentCallback(const uint8_t *macAddr, esp_now_send_status_t status)
+{
+    Serial.print(F("sentCallback: "));
+    char macStr[18];
+    Serial.print(F("Packet Sent to: ")); // macStr
+    formatMacAddress(macAddr, macStr, 18);
+    // Serial.println(status == ESP_NOW_SEND_SUCCESS ? F("Delivery Success") : F("Delivery Fail"));
+}
+
+// esp_now
+
+void handleStrip(char color)
+{
+}
+
+void broadcast(struct struct_message message)
+{
+    Serial.print(F("Broadcast: "));
+    // Broadcast a message to every device in range
+    uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+    esp_now_peer_info_t peerInfo = {};
+    memcpy(&peerInfo.peer_addr, broadcastAddress, 6);
+    if (!esp_now_is_peer_exist(broadcastAddress))
+    {
+        esp_now_add_peer(&peerInfo);
+    }
+
+    // Send message
+    esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&myData, sizeof(myData));
+
+    if (result == ESP_OK)
+    {
+        Serial.println(F("Broadcast message success"));
+    }
+    else
+    {
+        Serial.println(F("Unknown error"));
+    }
+}
+
+// Bluetooth
+class MyServerCallbacks : public BLEServerCallbacks
+{
+    void onConnect(BLEServer *pServer)
+    {
+        Serial.print(F("Connected! "));
+        deviceConnected = true;
+    };
+
+    void onDisconnect(BLEServer *pServer)
+    {
+        Serial.print(F("Disconnected! "));
+        deviceConnected = false;
+    }
+};
+
+String readString;
+#include <typeinfo>
+#include <stdlib.h>
+#include <string.h>
+#include <string>
+#include <iostream>
+
+// Bluetooth
+class MyCallbacks : public BLECharacteristicCallbacks
+{
+    void onWrite(BLECharacteristic *pCharacteristic)
+    {
+        std::string message = pCharacteristic->getValue();
+        COMMAND = "";
+        if (message.length() > 0)
+        {
+            for (int i = 0; i < message.length(); i++)
+            {
+                char c = message[i];
+                COMMAND += c;
+            }
+        }
+        if (COMMAND.length() > 0)
+        {
+            Serial.println("*********");
+            Serial.print("Command : ");
+            Serial.println(COMMAND);
+            Serial.println("*********");
+
+            if (COMMAND == "swipe")
+            {
+                swipe();
+            }
+            else if (COMMAND == "rainbowCycle ")
+            {
+                rainbowCycle(10);
+            }
+            else if (COMMAND == "rainbow")
+            {
+                rainbow(10);
+            }
+            else if (COMMAND == "theaterChaseRainbow")
+            {
+                theaterChaseRainbow(50);
+            }
+            else if (COMMAND == "theaterChase")
+            {
+                swipeRandom();
+                // theaterChase(strip.Color(0, 0, 127), 50);
+            }
+            else
+            {
+                swipeRandom();
+            }
+
+            strcpy(myData.a, COMMAND.c_str());
+            myData.b = random(1, 20);
+            // broadcast(myData);
+        }
+    }
+
+    void onRead(BLECharacteristic *pCharacteristic)
+    {
+        // struct timeval tv;
+        // gettimeofday(&tv, nullptr);
+        // std::ostringstream os;
+        // os << "Time: " << tv.tv_sec;
+        // pCharacteristic->setValue(os.str());
+    }
+};
+
+int touchValue;
+
+#define DELAY_PERIOD 250
+long oldMillis;
+const int threshold = 20;
+
+void setup()
+{
+    // Set up Serial Monitor
+    Serial.begin(115200);
+
+    // strip.begin();
+    // strip.show(); // Start OFF
+
+    // Create BLE Device
+    BLEDevice::init(ESPNAME);
+
+    // Create the BLE Server
+    pServer = BLEDevice::createServer();
+    pServer->setCallbacks(new MyServerCallbacks());
+
+    // Create BLE Service
+    BLEService *pService = pServer->createService(SERVICE_UUID);
+
+    // Create BLE Characteristic
+    pCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID,
+                                                     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY);
+
+    // Create a BLE Descriptor
+    pCharacteristic->addDescriptor(new BLE2902());
+
+    pCharacteristic->setCallbacks(new MyCallbacks());
+    pCharacteristic->setValue("Hello World");
+    // pRemoteCharacteristic->writeValue(newValue.c_str(), newValue.length());
+    /*
+      if(pRemoteCharacteristic->canRead()) {
+        std::string value = pRemoteCharacteristic->readValue();
+        Serial.print(F("The characteristic value was: "));
+        Serial.println(value.c_str());
+      }
+    */
+    // Start the service
+    pService->start();
+    pServer->getAdvertising()->start();
+
+    // Set ESP32 in STA mode to begin with
+    WiFi.mode(WIFI_STA);
+
+    // Print MAC address
+    Serial.println(WiFi.macAddress());
+
+    // Disconnect from WiFi
+    WiFi.disconnect();
+
+    // Initialize ESP-NOW
+    if (esp_now_init() == ESP_OK)
+    {
+        esp_now_register_recv_cb(receiveCallback);
+        esp_now_register_send_cb(sentCallback);
+    }
+    else
+    {
+        delay(1000);
+        ESP.restart();
+    }
+
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, LOW);
+}
+
+String ssid;
+
+void loop()
+{
+    touchValue = touchRead(4);
+    if (touchValue < threshold)
+    {
+        long currentMillis = millis();
+        if (currentMillis - oldMillis > DELAY_PERIOD)
+        {
+            oldMillis = currentMillis;
+            ledOn = !ledOn;
+            digitalWrite(LED_BUILTIN, ledOn);
+
+            myData.b = touchValue; // random(1,20);
+            myData.c = 1.2;
+            myData.d = false;
+
+            if (ledOn)
+            {
+                strcpy(myData.a, "ON");
+            }
+            else
+            {
+                strcpy(myData.a, "OFF");
+            }
+            broadcast(myData);
+        }
+    }
+}

@@ -1,0 +1,6 @@
+{
+  "IndentWidth": 2,
+  "UseTab": false,
+  "BreakBeforeBraces": Attach, 
+  "AllowShortBlocksOnASingleLine": true,
+}

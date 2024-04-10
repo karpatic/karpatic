@@ -1,7 +1,16 @@
 # Welcome!
 
+3. visits `/` or any other pages listed in `include` configuration
+4. find all links on the page with the same domain, add them to queue
+5. If there is more than one page in the queue it also adds `/404.html` to the queue
+6. renders the page with the help of puppeteer
+7. waits till there are no active network requests for more than 0.5 second
+
+removes any SEARCH or HASH from URL
+
 ## About
-Here is where I keep the client-side code. The code operates uniquely depending on which of the three different enviornments it is running in, (dev, react-snap, prod). While I develop in the dev env, react-snap will pre-render my code in it's own envioronment, the output of which is used in the prod env. 
+
+Here is where I keep the client-side code. The code operates uniquely depending on which of the three different enviornments it is running in, (dev, react-snap, prod). While I develop in the dev env, react-snap will pre-render my code in it's own envioronment, the output of which is used in the prod env.
 
 ## What happens:
 
@@ -13,10 +22,10 @@ Here is where I keep the client-side code. The code operates uniquely depending 
 - - Events hooks in template and sitemap.js pick up on this
 - - - Sitemap.js injects template content and conditionally refreshes sitemap/TOC
 
-## Config 
+## Config
 
 - Webpack: Debugging: Need to toggle `purefuncs`
-- `Head.json`: uses src/client/images/ for meta tags 
+- `Head.json`: uses src/client/images/ for meta tags
 - `Robots.txt` -> specify sitemaps and nofollow noindex section/links. More [info](https://search.google.com/search-console/welcome), [here](https://support.google.com/webmasters/answer/7451001).
 
 ## Dependencies
@@ -30,7 +39,8 @@ Here is where I keep the client-side code. The code operates uniquely depending 
 - Webpacks [file-loader](https://webpack.js.org/loaders/file-loader/) removes this complication.
 
 ## Misc
-The following are being used internally. 
+
+The following are being used internally.
 
 ### React-snap
 
@@ -49,22 +59,58 @@ The default snapshot delay is 50ms. It works with routing strategies using the H
 - npx cap add android
 - npx cap open android
 
+## Todo
 
-## Todo 
+https://9elements.github.io/fancy-border-radius/
+
+full widht img breakout
+sitemap behavior and big/small screen alignment
+
 - text wrap balance
 - https://9elements.github.io/fancy-border-radius/ - unicycles and in blog
 - click2like
-- code line vs code block 
+- code line vs code block
 - Dynamic Tables from py output
 - npm export mainjs for convert fns
 - https://x.st/spinning-diagrams-with-css/
-- webAuthn - firebase - termly - twilio - calendly 
-- sharing [pages](https://garden.bradwoods.io/notes/html/head/share-web-page) 
+- webAuthn - firebase - termly - twilio - calendly
+- sharing [pages](https://garden.bradwoods.io/notes/html/head/share-web-page)
 - sized [images](https://www.stefanjudis.com/snippets/a-picture-element-to-load-correctly-resized-webp-images-in-html/)
 - Fix sitemap to default close + animate opacity to show/hide.
 - Fix nav to be (<- NAV X)(HOME | TOC || BACK) ( CONTENTS LISTED)
 - dllr project
 - pivot table
+
+fancy borders for quotes
+The next step was to add this line in the head of all HTML layout files:
+
+<link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="/feed.xml">
+
+<a class="btn btn-rss" href="/feed.xml" target="_blank">RSS</a>
+
+PAGES vs POSTS VS COLLECTION
+
+:::note[Your Title **with** some _Markdown_ `syntax`!]
+<tip>
+<warning>
+<danger>
+<note>
+<info>
+<tabs><tabitem> -> querystring
+
+````jsx title="/src/components/HelloCodeTitle.js"
+```js
+```jsx {1,4-6,11} showLineNumbers
+:::tip[Use tabs in admonitions]
+
+<Tabs>
+  <TabItem value="apple" label="Apple">This is an apple 🍎</TabItem>
+  <TabItem value="orange" label="Orange">This is an orange 🍊</TabItem>
+  <TabItem value="banana" label="Banana">This is a banana 🍌</TabItem>
+</Tabs>
+
+:::
+inline toc
 
 ### Maybe Todo
 
@@ -79,9 +125,9 @@ I've experimented with most of these:
 - dns prefetch and preconnect
 - image map webpage
 - css_animations.ipynb
- 
+
 https://developers.google.com/search/docs/appearance/structured-data/search-gallery
-https://play.ht/ 
+https://play.ht/
 https://polypane.app/css-3d-transform-examples/https://validator.w3.org/nu/
 
 
@@ -124,11 +170,11 @@ w.oldRoute = location.pathname;
 w.isLocal ||= !!!w.content;
 w.preRendering = /ReactSnap/.test(navigator.userAgent);
 w.redirect = async (event = false) => {
-  event?.preventDefault?.(); 
+  event?.preventDefault?.();
   !w.navEvent &&
     ({ handleRoute: w.handleRoute, navEvent: w.navEvent } = await import(
       /* webpackChunkName: "route" */ "./utils/route.js"
-    )); 
+    ));
   event.type == "click"
     ? (history.pushState({}, "", event.target.href), navEvent())
     : handleRoute();
@@ -232,5 +278,6 @@ let create_url = (link, sitemap) => {
   return t;
 };
 
-    
+
   let currentTab = w.meta.tab||w.meta.filename
+````

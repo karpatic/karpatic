@@ -60,7 +60,7 @@ export const handleRoute = async () => {
       })()
       )
       : (await (async () => {
-        let x = await import(/* webpackChunkName: "convert" */ "../../server/convert.mjs")
+        let x = await import(/* webpackChunkName: "convert" */ "../../server/ipynb2web/src/convert.mjs")
 
         return x
       })()
