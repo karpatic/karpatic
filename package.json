@@ -18,7 +18,7 @@
   "reactSnap": {
     "headless": true,
     "skipThirdPartyRequests": false,
-    "concurrency": 1,
+    "concurrency": 6,
     "inlineCss": false,
     "source": "./docs", 
     "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],

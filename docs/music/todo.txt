@@ -1,0 +1,103 @@
+#2196f3
+
+onload of rss create list of songs - index them 
+onclick of song at index, on song end play next song in index.
+
+Play all, play single
+create play now, play next play at end & add to
+popularity bar underneath
+background color change if already saved in playlist
+
+// TODO:: Instead of calling uploadSong with the index of the song in the body, call the index from the array that is only called when a song is clicked (requires a new seperate function) such that onclick of the column songs doesnt update the navbar cuedlist with the songs from the body.
+// TODO:: allow checkbox functionality of the searchbox checkboxes.
+// TODO:: Perform searching of channel display "working code in old project"
+// TODO:: Searchbox of cued songs - Make the options display in respective box. 
+// TODO:: Create Dashboard Button - Dashboard has a toggle switch for exploring and advanced search
+// TODO:: Onhover of Songs in body display functions (que @ end, begining, add to playlist, edit)
+// TODO:: Onclick of channel, remove checkboxes. Onclick of first checkbox, remove any 
+// TODO:: Add Footer information
+// TODO:: Change background by invert
+// TODO:: Create table that slides out left from right side displaying channel info
+// TODO:: Create table slides out right from left displaying channels that activates prior table
+// TODO:: Rainbow background, Pick your own background
+// TODO:: Set Popularity bar on song info, 
+// TODO:: Fix up display
+// TODO:: Add Search Options to Billboard by First Creating a Javascript Arrays of channel primary key and 
+/*
+Create billboard table, insert genre, award, and url as fields
+Request all from table
+create h1 with dropdown button to change genre
+on change, it displays major award winners in that genre 
+and updates caption text which loads other awards
+
+user can click any day in the list and it popover history of what song held that position
+clicking an artist loads a search for the artist, clicking song loads the song.
+
+initialize a function that is behaves like a flag but contains an array
+create a function thats called inside onstatechange 
+change flag state depending if the function needs to happen before a new song starts playing
+create a checklist of songs to load  in order to get their id and append it to the now playing list
+remove variable from the flag after the song id has been added to list of playing
+
+Same thing for Itunes except only you have to parse the song to title and author
+
+
+
+*/
+0) Create Database
+0.5)DB Updates
+	Inputs:
+	Outputs:
+	Requirements: 
+	Description: Like Dislike Buttons, Heart Button, Smiley Frown Button, Make Songs Playing Clickable, Sync slider and title to song
+1) TextFormating
+	Inputs: Unformated Raw text
+	Outputs:
+	Requirements: a) Saftey check text, Clean and Format text b) search for "Original Video" in text and save it. c) format timestamp
+	Description:
+2) Registration page
+	Inputs: Username, Password, *Email.
+	Outputs: ID & timestamp.*Email
+	Requirements: Login model redirects on Register model if btn click. Initializes profile.
+	Description: Allows Guest Sign in with Blank or Prefabricated Users Account
+3) Create Dashboard - Breadcrumbs
+	Inputs: 
+	Outputs:
+	Requirements: browse (channels (add btn - browse), songs(listen, add), Playlists )
+	Description: Breadcrumb will show Dashboard/ or Channel/ 
+4) Display Search Box
+	Inputs:
+	Outputs:
+	Requirements:
+	Description: Alerts section will display top 3 songs displayed by date added. Clicking view all displays the <table class="Explorer"> found on the home page. the Channel and Playlist search options in the table settings are unclicked and the table displays by most recent
+6) Save as Playlist
+	Inputs:
+	Outputs:
+	Requirements: 
+	Description: Latest Popular Genre Tag User Selected
+5) Song: Play Now, Play next, Queue, Playlist/Remove
+	Inputs: display order = linked list
+	Outputs: add to Playlist dropdown
+	Requirements: create queue push pop, create playlists
+	Description: Needs to be split into into each two sections
+7) Toggles
+	Inputs:
+	Outputs:
+	Requirements: 
+	Description:
+8) Styleing
+	1) highlighting active song and active div
+	2) modal
+	3) text color
+	4) border colors
+	5) display table
+	6) make songs <a> so the mouse clicker shows.
+	7) change the white dropdowns to gray
+FINISHED:: 
+
+Fixes
+	Inputs:
+	Outputs:
+	Requirements: 
+	Description: 
+	fli -90 degrees
