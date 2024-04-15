@@ -53,22 +53,20 @@ export const handleRoute = async () => {
   let url = !isLocal || preRendering ? `${location.origin}/posts/${route}.json` : `../../ipynb/${route}.ipynb`
   let content = {}
   try {
-    console.log("~~~~~~> GET_CONTENT"); //:PATH:", url );
+    console.log("~~~~~~> handleRoute:GET_CONTENT"); //:PATH:", url );
     content = await (!isLocal || preRendering
-      ? (await (async () => {
-        return (await fetch(url)).json()
-      })()
-      )
+      ? (await (async () => { return (await fetch(url)).json() })() )
       : (await (async () => {
         let x = await import(/* webpackChunkName: "convert" */ "../../server/ipynb2web/src/convert.mjs")
-
         return x
       })()
       ).nb2json(url));
   }
   catch (err) {
-    console.log("~~~~~~~~~> handleRoute:GET_CONTENT:ERROR", url, err)
-    console.log(err)
+    // No Json or Ipynb found. Reload the page.
+    console.log("~~~~~~~~~> handleRoute:GET_CONTENT:ERROR", {givenPath: location.pathname, route: route })
+    if (location.hash != "#reload") { location.hash = "reload"; location.reload() }
+    else{ console.log(err) }
   }
 
 

@@ -15,9 +15,12 @@
     "makeAudio": "make audio"
   },
   "reactSnap": {
+    "headless": true,
+    "skipThirdPartyRequests": false,
     "concurrency": 1,
     "inlineCss": false,
-    "source": "./docs",
+    "source": "./docs", 
+    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
     "removeStyleTags": false,
     "preloadImages": false,
     "asyncScriptTags": false,
