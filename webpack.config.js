@@ -225,7 +225,9 @@ module.exports = (env, args) => {
             toType: "file",
           },
           { from: "./src/ipynb", to: "./ipynb", toType: "dir" }, 
-          { from: "./src/music", to: "./music", toType: "dir" },
+          { from: "./src/music", to: "./music", toType: "dir", globOptions: {
+            ignore: ["**/.git/**", "**/.gitignore", "**/.gitmodules"], }
+          },
           { from: "./src/client/cdn", to: "./cdn", toType: "dir" },
           { from: "./src/client/posts", to: "./posts", toType: "dir" },
           { from: "./src/client/images", to: "./images", toType: "dir" },
