@@ -8,6 +8,8 @@ esp_lights/.vscode/c_cpp_properties.json
 esp_lights/.vscode/launch.json
 esp_lights/.vscode/ipch
 esp_lights/lib/
+tmp
+appmap.yml
 
 # Node build artifacts
 .node_modules/

@@ -57,7 +57,7 @@ export const handleRoute = async () => {
     content = await (!isLocal || preRendering
       ? (await (async () => { return (await fetch(url)).json() })() )
       : (await (async () => {
-        let x = await import(/* webpackChunkName: "convert" */ "../../server/ipynb2web/src/convert.mjs")
+        let x = await import(/* webpackChunkName: "convert" */ "../../dev/ipynb2web/src/convert.mjs")
         return x
       })()
       ).nb2json(url));

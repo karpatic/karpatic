@@ -1,0 +1,45 @@
+digraph G {
+concentrate=true;
+splines="ortho";
+rankdir="LR";
+subgraph legend{
+    rank = min;
+    label = "legend";
+    Legend [shape=none, margin=0, label = <
+        <table cellspacing="0" cellpadding="0" border="1"><tr><td>Code2flow Legend</td></tr><tr><td>
+        <table cellspacing="0">
+        <tr><td>Regular function</td><td width="50px" bgcolor='#cccccc'></td></tr>
+        <tr><td>Trunk function (nothing calls this)</td><td bgcolor='#966F33'></td></tr>
+        <tr><td>Leaf function (this calls nothing else)</td><td bgcolor='#6db33f'></td></tr>
+        <tr><td>Function call</td><td><font color='black'>&#8594;</font></td></tr>
+        </table></td></tr></table>
+        >];
+}node_1853cb36 [label="0: (global)()" name="sync::(global)" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_a79c8b19 [label="89: displayElement()" name="sync::displayElement" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_6650249b [label="8: getValidDf()" name="sync::getValidDf" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_3df9bd3c [label="18: getValidNames()" name="sync::getValidNames" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_87946f9f [label="28: init()" name="sync::init" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_2a6c8647 [label="69: setData()" name="sync::setData" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_34a54f4b [label="73: setMapping()" name="sync::setMapping" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_3705ed40 [label="77: setVizType()" name="sync::setVizType" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_a037cd1d [label="93: update()" name="sync::update" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_1853cb36 -> node_87946f9f [color="#D55E00" penwidth="2"];
+node_a79c8b19 -> node_6650249b [color="#E69F00" penwidth="2"];
+node_a79c8b19 -> node_3df9bd3c [color="#E69F00" penwidth="2"];
+node_a79c8b19 -> node_3df9bd3c [color="#E69F00" penwidth="2"];
+node_2a6c8647 -> node_6650249b [color="#CC79A7" penwidth="2"];
+node_34a54f4b -> node_3df9bd3c [color="#009E73" penwidth="2"];
+node_34a54f4b -> node_3df9bd3c [color="#009E73" penwidth="2"];
+node_3705ed40 -> node_3df9bd3c [color="#000000" penwidth="2"];
+node_3705ed40 -> node_3df9bd3c [color="#000000" penwidth="2"];
+node_a037cd1d -> node_6650249b [color="#0072B2" penwidth="2"];
+node_a037cd1d -> node_3df9bd3c [color="#0072B2" penwidth="2"];
+node_a037cd1d -> node_3df9bd3c [color="#0072B2" penwidth="2"];
+subgraph cluster_48545ef3 {
+    node_6650249b node_3df9bd3c node_87946f9f node_2a6c8647 node_34a54f4b node_3705ed40 node_a79c8b19 node_a037cd1d node_1853cb36;
+    label="File: sync";
+    name="sync";
+    style="filled";
+    graph[style=dotted];
+};
+}

@@ -13,15 +13,20 @@
     "test": "nodemon src/server/scripts/test.js",
     "watchPages": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'npm run makePages'",
     "makePages": "make pages",
-    "makeAudio": "make audio"
+    "makeAudio": "make audio",
+    "pydia": "node ./src/tests/diagram.js" 
+    
   },
   "reactSnap": {
     "headless": true,
     "skipThirdPartyRequests": false,
     "concurrency": 6,
     "inlineCss": false,
-    "source": "./docs", 
-    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
+    "source": "./docs",
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ],
     "removeStyleTags": false,
     "preloadImages": false,
     "asyncScriptTags": false,
@@ -89,6 +94,7 @@
     "webpack-pwa-manifest": "^4.3.0"
   },
   "dependencies": {
+    "acorn": "^8.11.3",
     "nodemon": "^3.0.1",
     "openai": "^4.16.1",
     "web3": "^4.0.3"
