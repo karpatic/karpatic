@@ -1,11 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const rateLimit = require("express-rate-limit"); // https://www.npmjs.com/package/express-rate-limit
-const ethers = require("./scripts/ethers.js");
+// const ethers = require("./scripts/ethers.js");
 const html2png = require("./scripts/html2png.js");
 const html2txt = require("./scripts/html2txt.js");
 const html = require("./scripts/html.js");
-const trader = require("./scripts/trader.js");
+// const trader = require("./scripts/trader.js");
 
 // https://www.reddit.com/domain/cryptovoxels.com.rss
 // https://www.reddit.com/domain/voxels.com.rss
@@ -15,45 +15,45 @@ const trader = require("./scripts/trader.js");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.get(
-  "/trader/check",
-  rateLimit({ windowMs: 3 * 1000, max: 1 }),
-  async (req, res) => {
-    trader.check(req, res);
-  }
-);
+// app.get(
+//   "/trader/check",
+//   rateLimit({ windowMs: 3 * 1000, max: 1 }),
+//   async (req, res) => {
+//     trader.check(req, res);
+//   }
+// );
 
-app.get(
-  "/trader/approve",
-  rateLimit({ windowMs: 3 * 1000, max: 1 }),
-  async (req, res) => {
-    trader.approve(req, res);
-  }
-);
+// app.get(
+//   "/trader/approve",
+//   rateLimit({ windowMs: 3 * 1000, max: 1 }),
+//   async (req, res) => {
+//     trader.approve(req, res);
+//   }
+// );
 
-app.get(
-  "/trader/swap",
-  rateLimit({ windowMs: 3 * 1000, max: 1 }),
-  async (req, res) => {
-    trader.swap(req, res);
-  }
-);
+// app.get(
+//   "/trader/swap",
+//   rateLimit({ windowMs: 3 * 1000, max: 1 }),
+//   async (req, res) => {
+//     trader.swap(req, res);
+//   }
+// );
 
-app.get(
-  "/trader/portfolio",
-  rateLimit({ windowMs: 3 * 1000, max: 1 }),
-  async (req, res) => {
-    trader.getPortfolio(req, res);
-  }
-);
+// app.get(
+//   "/trader/portfolio",
+//   rateLimit({ windowMs: 3 * 1000, max: 1 }),
+//   async (req, res) => {
+//     trader.getPortfolio(req, res);
+//   }
+// );
 
-app.get(
-  "/ether/",
-  rateLimit({ windowMs: 3 * 1000, max: 1 }),
-  async (req, res) => {
-    ethers.ethers(req, res);
-  }
-);
+// app.get(
+//   "/ether/",
+//   rateLimit({ windowMs: 3 * 1000, max: 1 }),
+//   async (req, res) => {
+//     ethers.ethers(req, res);
+//   }
+// );
 
 app.get(
   "/html2png/",
@@ -79,13 +79,13 @@ app.get(
   }
 );
 
-app.get(
-  "/email/",
-  rateLimit({ windowMs: 1 * 60 * 1000, max: 10 }),
-  async (req, res) => {
-    // trader.trade(req, res);
-  }
-);
+// app.get(
+//   "/email/",
+//   rateLimit({ windowMs: 1 * 60 * 1000, max: 10 }),
+//   async (req, res) => {
+//     // trader.trade(req, res);
+//   }
+// );
 
 app.get(
   "/text/",
