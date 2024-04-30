@@ -14,6 +14,8 @@ const pdf = require('./scripts/pdf.js')
 //  https://www.twilio.com/docs/sms/api/message-resource
 
 const app = express();
+app.set('trust proxy', true);
+
 const PORT = process.env.PORT || 8080;
 
 // app.get(
