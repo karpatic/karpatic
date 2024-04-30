@@ -5,6 +5,7 @@ const rateLimit = require("express-rate-limit"); // https://www.npmjs.com/packag
 const html2png = require("./scripts/html2png.js");
 const html2txt = require("./scripts/html2txt.js");
 const html = require("./scripts/html.js");
+const pdf = require('./scripts/pdf.js')
 // const trader = require("./scripts/trader.js");
 
 // https://www.reddit.com/domain/cryptovoxels.com.rss
@@ -54,6 +55,14 @@ const PORT = process.env.PORT || 8080;
 //     ethers.ethers(req, res);
 //   }
 // );
+
+app.post(
+  '/pdf/',
+  rateLimit({ windowMs: 1 * 60 * 1000, max: 10 }),
+  async (req, res) => {
+    pdf.generate_pdf(req, res);
+  }
+);
 
 app.get(
   "/html2png/",

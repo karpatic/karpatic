@@ -9,6 +9,7 @@
     "deploy": "make pages; npm run bild",
     "postbild": "react-snap",
     "postreact-snap": "ls",
+    "serverSetup": "bash setup_texlive.sh",
     "server": "nodemon --optimize_for_size --max_old_space_size=460 src/server/index.js",
     "test": "nodemon src/server/scripts/test.js",
     "watchPages": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'npm run makePages'",
@@ -85,7 +86,7 @@
     "webpack-pwa-manifest": "^4.3.0",
     "web3": "^4.0.3"
   },
-  "dependencies": {
+  "dependencies": { 
     "express": "^4.15.2",
     "express-rate-limit": "^6.6.0",
     "fs": "^0.0.1-security",
