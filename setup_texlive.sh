@@ -15,6 +15,3 @@ export PATH=/usr/local/texlive/2023/bin/x86_64-linux:$PATH
 
 # Clean up 
 rm -rf install-tl-unx.tar.gz install-tl-*
-
-# Start server
-npm run server
