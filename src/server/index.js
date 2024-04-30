@@ -4,6 +4,7 @@ const rateLimit = require("express-rate-limit"); // https://www.npmjs.com/packag
 const ethers = require("./scripts/ethers.js");
 const html2png = require("./scripts/html2png.js");
 const html2txt = require("./scripts/html2txt.js");
+const html = require("./scripts/html.js");
 const trader = require("./scripts/trader.js");
 
 // https://www.reddit.com/domain/cryptovoxels.com.rss
@@ -59,6 +60,14 @@ app.get(
   rateLimit({ windowMs: 1 * 60 * 1000, max: 10 }),
   async (req, res) => {
     html2png.visualize(req, res);
+  }
+);
+
+app.get(
+  "/html/",
+  rateLimit({ windowMs: 1 * 60 * 1000, max: 10 }),
+  async (req, res) => {
+    html.getHtml(req, res);
   }
 );
 
