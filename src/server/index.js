@@ -122,7 +122,8 @@ app.get("/", async (req, res) => {
   res.json({ user: "geek" });
 });
 
-app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+const server = app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+server.setTimeout(10 * 12 * 100); // Sets timeout to 12 seconds
 
 /*
 // https://elements.heroku.com/buttons/heroku/node-js-getting-started
