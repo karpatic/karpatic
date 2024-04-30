@@ -3,6 +3,7 @@ const path = require("path");
 
 
 async function generate_pdf(req, res) {
+  console.log("Generating PDF", req)
   const { latex } = req.body;
   if (!latex) return false;  
   execSync(`pdflatex -interaction=nonstopmode ./content.tex`, { stdio: "inherit" });
