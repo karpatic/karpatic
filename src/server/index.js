@@ -148,12 +148,9 @@ app.post('/login', (req, res) => {
 })
 */
 
-
-
-
 app.use(fileUpload());
 
-app.post('/upload-session', (req, res) => {
+app.post('/telegram/upload-session', (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send('No files were uploaded.');
   }
@@ -178,7 +175,7 @@ app.get("/telegram/auth", (req, res) => {
 <body>
     <h1>Authenticate Telegram</h1>
     <h1>Upload Telegram Session File</h1>
-    <form ref='uploadForm' id='uploadForm' action='/upload-session' method='post' encType="multipart/form-data">
+    <form ref='uploadForm' id='uploadForm' action='/telegram/upload-session' method='post' encType="multipart/form-data">
         <input type="file" name="sessionFile" />
         <input type='submit' value='Upload!' />
     </form>
