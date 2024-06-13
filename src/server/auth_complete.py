@@ -2,10 +2,11 @@ import os
 import sys
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError
-from dotenv import load_dotenv
 
 # Optionally load environment variables from a .env file
-if os.path.exists('.env'):
+if not os.getenv('DYNO'):
+    from dotenv import load_dotenv
+    # if os.path.exists('.env'):
     load_dotenv()
 
 api_id = int(os.getenv('TELEGRAM_API_ID'))
