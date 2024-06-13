@@ -215,8 +215,6 @@ app.get("/telegram/auth", (req, res) => {
   res.send(authPage);
 });
 
-
-
 app.get("/telegram/auth/send-code", async (req, res) => {
   const phone = req.query.phone;
   if (!phone) {
@@ -235,7 +233,6 @@ app.get("/telegram/auth/send-code", async (req, res) => {
     res.status(500).send("Error executing the script.");
   }
 });
-
 
 app.get("/telegram/auth/complete-auth", async (req, res) => {
   const phone = req.query.phone;
