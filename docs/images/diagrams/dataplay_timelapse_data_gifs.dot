@@ -1,0 +1,44 @@
+digraph G {
+concentrate=true;
+splines="ortho";
+rankdir="LR";
+subgraph legend{
+    rank = min;
+    label = "legend";
+    Legend [shape=none, margin=0, label = <
+        <table cellspacing="0" cellpadding="0" border="1"><tr><td>Code2flow Legend</td></tr><tr><td>
+        <table cellspacing="0">
+        <tr><td>Regular function</td><td width="50px" bgcolor='#cccccc'></td></tr>
+        <tr><td>Trunk function (nothing calls this)</td><td bgcolor='#966F33'></td></tr>
+        <tr><td>Leaf function (this calls nothing else)</td><td bgcolor='#6db33f'></td></tr>
+        <tr><td>Function call</td><td><font color='black'>&#8594;</font></td></tr>
+        </table></td></tr></table>
+        >];
+}node_1dc877c4 [label="87: addKey()" name="timelapse_data_gifs::addKey" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_773fc561 [label="119: createGif()" name="timelapse_data_gifs::createGif" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_6ccd802a [label="163: createGifMap()" name="timelapse_data_gifs::createGifMap" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_8a9d2dff [label="130: createPicture()" name="timelapse_data_gifs::createPicture" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_5ca5a9b2 [label="115: getAbsMinMax()" name="timelapse_data_gifs::getAbsMinMax" shape="rect" style="rounded,filled" fillcolor="#cccccc" ];
+node_4ca83c81 [label="83: getColByName()" name="timelapse_data_gifs::getColByName" shape="rect" style="rounded,filled" fillcolor="#cccccc" ];
+node_b4788483 [label="82: getColName()" name="timelapse_data_gifs::getColName" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_48647d8e [label="110: getMinMax()" name="timelapse_data_gifs::getMinMax" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_d09cbbd9 [label="93: nullIfEqual()" name="timelapse_data_gifs::nullIfEqual" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_1dc877c4 -> node_4ca83c81 [color="#F0E442" penwidth="2"];
+node_1dc877c4 -> node_b4788483 [color="#F0E442" penwidth="2"];
+node_6ccd802a -> node_773fc561 [color="#56B4E9" penwidth="2"];
+node_6ccd802a -> node_8a9d2dff [color="#56B4E9" penwidth="2"];
+node_6ccd802a -> node_5ca5a9b2 [color="#56B4E9" penwidth="2"];
+node_5ca5a9b2 -> node_48647d8e [color="#56B4E9" penwidth="2"];
+node_4ca83c81 -> node_b4788483 [color="#E69F00" penwidth="2"];
+node_d09cbbd9 -> node_b4788483 [color="#E69F00" penwidth="2"];
+node_d09cbbd9 -> node_b4788483 [color="#E69F00" penwidth="2"];
+node_d09cbbd9 -> node_b4788483 [color="#E69F00" penwidth="2"];
+node_d09cbbd9 -> node_b4788483 [color="#E69F00" penwidth="2"];
+subgraph cluster_4a3081ca {
+    node_b4788483 node_4ca83c81 node_1dc877c4 node_d09cbbd9 node_48647d8e node_5ca5a9b2 node_773fc561 node_8a9d2dff node_6ccd802a;
+    label="File: timelapse_data_gifs";
+    name="timelapse_data_gifs";
+    style="filled";
+    graph[style=dotted];
+};
+}

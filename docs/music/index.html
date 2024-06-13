@@ -1,9 +1,583 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="A Media Player"><meta name="author" content="Charles Karpati"><title>CKPlayer</title><link rel="stylesheet" type="text/css" href="/music/css/bootstrap.min.css"><link rel="stylesheet" type="text/css" href="/music/css/font-awesome/css/font-awesome.min.css"><script src="/music/js/jquery.js"></script><script src="/music/js/bootstrap.min.js"></script><script src="/music/js/idb.umd.min.js"></script><link rel="stylesheet" type="text/css" href="/music/css/design.css"></head><body><nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button><div class="special"><a class="pull-left fa fa-random" href="javascript:;" onclick="setShuffle();" title="Randomize" data-toggle="tooltip" data-placement="bottom"></a><a class="pull-left fa fa-repeat" id="loop" href="javascript:;" onclick="setLoop();" title="Repeat Playlist" data-toggle="tooltip" data-placement="bottom"></a><a class="pull-left fa fa-long-arrow-right" id="unLoop" href="javascript:;" onclick="setUnLoop();" style="display:none" title="No Repeat" data-toggle="tooltip" data-placement="bottom"></a><a class="pull-left fa fa-step-backward" href="javascript:;" onclick="previous();" title="Previous" data-toggle="tooltip" data-placement="bottom"></a><div id="sliderBar" class="pull-left"><input type="range" onclick="seekTo(this.value);" id="progressBar" style="height:70%"><marquee id="title" style="color:#9d9d9d;font-size:12px;height:25%" behavior="scroll" direction="left">Click a Song to Begin</marquee></div><a class="pull-left fa fa-step-forward" href="javascript:;" onclick="next();" title="Next" data-toggle="tooltip" data-placement="bottom"></a><a class="pull-left fa fa-pause" id="pause" href="javascript:;" onclick="pause();" title="Pause" style="display:none" data-toggle="tooltip" data-placement="bottom"></a><a class="pull-left fa fa-play" id="play" href="javascript:;" onclick="play();" title="Play" data-toggle="tooltip" data-placement="bottom"></a></div></div><div><ul class="nav top-nav special"><a class="pull-right fa fa-question" title="About" data-toggle="modal" data-target="#myModalAbout" data-placement="bottom"></a><li class="dropdown pull-right" title="Settings" data-toggle="tooltip" data-placement="bottom"><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i> <b class="caret"></b></a><ul class="dropdown-menu"><li class="active"><a>Settings</a></li><li id="loginListItem"><a href="#" onclick="$('#loginModal').modal('show');"><i class="fa fa-fw fa-sign-in"></i> Log In</a></li><li id="logoutListItem" style="display:none"><a href="#" onclick="logoutUser();"><i class="fa fa-fw fa-power-off"></i> Log Out</a></li></ul></li><li class="dropdown pull-right" title="Volume" data-toggle="tooltip" data-placement="bottom"><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-volume-down"></i> <b class="caret"></b></a><ul class="dropdown-menu hiddenBackgroundSlider" style="background-color:#000"><li><input type="range" onclick="setVolume(this.value)" id="volVal" value="100" class="verticalSlider"></li></ul></li><a class="pull-right fa fa-expand" title="Expand Video" data-toggle="modal" data-target="#videoModal" data-placement="bottom"></a></ul></div><div class="collapse navbar-collapse navbar-ex1-collapse"><ul class="nav navbar-nav side-nav myautoscroll"><li><a href="javascript:;" onclick=""><i class="fa fa-fw fa-home"></i> Explore</a></li><li><a href="javascript:;" onclick="loadPlaylist(); toggleCarret(this);" data-toggle="collapse" data-target="#searchPlaylist"><i class="fa fa-fw fa-th-list"></i> Playlists <i class="fa fa-fw fa-angle-up"></i></a><ul id="searchPlaylist" class="collapse"></ul></li><li><a href="javascript:;" onclick="toggleCarret(this);" data-toggle="collapse" data-target="#searchChannel"><i class="fa fa-fw fa-th-list"></i> Channels <i class="fa fa-fw fa-angle-up"></i></a><ul id="searchChannel" style="height:200px;overflow:auto" class="collapse"></ul></li><li><a><i class="fa fa-music"></i> Now Playing</a><ul id="playing" style="overflow:auto" class="collapse in"></ul></li></ul></div></nav><div id="wrapper"><div id="page-wrapper"><div class="container-fluid"><div class="alert-box success">Successfully Saved</div><div class="alert-box failure">Failed to Save</div><div id="video" align="middle"></div><div class="col-xs-12" id="songs"><div class="row"><div class="col-lg-12"><h1>Explore</h1><ul style="background-color:#222;border-radius:5px 5px 0 0;width:100%" class="nav nav-tabs"><li style="width:30%"><a data-toggle="tab" href="#menu1">Explore</a></li><li style="width:30%" class="active"><a data-toggle="tab" href="#menu2">Local Storage</a></li><li style="width:30%"><a data-toggle="tab" href="#menu3">Playlist</a></li></ul></div></div><div class="tab-content"><div id="menu1" class="tab-pane fade"><div class="well" style="background:#222"><h3>Filter Trending</h3><small>Made possible by Apple's Itunes RSS Feed</small><br><br><label for="genreDropdown">Select Genre:</label> <input type="text" placeholder="Search.." id="genreSearch" onkeyup="debounceFilterGenre()"> <select id="genreDropdown"><option value="1230">Chinese Alt</option><option value="1001">College Rock</option><option value="100018">EMO</option><option value="1002">Goth Rock</option><option value="1003">Grunge</option><option value="100020">Indie Pop</option><option value="1004" selected="selected">Indie Rock</option><option value="1231">Korean Indie</option><option value="1005">New Wave</option><option value="100019">Pop Punk</option><option value="1006">Punk</option><option value="1286">Arabic Pop</option><option value="1287">Islamic</option><option value="1284">Khaleeji</option><option value="1285">North African</option><option value="1210">Acoustic Blues</option><option value="1007">Chicago Blues</option><option value="1009">Classic Blues</option><option value="1010">Contemporary Blues</option><option value="1011">Country Blues</option><option value="1012">Delta Blues</option><option value="1013">Electric Blues</option><option value="1220">Axé</option><option value="1229">Baile Funk</option><option value="1221">Bossa Nova</option><option value="1222">Choro</option><option value="1223">Forró</option><option value="1224">Frevo</option><option value="1225">MPB</option><option value="1226">Pagode</option><option value="1227">Samba</option><option value="1228">Sertanejo</option><option value="1014">Lullabies</option><option value="1015">Sing-Along</option><option value="1016">Stories</option><option value="1233">Chinese Classical</option><option value="1234">Chinese Flute</option><option value="1235">Chinese Opera</option><option value="1236">Chinese Orchestral</option><option value="1237">Chinese Regional Folk</option><option value="1238">Chinese Strings</option><option value="1239">Taiwanese Folk</option><option value="1240">Tibetan Native Music</option><option value="1094">CCM</option><option value="1095">Christian Metal</option><option value="1096">Christian Pop</option><option value="1097">Christian Rap</option><option value="1098">Christian Rock</option><option value="1099">Classic Christian</option><option value="1100">Contemporary Gospel</option><option value="1101">Gospel</option><option value="1103">Praise &amp; Worship</option><option value="1104">Southern Gospel</option><option value="1105">Traditional Gospel</option><option value="100001">Art Song</option><option value="1017">Avant-Garde</option><option value="1018">Baroque Era</option><option value="100002">Brass &amp; Woodwinds</option><option value="100006">Cantata</option><option value="100012">Cello</option><option value="1019">Chamber Music</option><option value="1020">Chant</option><option value="1021">Choral</option><option value="1022">Classical Crossover</option><option value="1211">High Classical</option><option value="100004">Contemporary Era</option><option value="1023">Early Music</option><option value="100007">Electronic</option><option value="100009">Guitar</option><option value="1024">Impressionist</option><option value="1025">Medieval Era</option><option value="1026">Minimalism</option><option value="1027">Modern Era</option><option value="9">Opera</option><option value="1028">Opera</option><option value="100005">Oratorio</option><option value="1029">Orchestral</option><option value="100013">Percussion</option><option value="100010">Piano</option><option value="1030">Renaissance</option><option value="1031">Romantic Era</option><option value="100008">Sacred</option><option value="100003">Solo Instrumental</option><option value="100011">Violin</option><option value="1032">Wedding Music</option><option value="1167">Novelty</option><option value="1171">Standup Comedy</option><option value="1033">Alternative Country</option><option value="1034">Americana</option><option value="1035">Bluegrass</option><option value="1036">Contemporary Bluegrass</option><option value="1037">Contemporary Country</option><option value="1038">Country Gospel</option><option value="1039">Honky Tonk</option><option value="1040">Outlaw Country</option><option value="1294">Thai Country</option><option value="1041">Traditional Bluegrass</option><option value="1042">Traditional Country</option><option value="1043">Urban Cowboy</option><option value="1044">Breakbeat</option><option value="1045">Exercise</option><option value="1046">Garage</option><option value="1047">Hardcore</option><option value="1048">House</option><option value="1049">Jungle/Drum'n'bass</option><option value="1050">Techno</option><option value="1051">Trance</option><option value="1054">Lounge</option><option value="1055">Swing</option><option value="1056">Ambient</option><option value="100015">Bass</option><option value="1057">Downtempo</option><option value="100014">Dubstep</option><option value="1058">Electronica</option><option value="1060">IDM/Experimental</option><option value="1061">Industrial</option><option value="1068">Alternative Rap</option><option value="1241">Chinese Hip-Hop</option><option value="1069">Dirty South</option><option value="1070">East Coast Rap</option><option value="1071">Gangsta Rap</option><option value="1072">Hardcore Rap</option><option value="1073">Hip-Hop</option><option value="1242">Korean Hip-Hop</option><option value="1074">Latin Rap</option><option value="1075">Old School Rap</option><option value="1076">Rap</option><option value="100016">UK Hip-Hop</option><option value="1077">Underground Rap</option><option value="1078">West Coast Rap</option><option value="1079">Chanukah</option><option value="1080">Christmas</option><option value="1081">Christmas: Children's</option><option value="1082">Christmas: Classic</option><option value="1083">Christmas: Classical</option><option value="1084">Christmas: Jazz</option><option value="1085">Christmas: Modern</option><option value="1086">Christmas: Pop</option><option value="1087">Christmas: R&amp;B</option><option value="1088">Christmas: Religious</option><option value="1089">Christmas: Rock</option><option value="1090">Easter</option><option value="1091">Halloween</option><option value="1092">Holiday: Other</option><option value="1093">Thanksgiving</option><option value="1263">Bollywood</option><option value="1267">Devotional &amp; Spiritual</option><option value="1278">Ghazals</option><option value="1269">Indian Classical</option><option value="1279">Indian Folk</option><option value="1185">Indian Pop</option><option value="1266">Regional Indian</option><option value="1268">Sufi</option><option value="1264">Tamil</option><option value="1265">Telugu</option><option value="1106">Avant-Garde Jazz</option><option value="1053">Bop</option><option value="1052">Big Band</option><option value="1107">Contemporary Jazz</option><option value="1209">Cool</option><option value="1108">Crossover Jazz</option><option value="1109">Dixieland</option><option value="1110">Fusion</option><option value="1207">Hard Bop</option><option value="1111">Latin Jazz</option><option value="1112">Mainstream Jazz</option><option value="1113">Ragtime</option><option value="1114">Smooth Jazz</option><option value="1208">Trad Jazz</option><option value="1175">Vocal Jazz</option><option value="1246">Korean Trad Instrumental</option><option value="1245">Korean Trad Song</option><option value="1247">Korean Trad Theater</option><option value="1244">Korean Classical</option><option value="1121">Latin Alternative &amp; Rock</option><option value="1120">Baladas y Boleros</option><option value="1116">Contemporary Latin</option><option value="1115">Latin Jazz</option><option value="1119">Latin Urban</option><option value="1117">Latin Pop</option><option value="1118">Raíces</option><option value="1123">Regional Mexicano</option><option value="1124">Salsa y Tropical</option><option value="1125">Environmental</option><option value="1126">Healing</option><option value="1127">Meditation</option><option value="1128">Nature</option><option value="1129">Relaxation</option><option value="1130">Travel</option><option value="100021">Yoga</option><option value="1131">Adult Contemporary</option><option value="1132">Britpop</option><option value="1250">C-Pop</option><option value="1251">Cantopop/HK-Pop</option><option value="1259">Indo Pop</option><option value="51">K-Pop</option><option value="1252">Korean Folk-Pop</option><option value="1255">Malaysian Pop</option><option value="1253">Mandopop</option><option value="1258">Manilla Sound</option><option value="1293">Oldies</option><option value="1257">Original Pilipino Music</option><option value="1256">Pinoy Pop</option><option value="1133">Pop/Rock</option><option value="1134">Soft Rock</option><option value="1254">Tai-Pop</option><option value="1135">Teen Pop</option><option value="1260">Thai Pop</option><option value="100022">Tribute</option><option value="1136">Contemporary R&amp;B</option><option value="1137">Disco</option><option value="1138">Doo Wop</option><option value="1139">Funk</option><option value="1140">Motown</option><option value="1141">Neo-Soul</option><option value="1142">Quiet Storm</option><option value="1143">Soul</option><option value="1193">Dub</option><option value="100017">Lovers Rock</option><option value="1183">Modern Dancehall</option><option value="1192">Roots Reggae</option><option value="1194">Ska</option><option value="1144">Adult Alternative</option><option value="1145">American Trad Rock</option><option value="1146">Arena Rock</option><option value="1147">Blues-Rock</option><option value="1148">British Invasion</option><option value="1248">Chinese Rock</option><option value="1149">Death Metal/Black Metal</option><option value="1150">Glam Rock</option><option value="1151">Hair Metal</option><option value="1152">Hard Rock</option><option value="1153">Metal</option><option value="1154">Jam Bands</option><option value="1249">Korean Rock</option><option value="1155">Prog-Rock/Art Rock</option><option value="1156">Psychedelic</option><option value="1157">Rock &amp; Roll</option><option value="1158">Rockabilly</option><option value="1159">Roots Rock</option><option value="1160">Singer/ Songwriter</option><option value="1161">Southern Rock</option><option value="1162">Surf</option><option value="1163">Tex-Mex</option><option value="1062">Alternative Folk</option><option value="1063">Contemporary Folk</option><option value="1064">Contemporary Singer/Songwriter</option><option value="1065">Folk-Rock</option><option value="1066">New Acoustic</option><option value="1067">Traditional Folk</option><option value="1165">Foreign Cinema</option><option value="1166">Musicals</option><option value="1168">Original Score</option><option value="1288">Sound Effects</option><option value="1169">Soundtrack</option><option value="1172">TV Soundtrack</option><option value="1173">Standards</option><option value="1174">Traditional Pop</option><option value="1261">Trot</option><option value="1176">Vocal Pop</option><option value="1203">Africa</option><option value="1281">Afrikaans</option><option value="1177">Afro-Beat</option><option value="1178">Afro-Pop</option><option value="1280">Arabesque</option><option value="1204">Asia</option><option value="1200">Australia</option><option value="1179">Cajun</option><option value="1276">Calypso</option><option value="1195">Caribbean</option><option value="1180">Celtic</option><option value="1181">Celtic Folk</option><option value="1182">Contemporary Celtic</option><option value="1274">Dangdut</option><option value="1271">Dini</option><option value="1184">Drinking Songs</option><option value="1205">Europe</option><option value="1297">Fado</option><option value="1282">Farsi</option><option value="1295">Flamenco</option><option value="1202">France</option><option value="1272">Halk</option><option value="1199">Hawaii</option><option value="1298">Iberia</option><option value="1275">Indonesian Religious</option><option value="1283">Israeli</option><option value="1201">Japan</option><option value="1186">Japanese Pop</option><option value="1187">Klezmer</option><option value="1198">North America</option><option value="1188">Polka</option><option value="1299">Russian</option><option value="1270">Russian Chanson</option><option value="1273">Sanat</option><option value="1277">Soca</option><option value="1206">South Africa</option><option value="1196">South America</option><option value="1296">Tango</option><option value="1189">Traditional Celtic</option><option value="1300">Turkish</option><option value="1190">Worldbeat</option><option value="1191">Zydeco</option><option value="7001">Action</option><option value="7002">Adventure</option><option value="7003">Arcade</option><option value="7004">Board</option><option value="7005">Card</option><option value="7006">Casino</option><option value="7007">Dice</option><option value="7008">Educational</option><option value="7009">Family</option><option value="7011">Music</option><option value="7012">Puzzle</option><option value="7013">Racing</option><option value="7014">Role Playing</option><option value="7015">Simulation</option><option value="7016">Sports</option><option value="7017">Strategy</option><option value="7018">Trivia</option><option value="7019">Word</option><option value="13007">Arts &amp; Photography</option><option value="13006">Automotive</option><option value="13008">Brides &amp; Weddings</option><option value="13009">Business &amp; Investing</option><option value="13010">Children's Magazines</option><option value="13011">Computers &amp; Internet</option><option value="13012">Cooking, Food &amp; Drink</option><option value="13013">Crafts &amp; Hobbies</option><option value="13014">Electronics &amp; Audio</option><option value="13015">Entertainment</option><option value="13002">Fashion &amp; Style</option><option value="13017">Health, Mind &amp; Body</option><option value="13018">History</option><option value="13003">Home &amp; Garden</option><option value="13019">Literary Magazines &amp; Journals</option><option value="13020">Men's Interest</option><option value="13021">Movies &amp; Music</option><option value="13001">News &amp; Politics</option><option value="13004">Outdoors &amp; Nature</option><option value="13023">Parenting &amp; Family</option><option value="13024">Pets</option><option value="13025">Professional &amp; Trade</option><option value="13026">Regional News</option><option value="13027">Science</option><option value="13005">Sports &amp; Leisure</option><option value="13028">Teens</option><option value="13029">Travel &amp; Regional</option><option value="13030">Women's Interest</option><option value="1402">Design</option><option value="1459">Fashion &amp; Beauty</option><option value="1306">Food</option><option value="1401">Literature</option><option value="1405">Performing Arts</option><option value="1406">Visual Arts</option><option value="1471">Business News</option><option value="1410">Careers</option><option value="1412">Investing</option><option value="1413">Management &amp; Marketing</option><option value="1472">Shopping</option><option value="1468">Educational Technology</option><option value="1416">Higher Education</option><option value="1415">K-12</option><option value="1469">Language Courses</option><option value="1470">Training</option><option value="1454">Automotive</option><option value="1455">Aviation</option><option value="1460">Hobbies</option><option value="1461">Other Games</option><option value="1404">Video Games</option><option value="1475">Local</option><option value="1473">National</option><option value="1476">Non-Profit</option><option value="1474">Regional</option><option value="1481">Alternative Health</option><option value="1417">Fitness &amp; Nutrition</option><option value="1420">Self-Help</option><option value="1421">Sexuality</option><option value="1438">Buddhism</option><option value="1439">Christianity</option><option value="1463">Hinduism</option><option value="1440">Islam</option><option value="1441">Judaism</option><option value="1464">Other</option><option value="1444">Spirituality</option><option value="1478">Medicine</option><option value="1477">Natural Sciences</option><option value="1479">Social Sciences</option><option value="1462">History</option><option value="1302">Personal Journals</option><option value="1443">Philosophy</option><option value="1320">Places &amp; Travel</option><option value="1467">Amateur</option><option value="1466">College &amp; High School</option><option value="1456">Outdoor</option><option value="1465">Professional</option><option value="1446">Gadgets</option><option value="1450">Podcasting</option><option value="1480">Software How-To</option><option value="1448">Tech News</option><option value="8051">Dialogue</option><option value="8052">Music</option><option value="8050">Sound Effects</option><option value="8001">Alternative</option><option value="8063">Anime</option><option value="8064">Arabic</option><option value="8002">Blues</option><option value="8076">Brazilian</option><option value="8003">Children's Music</option><option value="8090">Chinese</option><option value="8099">Christian &amp; Gospel</option><option value="8004">Classical</option><option value="8005">Comedy</option><option value="8006">Country</option><option value="8007">Dance</option><option value="8149">Disney</option><option value="8150">Easy Listening</option><option value="8008">Electronic</option><option value="8009">Enka</option><option value="8158">Fitness &amp; Workout</option><option value="8159">Folk</option><option value="8010">French Pop</option><option value="8011">German Folk</option><option value="8012">German Pop</option><option value="8013">Hip-Hop/Rap</option><option value="8014">Holiday</option><option value="8187">Indian</option><option value="8015">Inspirational</option><option value="8198">Instrumental</option><option value="8016">J-Pop</option><option value="8017">Jazz</option><option value="8215">Karaoke</option><option value="8018">Kayokyoku</option><option value="8216">Korean</option><option value="8019">Latin</option><option value="8230">Marching Bands</option><option value="8020">New Age</option><option value="8236">Orchestral</option><option value="8022">Pop</option><option value="8023">R&amp;B/Soul</option><option value="8024">Reggae</option><option value="8025">Rock</option><option value="8026">Singer/Songwriter</option><option value="8027">Soundtrack</option><option value="8028">Spoken Word</option><option value="8029">Vocal</option><option value="8030">World</option><option value="10002">Art &amp; Architecture</option><option value="11234">Art History</option><option value="11019">Dance</option><option value="11236">Design</option><option value="11020">Fashion</option><option value="11021">Film</option><option value="10067">Games</option><option value="11022">Interior Design</option><option value="11023">Media Arts</option><option value="10087">Music</option><option value="10089">Performing Arts</option><option value="10092">Photography</option><option value="11024">Radio</option><option value="11025">TV</option><option value="10036">Theater</option><option value="11026">Visual Arts</option><option value="11027">Arts &amp; Entertainment</option><option value="11028">Business</option><option value="11029">Culinary</option><option value="11030">Gay &amp; Lesbian</option><option value="11031">Historical</option><option value="11032">Literary</option><option value="11033">Media &amp; Journalism</option><option value="11034">Military</option><option value="11035">Politics</option><option value="11036">Religious</option><option value="11037">Science &amp; Technology</option><option value="11038">Sports</option><option value="11039">Women</option><option value="11243">Accounting</option><option value="10010">Careers</option><option value="10011">Economics</option><option value="10013">Finance</option><option value="11244">Hospitality</option><option value="10005">Industries &amp; Professions</option><option value="10012">Investing</option><option value="10014">Management &amp; Leadership</option><option value="10006">Marketing &amp; Sales</option><option value="10008">Personal Finance</option><option value="11245">Real Estate</option><option value="10009">Reference</option><option value="10007">Small Business &amp; Entrepreneurship</option><option value="10081">Children's Fiction</option><option value="10082">Children's Nonfiction</option><option value="50000090">Comics</option><option value="10015">Graphic Novels</option><option value="10016">Manga</option><option value="11011">Broadcasting</option><option value="11012">Digital Media</option><option value="11013">Journalism</option><option value="11014">Photojournalism</option><option value="11015">Print</option><option value="11016">Speech</option><option value="11017">Writing</option><option value="10017">Computers</option><option value="10018">Databases</option><option value="10019">Digital Media</option><option value="10020">Internet</option><option value="10021">Network</option><option value="10022">Operating Systems</option><option value="10023">Programming</option><option value="10024">Software</option><option value="10025">System Administration</option><option value="10026">Beverages</option><option value="10027">Courses &amp; Dishes</option><option value="11255">Culinary Arts</option><option value="10030">Methods</option><option value="10031">Reference</option><option value="10032">Regional &amp; Ethnic</option><option value="10028">Special Diet</option><option value="10029">Special Occasions</option><option value="10033">Specific Ingredients</option><option value="10039">Action &amp; Adventure</option><option value="10040">African American</option><option value="11045">Anthologies</option><option value="10042">Classics</option><option value="11046">Comparative Literature</option><option value="11047">Drama</option><option value="10043">Erotica</option><option value="11044">Essays</option><option value="11049">Fairy Tales, Myths &amp; Fables</option><option value="11050">Family</option><option value="10045">Gay</option><option value="10046">Ghost</option><option value="10047">Historical</option><option value="10048">Horror</option><option value="50000088">Light Novels</option><option value="10049">Literary</option><option value="10084">Literary Criticism</option><option value="10093">Poetry</option><option value="10041">Religious</option><option value="10065">Short Stories</option><option value="11062">Diet &amp; Nutrition</option><option value="10069">Health &amp; Fitness</option><option value="10094">Psychology</option><option value="10119">Self-Improvement</option><option value="10004">Spirituality</option><option value="10070">Africa</option><option value="10071">Americas</option><option value="10072">Ancient</option><option value="10073">Asia</option><option value="10074">Australia &amp; Oceania</option><option value="10075">Europe</option><option value="10076">Latin America</option><option value="10077">Middle East</option><option value="10078">Military</option><option value="10079">United States</option><option value="10080">World</option><option value="11246">Jokes &amp; Riddles</option><option value="11087">Animals</option><option value="11106">Arts &amp; Entertainment</option><option value="11088">Basic Concepts</option><option value="11102">Biography</option><option value="11103">Careers &amp; Occupations</option><option value="11104">Computers &amp; Technology</option><option value="11105">Cooking &amp; Food</option><option value="11111">Family</option><option value="11112">Fiction</option><option value="11132">Games &amp; Activities</option><option value="11133">General Nonfiction</option><option value="11157">Government</option><option value="11134">Health</option><option value="11135">History</option><option value="11136">Holidays &amp; Celebrations</option><option value="11149">Humor</option><option value="11152">Learning to Read</option><option value="11156">Nursery Rhymes</option><option value="11151">Poetry</option><option value="11158">Reference</option><option value="11159">Religion</option><option value="11160">Science &amp; Nature</option><option value="11161">Social Issues</option><option value="11162">Social Studies</option><option value="11163">Sports &amp; Recreation</option><option value="11164">Transportation</option><option value="10001">Antiques &amp; Collectibles</option><option value="10034">Crafts &amp; Hobbies</option><option value="10068">Gardening</option><option value="10090">Pets</option><option value="10054">British Detectives</option><option value="11259">Cozy</option><option value="10050">Hard-Boiled</option><option value="10051">Historical</option><option value="10052">Police Procedural</option><option value="10053">Short Stories</option><option value="10055">Women Sleuths</option><option value="10038">Family &amp; Relationships</option><option value="10091">Philosophy</option><option value="10120">Social Science</option><option value="10138">Transportation</option><option value="10149">True Crime</option><option value="11260">Current Events</option><option value="11261">Foreign Policy &amp; International Relations</option><option value="11262">Local Government</option><option value="11263">National Government</option><option value="11264">Political Science</option><option value="11265">Public Administration</option><option value="11266">World Affairs</option><option value="10035">Design</option><option value="10137">Engineering</option><option value="10083">Law</option><option value="10086">Medical</option><option value="10037">Education</option><option value="10095">Almanacs &amp; Yearbooks</option><option value="10096">Atlases &amp; Maps</option><option value="10097">Catalogs &amp; Directories</option><option value="10098">Consumer Guides</option><option value="10099">Dictionaries &amp; Thesauruses</option><option value="10100">Encyclopedias</option><option value="10101">Etiquette</option><option value="10066">Foreign Languages</option><option value="11085">Manuals</option><option value="10102">Quotations</option><option value="10136">Study Aids</option><option value="10103">Words &amp; Language</option><option value="10104">Writing</option><option value="10105">Bible Studies</option><option value="10003">Bibles</option><option value="10106">Buddhism</option><option value="10107">Christianity</option><option value="11247">Comparative Religion</option><option value="10108">Hinduism</option><option value="10109">Islam</option><option value="10110">Judaism</option><option value="10057">Contemporary</option><option value="10056">Erotic Romance</option><option value="11043">Gay &amp; Lesbian</option><option value="10059">Historical</option><option value="11231">Holiday</option><option value="11229">Inspirational</option><option value="11233">Military</option><option value="11040">New Adult</option><option value="10058">Paranormal</option><option value="11042">Romantic Comedy</option><option value="10060">Short Stories</option><option value="10061">Suspense</option><option value="10062">Western</option><option value="11232">Wholesome</option><option value="10044">Fantasy</option><option value="10063">Science Fiction</option><option value="10064">Science Fiction &amp; Literature</option><option value="11063">Agriculture</option><option value="10111">Astronomy</option><option value="11064">Atmosphere</option><option value="11065">Biology</option><option value="10112">Chemistry</option><option value="10113">Earth Sciences</option><option value="11066">Ecology</option><option value="11067">Environment</option><option value="10114">Essays</option><option value="11068">Geography</option><option value="11069">Geology</option><option value="10115">History</option><option value="10116">Life Sciences</option><option value="10085">Mathematics</option><option value="10088">Nature</option><option value="10117">Physics</option><option value="10118">Reference</option><option value="10121">Baseball</option><option value="10122">Basketball</option><option value="11054">Boxing</option><option value="10123">Coaching</option><option value="11055">Cricket</option><option value="11056">Cycling</option><option value="11057">Equestrian</option><option value="10124">Extreme Sports</option><option value="10125">Football</option><option value="10126">Golf</option><option value="10127">Hockey</option><option value="11058">Martial Arts &amp; Self Defense</option><option value="11059">Motor Sports</option><option value="10128">Mountaineering</option><option value="10129">Outdoors</option><option value="10130">Racket Sports</option><option value="10131">Reference</option><option value="11060">Rugby</option><option value="11061">Running</option><option value="10132">Soccer</option><option value="10133">Training</option><option value="10134">Water Sports</option><option value="10135">Winter Sports</option><option value="10139">Africa</option><option value="10140">Asia</option><option value="10142">Canada</option><option value="10143">Caribbean</option><option value="10145">Essays &amp; Memoirs</option><option value="10146">Europe</option><option value="10144">Latin America</option><option value="10147">Middle East</option><option value="10141">Specialty Travel</option><option value="10148">United States</option><option value="11166">Animals</option><option value="11171">Arts &amp; Entertainment</option><option value="11167">Biography</option><option value="11168">Careers &amp; Occupations</option><option value="11223">Coming of Age</option><option value="11169">Computers &amp; Technology</option><option value="11170">Cooking &amp; Food</option><option value="11176">Family</option><option value="11177">Fiction</option><option value="11199">Games &amp; Activities</option><option value="11200">General Nonfiction</option><option value="11201">Health</option><option value="11202">History</option><option value="11203">Holidays &amp; Celebrations</option><option value="11216">Humor</option><option value="11218">Poetry</option><option value="11219">Politics &amp; Government</option><option value="11220">Reference</option><option value="11221">Religion</option><option value="11222">Science &amp; Nature</option><option value="11224">Social Studies</option><option value="11225">Sports &amp; Recreation</option><option value="11226">Transportation</option><option value="12201">Action</option><option value="12202">Adventure</option><option value="12203">Arcade</option><option value="12204">Board</option><option value="12205">Card</option><option value="12206">Casino</option><option value="12207">Dice</option><option value="12208">Educational</option><option value="12209">Family</option><option value="12210">Kids</option><option value="12211">Music</option><option value="12212">Puzzle</option><option value="12213">Racing</option><option value="12214">Role Playing</option><option value="12215">Simulation</option><option value="12216">Sports</option><option value="12217">Strategy</option><option value="12218">Trivia</option><option value="12219">Word</option><option value="40000017">Architecture</option><option value="40000019">Art History</option><option value="40000116">Culinary Arts</option><option value="40000020">Dance</option><option value="40000022">Design</option><option value="40000117">Fashion</option><option value="40000021">Film</option><option value="40000023">Interior Design</option><option value="40000118">Media Arts</option><option value="40000024">Music</option><option value="40000119">Photography</option><option value="40000025">Theater</option><option value="40000120">Visual Art</option><option value="40000002">Economics</option><option value="40000121">Entrepreneurship</option><option value="40000003">Finance</option><option value="40000004">Hospitality</option><option value="40000005">Management</option><option value="40000006">Marketing</option><option value="40000007">Personal Finance</option><option value="40000008">Real Estate</option><option value="40000122">Broadcasting</option><option value="40000123">Digital Media</option><option value="40000124">Journalism</option><option value="40000125">Photojournalism</option><option value="40000126">Print</option><option value="40000127">Speech</option><option value="40000128">Writing</option><option value="40000010">Chemical &amp; Petroleum Engineering</option><option value="40000011">Civil Engineering</option><option value="40000012">Computer Science</option><option value="40000013">Electrical Engineering</option><option value="40000014">Environmental Engineering</option><option value="40000015">Mechanical Engineering</option><option value="40000027">Anatomy &amp; Physiology</option><option value="40000028">Behavioral Science</option><option value="40000029">Dentistry</option><option value="40000030">Diet &amp; Nutrition</option><option value="40000031">Emergency Medicine</option><option value="40000032">Genetics</option><option value="40000033">Gerontology</option><option value="40000039">Global Health</option><option value="40000034">Health &amp; Exercise Science</option><option value="40000035">Immunology</option><option value="40000036">Neuroscience</option><option value="40000129">Nursing</option><option value="40000037">Pharmacology &amp; Toxicology</option><option value="40000038">Psychiatry</option><option value="40000040">Radiology</option><option value="40000046">African History</option><option value="40000042">Ancient History</option><option value="40000047">Asia-Pacific History</option><option value="40000048">European History</option><option value="40000043">Medieval History</option><option value="40000049">Middle Eastern History</option><option value="40000044">Military History</option><option value="40000045">Modern History</option><option value="40000050">North American History</option><option value="40000051">South American History</option><option value="40000057">African Languages</option><option value="40000058">Ancient Languages</option><option value="40000130">Arabic</option><option value="40000131">Chinese</option><option value="40000178">Danish</option><option value="40000173">Dutch</option><option value="40000061">English</option><option value="40000177">Finnish</option><option value="40000181">Flemish</option><option value="40000063">French</option><option value="40000064">German</option><option value="40000132">Hebrew</option><option value="40000133">Hindi</option><option value="40000134">Indigenous Languages</option><option value="40000065">Italian</option><option value="40000135">Japanese</option><option value="40000136">Korean</option><option value="40000066">Linguistics</option><option value="40000174">Luxembourgish</option><option value="40000176">Norwegian</option><option value="40000137">Other Languages</option><option value="40000179">Polish</option><option value="40000138">Portuguese</option><option value="40000139">Russian</option><option value="40000068">Spanish</option><option value="40000069">Speech Pathology</option><option value="40000175">Swedish</option><option value="40000180">Turkish</option><option value="40000141">Foreign Policy &amp; International Relations</option><option value="40000095">Law</option><option value="40000142">Local Governments</option><option value="40000143">National Governments</option><option value="40000096">Political Science</option><option value="40000097">Public Administration</option><option value="40000144">World Affairs</option><option value="40000071">Anthologies</option><option value="40000072">Biography</option><option value="40000073">Classics</option><option value="40000145">Comparative Literature</option><option value="40000075">Fiction</option><option value="40000074">Literary Criticism</option><option value="40000076">Poetry</option><option value="40000078">Advanced Mathematics</option><option value="40000079">Algebra</option><option value="40000080">Arithmetic</option><option value="40000081">Calculus</option><option value="40000082">Geometry</option><option value="40000083">Statistics</option><option value="40000146">Aesthetics</option><option value="40000147">Epistemology</option><option value="40000148">Ethics</option><option value="40000151">Logic</option><option value="40000149">Metaphysics</option><option value="40000152">Philosophy of Language</option><option value="40000153">Philosophy of Religion</option><option value="40000150">Political Philosophy</option><option value="40000155">Anthropology</option><option value="40000154">Archaeology</option><option value="40000098">Psychology</option><option value="40000099">Social Welfare</option><option value="40000100">Sociology</option><option value="40000156">Buddhism</option><option value="40000157">Christianity</option><option value="40000158">Comparative Religion</option><option value="40000159">Hinduism</option><option value="40000160">Islam</option><option value="40000161">Judaism</option><option value="40000162">Other Religions</option><option value="40000163">Spirituality</option><option value="40000085">Agricultural</option><option value="40000086">Astronomy</option><option value="40000087">Atmosphere</option><option value="40000088">Biology</option><option value="40000089">Chemistry</option><option value="40000090">Ecology</option><option value="40000164">Environment</option><option value="40000091">Geography</option><option value="40000092">Geology</option><option value="40000093">Physics</option><option value="40000165">African Studies</option><option value="40000166">American Studies</option><option value="40000103">Asia Pacific Studies</option><option value="40000167">Cross-cultural Studies</option><option value="40000104">European Studies</option><option value="40000168">Immigration &amp; Emigration</option><option value="40000105">Indigenous Studies</option><option value="40000106">Latin &amp; Caribbean Studies</option><option value="40000107">Middle Eastern Studies</option><option value="40000169">Race &amp; Ethnicity Studies</option><option value="40000170">Sexuality Studies</option><option value="40000108">Women's Studies</option><option value="40000110">Curriculum &amp; Teaching</option><option value="40000111">Educational Leadership</option><option value="40000171">Educational Technology</option><option value="40000112">Family &amp; Childcare</option><option value="40000172">Information/Library Science</option><option value="40000113">Learning Resources</option><option value="40000114">Psychology &amp; Research</option><option value="40000115">Special Education</option><option value="15001">Art &amp; Architecture</option><option value="15003">Art History</option><option value="15004">Dance</option><option value="15005">Design</option><option value="15006">Fashion</option><option value="15007">Film</option><option value="15008">Games</option><option value="15009">Interior Design</option><option value="15010">Media Arts</option><option value="15011">Music</option><option value="15012">Performing Arts</option><option value="15013">Photography</option><option value="15015">TV</option><option value="15014">Theater</option><option value="15016">Visual Arts</option><option value="15019">Accounting</option><option value="15020">Careers</option><option value="15021">Economics</option><option value="15022">Finance</option><option value="15023">Hospitality</option><option value="15024">Industries &amp; Professions</option><option value="15025">Investing</option><option value="15026">Management &amp; Leadership</option><option value="15027">Marketing &amp; Sales</option><option value="15028">Personal Finance</option><option value="15029">Real Estate</option><option value="15030">Reference</option><option value="15031">Small Business &amp; Entrepreneurship</option><option value="15033">Fiction</option><option value="15034">Nonfiction</option><option value="15311">Comics</option><option value="15036">Graphic Novels</option><option value="15037">Manga</option><option value="15039">Broadcasting</option><option value="15040">Digital Media</option><option value="15041">Journalism</option><option value="15042">Photojournalism</option><option value="15043">Print</option><option value="15044">Speech</option><option value="15045">Writing</option><option value="15047">Computers</option><option value="15048">Databases</option><option value="15049">Digital Media</option><option value="15050">Internet</option><option value="15051">Network</option><option value="15052">Operating Systems</option><option value="15053">Programming</option><option value="15054">Software</option><option value="15055">System Administration</option><option value="15057">Beverages</option><option value="15058">Courses &amp; Dishes</option><option value="15059">Culinary Arts</option><option value="15060">Methods</option><option value="15061">Reference</option><option value="15062">Regional &amp; Ethnic</option><option value="15063">Special Diet</option><option value="15064">Special Occasions</option><option value="15065">Specific Ingredients</option><option value="15067">Aeronautics</option><option value="15068">Chemical &amp; Petroleum Engineering</option><option value="15069">Civil Engineering</option><option value="15070">Computer Science</option><option value="15071">Electrical Engineering</option><option value="15072">Environmental Engineering</option><option value="15073">Mechanical Engineering</option><option value="15074">Power Resources</option><option value="15077">Action &amp; Adventure</option><option value="15078">African American</option><option value="15079">Anthologies</option><option value="15080">Classics</option><option value="15081">Comparative Literature</option><option value="15082">Erotica</option><option value="15083">Gay</option><option value="15084">Ghost</option><option value="15085">Historical</option><option value="15086">Horror</option><option value="15076">Latino</option><option value="15087">Literary</option><option value="15088">Literary Criticism</option><option value="15089">Poetry</option><option value="15090">Religious</option><option value="15091">Short Stories</option><option value="15093">Fitness</option><option value="15094">Self-Improvement</option><option value="15096">Africa</option><option value="15097">Americas</option><option value="15101">Ancient</option><option value="15102">Asia</option><option value="15103">Australia &amp; Oceania</option><option value="15104">Europe</option><option value="15105">Middle East</option><option value="15106">Military</option><option value="15107">World</option><option value="15110">African Languages</option><option value="15111">Ancient Languages</option><option value="15112">Arabic</option><option value="15113">Bilingual Editions</option><option value="15114">Chinese</option><option value="15115">English</option><option value="15116">French</option><option value="15117">German</option><option value="15118">Hebrew</option><option value="15119">Hindi</option><option value="15120">Indigenous Languages</option><option value="15121">Italian</option><option value="15122">Japanese</option><option value="15123">Korean</option><option value="15124">Linguistics</option><option value="15125">Other Language</option><option value="15126">Portuguese</option><option value="15127">Russian</option><option value="15128">Spanish</option><option value="15129">Speech Pathology</option><option value="15131">Antiques &amp; Collectibles</option><option value="15132">Crafts &amp; Hobbies</option><option value="15133">Gardening</option><option value="15134">Pets</option><option value="15136">Advanced Mathematics</option><option value="15137">Algebra</option><option value="15138">Arithmetic</option><option value="15139">Calculus</option><option value="15140">Geometry</option><option value="15141">Statistics</option><option value="15143">Anatomy &amp; Physiology</option><option value="15144">Dentistry</option><option value="15145">Emergency Medicine</option><option value="15146">Genetics</option><option value="15147">Immunology</option><option value="15148">Neuroscience</option><option value="15149">Nursing</option><option value="15150">Pharmacology &amp; Toxicology</option><option value="15151">Psychiatry</option><option value="15152">Psychology</option><option value="15153">Radiology</option><option value="15154">Veterinary</option><option value="15156">British Detectives</option><option value="15157">Hard-Boiled</option><option value="15158">Historical</option><option value="15159">Police Procedural</option><option value="15160">Short Stories</option><option value="15161">Women Sleuths</option><option value="15163">Family &amp; Relationships</option><option value="15164">Transportation</option><option value="15165">True Crime</option><option value="15168">Aesthetics</option><option value="15169">Epistemology</option><option value="15170">Ethics</option><option value="15172">Logic</option><option value="15173">Metaphysics</option><option value="15171">Philosophy of Language</option><option value="15175">Philosophy of Religion</option><option value="15174">Political Philosophy</option><option value="15177">Current Events</option><option value="15178">Foreign Policy &amp; International Relations</option><option value="15179">Local Governments</option><option value="15180">National Governments</option><option value="15181">Political Science</option><option value="15182">Public Administration</option><option value="15183">World Affairs</option><option value="15185">Design</option><option value="15187">Engineering</option><option value="15186">Language Arts &amp; Disciplines</option><option value="15188">Law</option><option value="15189">Medical</option><option value="15191">Almanacs &amp; Yearbooks</option><option value="15192">Atlases &amp; Maps</option><option value="15193">Catalogs &amp; Directories</option><option value="15194">Consumer Guides</option><option value="15195">Dictionaries &amp; Thesauruses</option><option value="15196">Encyclopedias</option><option value="15197">Etiquette</option><option value="15312">Manuals</option><option value="15198">Quotations</option><option value="15199">Study Aids</option><option value="15200">Words &amp; Language</option><option value="15201">Writing</option><option value="15203">Bible Studies</option><option value="15204">Bibles</option><option value="15205">Buddhism</option><option value="15206">Christianity</option><option value="15207">Comparative Religion</option><option value="15208">Hinduism</option><option value="15209">Islam</option><option value="15210">Judaism</option><option value="15211">Spirituality</option><option value="15213">Contemporary</option><option value="15214">Erotic Romance</option><option value="15216">Historical</option><option value="15215">Paranormal</option><option value="15217">Short Stories</option><option value="15218">Suspense</option><option value="15219">Western</option><option value="15221">Fantasy</option><option value="15227">Science Fiction</option><option value="15228">Science Fiction &amp; Literature</option><option value="15233">Agriculture</option><option value="15234">Astronomy</option><option value="15235">Atmosphere</option><option value="15236">Biology</option><option value="15237">Chemistry</option><option value="15238">Earth Sciences</option><option value="15239">Ecology</option><option value="15240">Environment</option><option value="15241">Essays</option><option value="15242">Geography</option><option value="15243">Geology</option><option value="15244">History</option><option value="15245">Life Sciences</option><option value="15246">Nature</option><option value="15247">Physics</option><option value="15248">Reference</option><option value="15250">Anthropology</option><option value="15251">Archaeology</option><option value="15252">Civics</option><option value="15253">Government</option><option value="15254">Social Studies</option><option value="15255">Social Welfare</option><option value="15256">Society</option><option value="15269">Sociology</option><option value="15271">Baseball</option><option value="15272">Basketball</option><option value="15273">Coaching</option><option value="15274">Equestrian</option><option value="15275">Extreme Sports</option><option value="15276">Football</option><option value="15277">Golf</option><option value="15278">Hockey</option><option value="15279">Motor Sports</option><option value="15280">Mountaineering</option><option value="15281">Outdoors</option><option value="15282">Racket Sports</option><option value="15283">Reference</option><option value="15284">Soccer</option><option value="15285">Training</option><option value="15286">Water Sports</option><option value="15287">Winter Sports</option><option value="15289">Adult Education</option><option value="15290">Curriculum &amp; Teaching</option><option value="15291">Educational Leadership</option><option value="15292">Educational Technology</option><option value="15293">Family &amp; Childcare</option><option value="15294">Information &amp; Library Science</option><option value="15295">Learning Resources</option><option value="15296">Psychology &amp; Research</option><option value="15297">Special Education</option><option value="15299">Africa</option><option value="15300">Americas</option><option value="15304">Asia</option><option value="15305">Caribbean</option><option value="15306">Essays &amp; Memoirs</option><option value="15307">Europe</option><option value="15308">Middle East</option><option value="15309">Oceania</option><option value="15310">Specialty Travel</option><option value="1635">Chinese Alt</option><option value="1731">College Rock</option><option value="1945">EMO</option><option value="1732">Goth Rock</option><option value="1733">Grunge</option><option value="1947">Indie Pop</option><option value="1734">Indie Rock</option><option value="1636">Korean Indie</option><option value="1735">New Wave</option><option value="1946">Pop Punk</option><option value="1736">Punk</option><option value="1716">Arabic Pop</option><option value="1717">Islamic</option><option value="1714">Khaleeji</option><option value="1715">North African</option><option value="1737">Acoustic Blues</option><option value="1738">Chicago Blues</option><option value="1739">Classic Blues</option><option value="1740">Contemporary Blues</option><option value="1741">Country Blues</option><option value="1742">Delta Blues</option><option value="1743">Electric Blues</option><option value="1672">Axé</option><option value="1673">Baile Funk</option><option value="1674">Bossa Nova</option><option value="1675">Choro</option><option value="1676">Forro</option><option value="1677">Frevo</option><option value="1678">MPB</option><option value="1679">Pagode</option><option value="1680">Samba</option><option value="1681">Sertanejo</option><option value="1744">Lullabies</option><option value="1745">Sing-Along</option><option value="1746">Stories</option><option value="1638">Chinese Classical</option><option value="1639">Chinese Flute</option><option value="1640">Chinese Opera</option><option value="1641">Chinese Orchestral</option><option value="1642">Chinese Regional Folk</option><option value="1643">Chinese Strings</option><option value="1644">Taiwanese Folk</option><option value="1645">Tibetan Native Music</option><option value="1747">CCM</option><option value="1748">Christian Metal</option><option value="1749">Christian Pop</option><option value="1750">Christian Rap</option><option value="1751">Christian Rock</option><option value="1752">Classic Christian</option><option value="1753">Contemporary Gospel</option><option value="1754">Gospel</option><option value="1755">Praise &amp; Worship</option><option value="1756">Southern Gospel</option><option value="1757">Traditional Gospel</option><option value="1928">Art Song</option><option value="1758">Avant-Garde</option><option value="1759">Baroque Era</option><option value="1929">Brass &amp; Woodwinds</option><option value="1933">Cantata</option><option value="1939">Cello</option><option value="1760">Chamber Music</option><option value="1761">Chant</option><option value="1762">Choral</option><option value="1763">Classical Crossover</option><option value="1682">High Classical</option><option value="1931">Contemporary Era</option><option value="1764">Early Music</option><option value="1934">Electronic</option><option value="1936">Guitar</option><option value="1765">Impressionist</option><option value="1766">Medieval Era</option><option value="1767">Minimalism</option><option value="1768">Modern Era</option><option value="1609">Opera</option><option value="1932">Oratorio</option><option value="1769">Orchestral</option><option value="1940">Percussion</option><option value="1337">Piano</option><option value="1770">Renaissance</option><option value="1771">Romantic Era</option><option value="1935">Sacred</option><option value="1930">Solo Instrumental</option><option value="1938">Violin</option><option value="1772">Wedding Music</option><option value="1773">Novelty</option><option value="1774">Standup Comedy</option><option value="1775">Alternative Country</option><option value="1776">Americana</option><option value="1777">Bluegrass</option><option value="1778">Contemporary Bluegrass</option><option value="1779">Contemporary Country</option><option value="1780">Country Gospel</option><option value="1781">Honky Tonk</option><option value="1782">Outlaw Country</option><option value="1724">Thai Country</option><option value="1783">Traditional Bluegrass</option><option value="1784">Traditional Country</option><option value="1785">Urban Cowboy</option><option value="1786">Breakbeat</option><option value="1787">Exercise</option><option value="1788">Garage</option><option value="1789">Hardcore</option><option value="1790">House</option><option value="1791">Jungle/Drum'n'bass</option><option value="1792">Techno</option><option value="1793">Trance</option><option value="1794">Lounge</option><option value="1795">Swing</option><option value="1796">Ambient</option><option value="1942">Bass</option><option value="1797">Downtempo</option><option value="1941">Dubstep</option><option value="1798">Electronica</option><option value="1799">IDM/Experimental</option><option value="1800">Industrial</option><option value="1801">Alternative Rap</option><option value="1646">Chinese Hip-Hop</option><option value="1802">Dirty South</option><option value="1803">East Coast Rap</option><option value="1804">Gangsta Rap</option><option value="1805">Hardcore Rap</option><option value="1806">Hip-Hop</option><option value="1647">Korean Hip-Hop</option><option value="1807">Latin Rap</option><option value="1808">Old School Rap</option><option value="1809">Rap</option><option value="1943">UK Hip-Hop</option><option value="1810">Underground Rap</option><option value="1811">West Coast Rap</option><option value="1812">Chanukah</option><option value="1813">Christmas</option><option value="1814">Christmas: Children's</option><option value="1815">Christmas: Classic</option><option value="1816">Christmas: Classical</option><option value="1817">Christmas: Jazz</option><option value="1818">Christmas: Modern</option><option value="1819">Christmas: Pop</option><option value="1820">Christmas: R&amp;B</option><option value="1821">Christmas: Religious</option><option value="1822">Christmas: Rock</option><option value="1823">Easter</option><option value="1824">Halloween</option><option value="1825">Thanksgiving</option><option value="1691">Bollywood</option><option value="1695">Devotional &amp; Spiritual</option><option value="1707">Ghazals</option><option value="1697">Indian Classical</option><option value="1708">Indian Folk</option><option value="1704">Indian Pop</option><option value="1694">Regional Indian</option><option value="1696">Sufi</option><option value="1692">Tamil</option><option value="1693">Telugu</option><option value="1826">Avant-Garde Jazz</option><option value="1828">Bop</option><option value="1685">MZGenre.MusicVideo.Jazz.BigBand</option><option value="1829">Contemporary Jazz</option><option value="1830">Cool</option><option value="1831">Crossover Jazz</option><option value="1832">Dixieland</option><option value="1833">Fusion</option><option value="1834">Hard Bop</option><option value="1835">Latin Jazz</option><option value="1836">Mainstream Jazz</option><option value="1837">Ragtime</option><option value="1838">Smooth Jazz</option><option value="1839">Trad Jazz</option><option value="1902">Vocal Jazz</option><option value="1651">Korean Trad Instrumental</option><option value="1650">Korean Trad Song</option><option value="1652">Korean Trad Theater</option><option value="1649">Korean Classical</option><option value="1840">Alternative &amp; Rock in Spanish</option><option value="1841">Baladas y Boleros</option><option value="1842">Contemporary Latin</option><option value="1843">Latin Jazz</option><option value="1844">Latin Urban</option><option value="1845">Pop in Spanish</option><option value="1846">Raices</option><option value="1847">Regional Mexicano</option><option value="1848">Salsa y Tropical</option><option value="1849">Healing</option><option value="1850">Meditation</option><option value="1851">Nature</option><option value="1852">Relaxation</option><option value="1853">Travel</option><option value="1948">Yoga</option><option value="1854">Adult Contemporary</option><option value="1855">Britpop</option><option value="1655">C-Pop</option><option value="1656">Cantopop/HK-Pop</option><option value="1664">Indo Pop</option><option value="1686">K-Pop</option><option value="1657">Korean Folk-Pop</option><option value="1660">Malaysian Pop</option><option value="1658">Mandopop</option><option value="1663">Manilla Sound</option><option value="1723">Oldies</option><option value="1662">Original Pilipino Music</option><option value="1661">Pinoy Pop</option><option value="1856">Pop/Rock</option><option value="1857">Soft Rock</option><option value="1659">Tai-Pop</option><option value="1858">Teen Pop</option><option value="1665">Thai Pop</option><option value="1949">Tribute</option><option value="1859">Contemporary R&amp;B</option><option value="1860">Disco</option><option value="1861">Doo Wop</option><option value="1862">Funk</option><option value="1863">Motown</option><option value="1864">Neo-Soul</option><option value="1865">Soul</option><option value="1867">Dub</option><option value="1944">Lovers Rock</option><option value="1866">Modern Dancehall</option><option value="1868">Roots Reggae</option><option value="1869">Ska</option><option value="1870">Adult Alternative</option><option value="1871">American Trad Rock</option><option value="1872">Arena Rock</option><option value="1873">Blues-Rock</option><option value="1874">British Invasion</option><option value="1653">Chinese Rock</option><option value="1875">Death Metal/Black Metal</option><option value="1876">Glam Rock</option><option value="1877">Hair Metal</option><option value="1878">Hard Rock</option><option value="1688">Heavy Metal</option><option value="1879">Jam Bands</option><option value="1654">Korean Rock</option><option value="1880">Prog-Rock/Art Rock</option><option value="1881">Psychedelic</option><option value="1882">Rock &amp; Roll</option><option value="1883">Rockabilly</option><option value="1884">Roots Rock</option><option value="1885">Singer/ Songwriter</option><option value="1886">Southern Rock</option><option value="1887">Surf</option><option value="1888">Tex-Mex</option><option value="1889">Alternative Folk</option><option value="1890">Contemporary Folk</option><option value="1891">Contemporary Singer/Songwriter</option><option value="1892">Folk-Rock</option><option value="1893">New Acoustic</option><option value="1894">Traditional Folk</option><option value="1895">Foreign Cinema</option><option value="1896">Musicals</option><option value="1897">Original Score</option><option value="1718">Sound Effects</option><option value="1898">Soundtrack</option><option value="1899">TV Soundtrack</option><option value="1900">Standards</option><option value="1901">Traditional Pop</option><option value="1666">Trot</option><option value="1903">Vocal Pop</option><option value="1904">Africa</option><option value="1710">Afrikaans</option><option value="1905">Afro-Beat</option><option value="1906">Afro-Pop</option><option value="1709">Arabesque</option><option value="1907">Asia</option><option value="1908">Australia</option><option value="1909">Cajun</option><option value="1705">Calypso</option><option value="1910">Caribbean</option><option value="1911">Celtic</option><option value="1912">Celtic Folk</option><option value="1913">Contemporary Celtic</option><option value="1702">Dangdut</option><option value="1699">Dini</option><option value="1914">Europe</option><option value="1727">Fado</option><option value="1711">Farsi</option><option value="1725">Flamenco</option><option value="1915">France</option><option value="1700">Halk</option><option value="1916">Hawaii</option><option value="1728">Iberia</option><option value="1703">Indonesian Religious</option><option value="1712">Israeli</option><option value="1917">Japan</option><option value="1918">Klezmer</option><option value="1919">North America</option><option value="1920">Polka</option><option value="1729">Russian</option><option value="1698">Russian Chanson</option><option value="1701">Sanat</option><option value="1706">Soca</option><option value="1921">South Africa</option><option value="1922">South America</option><option value="1726">Tango</option><option value="1923">Traditional Celtic</option><option value="1730">Turkish</option><option value="1924">Worldbeat</option><option value="1925">Zydeco</option></select><br><label for="countryDropdown">Select Country:</label> <input type="text" placeholder="Search.." id="countrySearch" onkeyup="debounceFilterLanguage()"> <select id="countryDropdown"><option value="dz">Algeria</option><option value="ao">Angola</option><option value="ai">Anguilla</option><option value="ag">Antigua and Barbuda</option><option value="ar">Argentina</option><option value="am">Armenia</option><option value="au">Australia</option><option value="at">Austria</option><option value="az">Azerbaijan</option><option value="bs">Bahamas</option><option value="bh">Bahrain</option><option value="bb">Barbados</option><option value="by">Belarus</option><option value="be">Belgium</option><option value="bz">Belize</option><option value="bj">Benin</option><option value="bm">Bermuda</option><option value="bt">Bhutan</option><option value="bo">Bolivia</option><option value="ba">Bosnia and Herzegovina</option><option value="bw">Botswana</option><option value="br">Brazil</option><option value="vg">British Virgin Islands</option><option value="bg">Bulgaria</option><option value="kh">Cambodia</option><option value="cm">Cameroon</option><option value="ca">Canada</option><option value="cv">Cape Verde</option><option value="ky">Cayman Islands</option><option value="td">Chad</option><option value="cl">Chile</option><option value="cn">China mainland</option><option value="co">Colombia</option><option value="cr">Costa Rica</option><option value="hr">Croatia</option><option value="cy">Cyprus</option><option value="cz">Czech Republic</option><option value="ci">Côte d'Ivoire</option><option value="cd">Democratic Republic of the Congo</option><option value="dk">Denmark</option><option value="dm">Dominica</option><option value="do">Dominican Republic</option><option value="ec">Ecuador</option><option value="eg">Egypt</option><option value="sv">El Salvador</option><option value="ee">Estonia</option><option value="sz">Eswatini</option><option value="fj">Fiji</option><option value="fi">Finland</option><option value="fr">France</option><option value="ga">Gabon</option><option value="gm">Gambia</option><option value="ge">Georgia</option><option value="de">Germany</option><option value="gh">Ghana</option><option value="gr">Greece</option><option value="gd">Grenada</option><option value="gt">Guatemala</option><option value="gw">Guinea-Bissau</option><option value="gy">Guyana</option><option value="hn">Honduras</option><option value="hk">Hong Kong</option><option value="hu">Hungary</option><option value="is">Iceland</option><option value="in">India</option><option value="id">Indonesia</option><option value="iq">Iraq</option><option value="ie">Ireland</option><option value="il">Israel</option><option value="it">Italy</option><option value="jm">Jamaica</option><option value="jp">Japan</option><option value="jo">Jordan</option><option value="kz">Kazakhstan</option><option value="ke">Kenya</option><option value="kr">Korea, Republic of</option><option value="xk">Kosovo</option><option value="kw">Kuwait</option><option value="kg">Kyrgyzstan</option><option value="la">Lao People's Democratic Republic</option><option value="lv">Latvia</option><option value="lb">Lebanon</option><option value="lr">Liberia</option><option value="ly">Libya</option><option value="lt">Lithuania</option><option value="lu">Luxembourg</option><option value="mo">Macao</option><option value="mg">Madagascar</option><option value="mw">Malawi</option><option value="my">Malaysia</option><option value="mv">Maldives</option><option value="ml">Mali</option><option value="mt">Malta</option><option value="mr">Mauritania</option><option value="mu">Mauritius</option><option value="mx">Mexico</option><option value="fm">Micronesia, Federated States of</option><option value="md">Moldova</option><option value="mn">Mongolia</option><option value="me">Montenegro</option><option value="ms">Montserrat</option><option value="ma">Morocco</option><option value="mz">Mozambique</option><option value="mm">Myanmar</option><option value="na">Namibia</option><option value="np">Nepal</option><option value="nl">Netherlands</option><option value="nz">New Zealand</option><option value="ni">Nicaragua</option><option value="ne">Niger</option><option value="ng">Nigeria</option><option value="mk">North Macedonia</option><option value="no">Norway</option><option value="om">Oman</option><option value="pa">Panama</option><option value="pg">Papua New Guinea</option><option value="py">Paraguay</option><option value="pe">Peru</option><option value="ph">Philippines</option><option value="pl">Poland</option><option value="pt">Portugal</option><option value="qa">Qatar</option><option value="cg">Republic of the Congo</option><option value="ro">Romania</option><option value="ru">Russia</option><option value="rw">Rwanda</option><option value="sa">Saudi Arabia</option><option value="sn">Senegal</option><option value="rs">Serbia</option><option value="sc">Seychelles</option><option value="sl">Sierra Leone</option><option value="sg">Singapore</option><option value="sk">Slovakia</option><option value="si">Slovenia</option><option value="sb">Solomon Islands</option><option value="za">South Africa</option><option value="es">Spain</option><option value="lk">Sri Lanka</option><option value="kn">St. Kitts and Nevis</option><option value="kn">St. Kitts and Nevis</option><option value="lc">St. Lucia</option><option value="vc">St. Vincent and The Grenadines</option><option value="sr">Suriname</option><option value="se">Sweden</option><option value="ch">Switzerland</option><option value="tw">Taiwan</option><option value="tj">Tajikistan</option><option value="tz">Tanzania</option><option value="th">Thailand</option><option value="to">Tonga</option><option value="tt">Trinidad and Tobago</option><option value="tn">Tunisia</option><option value="tm">Turkmenistan</option><option value="tc">Turks and Caicos</option><option value="tr">Türkiye</option><option value="ae">UAE</option><option value="ug">Uganda</option><option value="ua">Ukraine</option><option value="gb">United Kingdom</option><option value="us" selected="selected">United States</option><option value="uy">Uruguay</option><option value="uz">Uzbekistan</option><option value="vu">Vanuatu</option><option value="ve">Venezuela</option><option value="vn">Vietnam</option><option value="ye">Yemen</option><option value="zm">Zambia</option><option value="zw">Zimbabwe</option></select><br><label for="explicitCheckbox">Explicit:</label> <input type="checkbox" id="explicitCheckbox"><br><label for="dataTypeToggle">Data Type:</label> <input type="radio" id="topSongsRadio" name="dataType" value="topsongs" checked="checked"> <label for="topSongsRadio">Top Songs</label> <input type="radio" id="topMusicVideosRadio" name="dataType" value="topmusicvideos"> <label for="topMusicVideosRadio">Top Music Videos</label><br><button id="getAppleData">Search</button><br><br><div class="tableDisplay"><table class="table table-hover" width="100%"><thead><tr><th>Title</th><th>Artist</th><th>Preview</th><th>Search Youtube</th></tr></thead><tbody id="itunesDataList"></tbody></table></div></div></div><div id="menu2" class="tab-pane fade in active"><div class="well" style="background:#222"><audio id="audioPlayer" style="display:none" controls=""></audio><button id="directoryPickerButton">Select MP3 Directory</button> <input type="file" id="mp3DirectoryInput" webkitdirectory="" directory="" multiple="" style="display:none"><div id="directoriesContainer"><hr></div></div></div><div id="menu3" class="tab-pane fade"><div class="well" style="background:#222"><h3>Create and Manage Playlists</h3><input type="text" id="newPlaylistName" placeholder="Playlist Name"> <button id="createPlaylistButton">Create New Playlist</button><div id="playlistCreationStatus"></div><hr><h4>Add to Playlist</h4><select id="playlistSelect"></select> <input type="text" id="trackName" placeholder="Track Name"> <input type="text" id="trackURL" placeholder="Track YouTube URL"> <button id="addTrackToPlaylistButton">Add Track</button><div id="trackAdditionStatus"></div><hr><h4>Bulk Add to Playlist</h4><select id="bulkPlaylistSelect"></select> <textarea id="bulkAddTracks" placeholder="Enter data in format: title,id"></textarea> <button id="bulkAddTracksToPlaylistButton">Add Tracks</button><div id="bulkAdditionStatus"></div><div id="playlistsContainer"><hr></div></div></div></div></div></div></div><br><div class="col-xs-1"></div><div class="col-xs-10 well well-sm" style="background:#000;color:#fff"><div class="col-xs-4" href="#" data-toggle="modal" data-target="#myModalAbout">About</div><div class="col-xs-4" href="#" data-toggle="modal" data-target="#myModalContact">Contact</div><div class="col-xs-4" href="#" data-toggle="modal" data-target="#myModalTerms">Terms</div></div><div class="col-xs-12"></div><div class="col-xs-1"></div><div class="col-xs-11" style="background:#000;height:80px"><img class="col-xs-3" src="/music/assets/ytpic.png" alt="Powered By Youtube" style="width:85px;height:40px"><div class="col-xs-3"><div class="g-ytsubscribe" style="float:right" data-channelid="UCHfNSTAAqh95V-kaFco-OUA" data-layout="full" data-count="hidden"></div></div><div class="col-xs-12" style="color:#fff"><p>If you like what you see, please subscribe!</p></div></div><iframe id="youtube_video" width="200" height="113" style="position:fixed;left:0;bottom:0;z-index:2147483647"></iframe></div><div class="modal fade" id="createPlaylist" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h4 class="modal-title">Create Playlist</h4></div><form action="javascript:;" method="get" class="form-horizontal" role="form"><div class="form-group"><label class="control-label col-sm-2" for="Playlist Name">Playlist Name:</label><div class="col-sm-8 col-md-6"><input type="text" class="form-control" id="PlaylistName1" placeholder="Enter Playlist Name"></div></div><div class="form-group"><label class="control-label col-sm-2" for="pwd">Comment:</label><div class="col-sm-8 col-md-6"><input type="text" class="form-control" id="Comment1" placeholder="Enter Comment"></div></div><div class="form-group"><div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-default" onclick="newPlaylist(this)" data-dismiss="modal">Submit</button></div></div></form></div></div></div><div class="modal fade" id="createChannelPlaylist" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h4 class="modal-title">Save Channels as Playlist</h4></div><div class="modal-body"><form action="javascript:;" onsubmit="newChannelPlalylist(this)" method="get" class="form-horizontal" role="form"><div class="form-group"><label class="control-label col-sm-2" for="Playlist Name">Playlist Name:</label><div class="col-sm-8 col-md-6"><input type="text" class="form-control" id="PlaylistName2" placeholder="Enter Playlist Name"></div></div><div class="form-group"><label class="control-label col-sm-2" for="pwd">Comment:</label><div class="col-sm-8 col-md-6"><input type="text" class="form-control" id="Comment2" placeholder="Enter Comment"></div></div><div class="form-group"><div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-default">Submit</button></div></div></form></div></div></div></div><div class="modal fade" id="loginModal" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h4 class="modal-title">Login</h4></div><div class="modal-body"><div id="loginState">Please Enter Your Credentials</div><form><div align="center"><label>Username:</label> <input type="text" placeholder="" name="UserNameInput"><br><b>Password: </b><input type="password" placeholder="" name="PassWordInput"><br></div><div class="modal-footer"><p style="float:left;color:#000">Username: guest<br>Password: account</p><input type="button" value="Register" align="left" class="register" onclick="showRegisterModal()"> <input type="button" value="Submit!" onclick="loginUser()" align="right"></div></form></div></div></div></div><div class="modal fade" id="registerModal" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h4 class="modal-title">Registration</h4></div><div class="modal-body"><div id="registrationState">Please Enter Credentials</div><form><div align="center"><label>Email (opt):</label> <input type="text" name="email"><br><label>Username:</label> <input type="text" name="name"><br><b>Password: </b><input type="password" placeholder="Password" name="pass1"><br><b>Password: </b><input type="password" placeholder="Password" name="pass2"><br><input type="checkbox" name="sendEmail"> <b>Email Results?</b></div><div class="modal-footer"><input type="button" value="Submit!" onclick="registerUser()" align="right"></div></form></div></div></div></div><div class="modal fade" id="videoModal" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><div class="modal-title" id="songTitle">If you see this, an error has occured</div></div><div class="modal-body"><div id="video" align="middle"></div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div><div class="modal fade" id="myModalAbout" role="dialog col-xs-12" align="center"><div class="modal-dialog"><div class="modal-content col-xs-12"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h2 class="modal-title">About This Site</h2></div><div class="modal-body col-xs-12"><h4>History</h4><p>I initially created this website in 2016 as a hobby project. After starting my job at the Baltimore Neighborhood Indicators Alliance (<a target="_blank" href="https://www.bniajfi.org">BNIA</a>), the site was set aside. Rediscovered in January 2024, I decided to give it a fresh update. Enjoy!</p><h4>General Information</h4><p>This site functions primarily as a media player. Your settings are saved in your local browser's memory. To keep changes permanently, please <a href="#" onclick="$('#registerModal').modal('show');">create an account</a>.</p><h4>Explore Tab</h4><p>Discover new music and save YouTube links to your playlist.</p><h4>Local Storage Tab</h4><p>Upload music from your desktop and manage your library.</p><h4>Creating a Playlist</h4><p>Build your playlist with YouTube URLs. You can add tracks manually by entering the artist, title, and URL, or add multiple tracks from a YouTube playlist or channel. Here's how:</p><ol><li>Manually add tracks by entering their YouTube URL along with the artist and title information.</li><li>Automatically add tracks from a YouTube playlist or channel:<ul><li>Navigate to the playlist or channel's video page.</li><li>Ensure all desired songs are visible on the page.</li><li>Open your browser's developer console with `Ctrl` + `Shift` + `C`.</li><li>Enter the script (below) in the console to extract song information:</li><li>Copy the console output into the playlist input field.</li></ul></li><pre style="text-align:left">var els = document.getElementsByClassName('yt-simple-endpoint style-scope ytd-playlist-video-renderer');
+<!DOCTYPE html>
+<!--
+title,id
+Com Truise - Futureworld,B_CBFDwOfao
+Com Truise - Ether Drift,qCmT74BSRyA
+Com Truise - Glawio,YBWZKVejLiw
+Com Truise - Brokendate,W0n3vQyfCfw
+Com Truise - Hyperlips,nunpUdoQwDE
+Com Truise - Flightwave,_0SryVC6Mi0
+Com Truise - Air Cal,pM2GK1s9PwE
+Com Truise - Cathode Girls,-3BZwmEg8pg
+Com Truise - VHS Sex,Nyb7K6Ho2kM
+Com Truise - Terminal,WimMaCYX4WA
+https://developers.google.com/youtube/iframe_api_reference#Queueing_Functions
+https://gist.github.com/milankragujevic/cf0e503407104b1e444efa18f4108ce1
+https://www.youtube.com/@ministrysound/videos
+
+example playlist url: https://www.youtube.com/playlist?list=PLJJbgs-F6xmvcOnjT0K71iKAHX-GsLKFv
+example song url: https://www.youtube.com/watch?v=B_CBFDwOfao
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A Media Player">
+    <meta name="author" content="Charles Karpati">
+    <title>CKPlayer</title>
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" type="text/css"  href="/music/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"  href="/music/css/font-awesome/css/font-awesome.min.css">
+    <script src="/music/js/jquery.js"></script>
+    <script src="/music/js/bootstrap.min.js"></script>
+    <script src="/music/js/idb.umd.min.js"></script>
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" type="text/css" href="/music/css/design.css">
+  </head>
+  <body>
+    <!-- Navigation, Sidebar -->
+    <!-- 
+      /*
+      Called From (file/function): 
+      Inputs: None
+      Purpose: Log User Out
+      Actions: Clears session histroy
+      Functions: ... below
+      */
+      --> 
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <!-- Start Lefthand Navbar Items-->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <!-- Top Left Navbar -->
+        <div class="special">
+          <!-- Randomize -->
+          <a class=" pull-left fa fa-random" href="javascript:;" onClick="setShuffle();" title="Randomize" data-toggle="tooltip" data-placement="bottom"></a>
+          <!-- Repeat Playlist -->
+          <a class=" pull-left fa fa-repeat" id='loop' href="javascript:;" onClick="setLoop();" title="Repeat Playlist" data-toggle="tooltip" data-placement="bottom"></a>
+          <!--No Repeat -->
+          <a class=" pull-left fa fa-long-arrow-right" id='unLoop' href="javascript:;" onClick="setUnLoop();" style="display:none;" title="No Repeat" data-toggle="tooltip" data-placement="bottom"></a>
+          <!-- Previous -->
+          <a class=" pull-left fa fa-step-backward" href="javascript:;" onClick="previous();" title="Previous" data-toggle="tooltip" data-placement="bottom"></a>
+          <!-- SliderBar -->
+          <div id="sliderBar" class="pull-left">
+            <input type="range" onclick="seekTo(this.value);" id="progressBar" style="height:70%">
+            <marquee id='title' style="color: #9d9d9d; font-size:12px; height:25%" behavior="scroll" direction="left"> Click a Song to Begin </marquee>
+            </input>
+          </div>
+          <!-- Next -->
+          <a class=" pull-left fa fa-step-forward" href="javascript:;" onClick="next();" title="Next" data-toggle="tooltip" data-placement="bottom"></a>
+          <!-- Pause -->
+          <a class=" pull-left fa fa-pause" id='pause' href="javascript:;" onClick="pause();" title="Pause" style="display:none;" data-toggle="tooltip" data-placement="bottom"></a>
+          <!-- Play -->
+          <a class=" pull-left fa fa-play" id='play' href="javascript:;" onClick="play();" title="Play" data-toggle="tooltip" data-placement="bottom"></a>
+        </div>
+      </div>
+      <!-- End Lefthand Navbar Items-->
+      <!-- Start Righthand Navbar Items-->
+      <div>
+        <!-- Top Right Navbar -->
+        <ul class="nav top-nav special">
+          <!-- About -->
+          <a class="pull-right fa fa-question" title="About" data-toggle="modal" data-target="#myModalAbout" data-toggle="tooltip" data-placement="bottom"></a>
+          <!-- Settings -->
+          <li class="dropdown pull-right" title="Settings" data-toggle="tooltip" data-placement="bottom">
+            <a class=" dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-wrench"></i>
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="active">
+                <a>Settings</a>
+              </li>
+              <!-- 
+                <li class="divider"></li><li><a href="#"><i class="fa fa-check-square-o"></i>
+                		All Features 
+                	</a></li><li><a href="#"><i class="fa fa-fw fa-user"></i>
+                		Personalize
+                	</a></li><li><a href="#"><i class="fa fa-fw fa-info"></i>
+                		Help 
+                	</a></li><li class="divider"></li>
+                -->
+              <li id="loginListItem">
+                <a href="#" onclick="$('#loginModal').modal('show');">
+                  <i class="fa fa-fw fa-sign-in"></i> Log In </a>
+              </li>
+              <li id="logoutListItem" style="display:none;">
+                <a href="#" onclick="logoutUser();">
+                  <i class="fa fa-fw fa-power-off"></i> Log Out </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Recent Uploads
+            <li title="Recent Uploads"
+            	class="dropdown pull-right" 
+            	data-toggle="tooltip" 
+            	data-placement="bottom"><a class=" dropdown-toggle"
+            		data-toggle="dropdown"><i class="fa fa-exclamation"></i><b class="caret"></b></a><ul class="dropdown-menu alert-dropdown"><li class="active"><a>Alerts</a></li><li class="divider"></li><li><a href="#">Song</a></li><li><a href="#">Song</a></li><li><a href="#">Song</a></li><li class="divider"></li><li><a href="#">View All</a></li></ul></li>
+            -->
+          <!-- Volume -->
+          <li class="dropdown pull-right" title="Volume" data-toggle="tooltip" data-placement="bottom">
+            <a class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-volume-down "></i>
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu hiddenBackgroundSlider" style="background-color:black">
+              <li>
+                <input type="range" onclick="setVolume(this.value)" id="volVal" value=100 class="verticalSlider" />
+              </li>
+            </ul>
+          </li>
+
+          <!-- <a class="pull-right fa fa-frown-o" data-toggle="tooltip" data-placement="bottom" title="Bad Mix"></a>
+															<!-- Bad Song 
+            <a class="pull-right fa fa-thumbs-o-down" 
+            	title="Bad Song" 
+            	data-toggle="tooltip" 
+            	data-placement="bottom"></a>
+															<!-- Love It 
+            <a class="pull-right fa fa-heart-o" 
+            	onclick="saveToPlaylist('Favorites');" 
+            	title="Love it" 
+            	data-toggle="tooltip" 
+            	data-placement="bottom" ></a>
+															<!-- Good Song
+            <a class="pull-right fa fa-thumbs-o-up" 
+            	title="Good Song" 
+            	data-toggle="tooltip" 
+            	data-placement="bottom"></a>
+            -->
+          <!-- <a class="pull-right fa fa-smile-o"	 data-toggle="tooltip" data-placement="bottom" title="Good Mix"></a>-->
+          <!-- Expand Video -->
+          <a class="pull-right fa fa-expand" title="Expand Video" data-toggle="modal" data-target="#videoModal" data-toggle="tooltip" data-placement="bottom"></a>
+        </ul>
+      </div>
+      <!-- End Righthand Navbar Items-->
+      <!-- Start Left Navbar Gutter-->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav side-nav myautoscroll">
+          <!-- Explore -->
+          <li>
+            <a href="javascript:;" onclick="">
+              <i class="fa fa-fw fa-home"></i> Explore </a>
+          </li>
+          <!-- Playlist -->
+          <li>
+            <a href="javascript:;" onclick="loadPlaylist(); toggleCarret(this);" data-toggle="collapse" data-target="#searchPlaylist">
+              <i class="fa fa-fw fa-th-list"></i> Playlists <i class="fa fa-fw fa-angle-up"></i>
+            </a>
+            <ul id="searchPlaylist" class="collapse"></ul>
+          </li>
+          <!-- Channels -->
+          <li>
+            <a href="javascript:;" onclick="toggleCarret(this);" data-toggle="collapse" data-target="#searchChannel">
+              <i class="fa fa-fw fa-th-list"></i> Channels <i class="fa fa-fw fa-angle-up"></i>
+            </a>
+            <!-- Channels Displayed-->
+            <ul id="searchChannel" style="height:200px; overflow:auto;" class="collapse">
+            </ul>
+          </li>
+          <!-- Now Playing -->
+          <li>
+            <a>
+              <i class="fa fa-music"></i> Now Playing </a>
+            <!-- playlist Displayed-->
+            <ul id="playing" style="overflow:auto;" class="collapse in"></ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Body -->
+    <div id="wrapper">
+      <div id="page-wrapper">
+        <div class="container-fluid">
+          <!-- Page Heading -->
+          <div class="alert-box success">Successfully Saved</div>
+          <div class="alert-box failure">Failed to Save</div>
+          <div id='video' align='middle'></div>
+          <div class="col-xs-12" id='songs'>
+            <!-- Songs -->
+            <div class="row">
+              <div class="col-lg-12">
+                <h1>Explore</h1>
+                <ul style="background-color:#222; border-radius: 5px 5px 0px 0px; width:100%;" class="nav nav-tabs">
+                  <li style="width:30%;">
+                    <a data-toggle="tab" href="#menu1">Explore</a>
+                  </li>
+                  <li style="width:30%;" class="active">
+                    <a data-toggle="tab" href="#menu2">Local Storage</a>
+                  </li>
+                  <li style="width:30%;">
+                    <a data-toggle="tab" href="#menu3">Playlist</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="tab-content">
+              <div id="menu1" class="tab-pane fade">
+                <div class='well' style="background:#222;"> 
+                  <!-- <button onclick="searchHypeM()";>Search Hype M</button> -->
+                  <!-- <div id="billboard"></div> -->
+                  <h3>Filter Trending</h3>
+                  <small>Made possible by Apple's Itunes RSS Feed</small>
+                  <br>
+                  <br>
+                  <!-- Genre Dropdown -->
+                  <label for="genreDropdown">Select Genre:</label>
+                  <input type="text" placeholder="Search.." id="genreSearch" onkeyup="debounceFilterGenre()">
+                  <select id="genreDropdown"></select>
+                  <br>
+                  <!-- Country Dropdown -->
+                  <label for="countryDropdown">Select Country:</label>
+                  <input type="text" placeholder="Search.." id="countrySearch" onkeyup="debounceFilterLanguage()">
+                  <select id="countryDropdown"></select>
+                  <br>
+                  <!-- Explicit Checkbox -->
+                  <label for="explicitCheckbox">Explicit:</label>
+                  <input type="checkbox" id="explicitCheckbox">
+                  <br>
+                  <!-- Data Type Toggle -->
+                  <label for="dataTypeToggle">Data Type:</label>
+                  <input type="radio" id="topSongsRadio" name="dataType" value="topsongs" checked>
+                  <label for="topSongsRadio">Top Songs</label>
+                  <input type="radio" id="topMusicVideosRadio" name="dataType" value="topmusicvideos">
+                  <label for="topMusicVideosRadio">Top Music Videos</label>
+                  <br>
+                  <button id="getAppleData">Search</button>
+                  <br>
+                  <br> 
+                  <div class="tableDisplay" class="col-lg-12">
+                    <table class="table table-hover" width='100%'>
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th>Artist</th>
+                          <th>Preview</th>
+                          <th>Search Youtube</th>
+                        </tr>
+                      </thead>
+                      <tbody id="itunesDataList"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+                <div id="menu2" class="tab-pane fade in active">
+                  <div class='well' style="background:#222;">
+                    <audio id="audioPlayer" style="display:none" controls></audio>
+                    <button id="directoryPickerButton">Select MP3 Directory</button>
+                    <input type="file" id="mp3DirectoryInput" webkitdirectory directory multiple style="display: none;">
+                    <div id="directoriesContainer"></div> <!-- Container for playlists -->
+                  </div>
+                </div>
+                <div id="menu3" class="tab-pane fade">
+                  <div class="well" style="background:#222;">
+                    <h3>Create and Manage Playlists</h3>
+                    <input type="text" id="newPlaylistName" placeholder="Playlist Name">
+                    <button id="createPlaylistButton">Create New Playlist</button>
+                    <div id="playlistCreationStatus"></div>
+                    <hr>
+                    
+                    <h4>Add to Playlist</h4>
+                    <select id="playlistSelect">
+                      <!-- Dynamically populated with playlists -->
+                    </select>
+                    <input type="text" id="trackName" placeholder="Track Name">
+                    <input type="text" id="trackURL" placeholder="Track YouTube URL">
+                    <button id="addTrackToPlaylistButton">Add Track</button>
+                    <div id="trackAdditionStatus"></div>
+                    
+                    <hr>
+                    <h4>Bulk Add to Playlist</h4>
+                    <select id="bulkPlaylistSelect">
+                      <!-- Dynamically populated with playlists -->
+                    </select>
+                    <textarea id="bulkAddTracks" placeholder="Enter data in format: title,id"></textarea>
+                    <button id="bulkAddTracksToPlaylistButton">Add Tracks</button>
+                    <div id="bulkAdditionStatus"></div>
+                    <div id="playlistsContainer"></div>
+                  </div>
+                </div>
+            </div>
+            <!-- /.row -->
+          </div>
+        </div>
+      </div> 
+      <!-- /.container-fluid -->
+      <!-- /#page-wrapper -->
+      <br>
+      <div class="col-xs-1"></div>
+      <div class="col-xs-10 well well-sm" style="background:black; color:white;">
+        <div class="col-xs-4" href="#" data-toggle="modal" data-target="#myModalAbout">About</div>
+        <div class="col-xs-4" href="#" data-toggle="modal" data-target="#myModalContact">Contact</div>
+        <div class="col-xs-4" href="#" data-toggle="modal" data-target="#myModalTerms">Terms</div>
+      </div>
+      <div class="col-xs-12"></div>
+      <div class="col-xs-1"></div>
+      <div class="col-xs-11" style="background:black; height:80px;">
+        <img class="col-xs-3" src="/music/assets/ytpic.png" alt="Powered By Youtube" style="width:85px; height:40px;">
+        <div class="col-xs-3">
+          <div class="g-ytsubscribe" style="float:right;" data-channelid="UCHfNSTAAqh95V-kaFco-OUA" data-layout="full" data-count="hidden"></div>
+        </div>
+        <div class="col-xs-12" style="color:white;">
+          <p>If you like what you see, please subscribe!</p>
+        </div>
+      </div>
+        <iframe id="youtube_video" width="200" height="113" style="position: fixed; left: 0; bottom: 0; z-index:2147483647">
+        </iframe>
+    </div>
+    <!-- Create Playlist Modal -->
+    <div class="modal fade" id="createPlaylist" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"> &times; </button>
+            <h4 class="modal-title"> Create Playlist </h4>
+          </div>
+          <form action="javascript:;" method="get" class="form-horizontal" role="form">
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="Playlist Name"> Playlist Name: </label>
+              <div class="col-sm-8 col-md-6">
+                <input type="text" class="form-control" id="PlaylistName1" placeholder="Enter Playlist Name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="pwd"> Comment: </label>
+              <div class="col-sm-8 col-md-6">
+                <input type="text" class="form-control" id="Comment1" placeholder="Enter Comment">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" onclick="newPlaylist(this)" data-dismiss="modal"> Submit </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Save Channel as Playlist Modal -->
+    <div class="modal fade" id="createChannelPlaylist" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"> &times; </button>
+            <h4 class="modal-title"> Save Channels as Playlist </h4>
+          </div>
+          <div class="modal-body">
+            <form action="javascript:;" onsubmit="newChannelPlalylist(this)" method="get" class="form-horizontal" role="form">
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="Playlist Name"> Playlist Name: </label>
+                <div class="col-sm-8 col-md-6">
+                  <input type="text" class="form-control" id="PlaylistName2" placeholder="Enter Playlist Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="pwd"> Comment: </label>
+                <div class="col-sm-8 col-md-6">
+                  <input type="text" class="form-control" id="Comment2" placeholder="Enter Comment">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-default"> Submit </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Login</h4>
+          </div>
+          <div class="modal-body">
+            <div id='loginState'>Please Enter Your Credentials</div>
+            <form>
+              <div align='center'>
+                <label>Username:</label>
+                <input type='text' placeholder="" name='UserNameInput' />
+                </br>
+                <b> Password: </b>
+                <input type='password' placeholder="" name='PassWordInput' />
+                </br>
+              </div>
+              <div class="modal-footer">
+                <p style="float:left; color:black;"> Username: guest <br> Password: account </p>
+                <input type='button' value='Register' align='left' class='register' onclick='showRegisterModal()' />
+                <input type='button' value='Submit!' onclick='loginUser()' align='right' />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registerModal" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Registration</h4>
+          </div>
+          <div class="modal-body">
+            <div id='registrationState'>Please Enter Credentials</div>
+            <form>
+              <div align='center'>
+                <label>Email (opt):</label>
+                <input type="text" name="email">
+                </br>
+                <label>Username:</label>
+                <input type="text" name="name">
+                <br>
+                <b> Password: </b>
+                <input type='password' placeholder="Password" name='pass1' />
+                </br>
+                <b> Password: </b>
+                <input type='password' placeholder="Password" name='pass2' />
+                <br>
+                <input type='checkbox' name='sendEmail'>
+                <b> Email Results? </b>
+              </div>
+              <div class="modal-footer">
+                <input type='button' value='Submit!' onclick='registerUser()' align='right' />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Video Modal -->
+    <div class="modal fade" id="videoModal" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"> &times; </button>
+            <div class="modal-title" id='songTitle'> If you see this, an error has occured </div>
+          </div>
+          <div class="modal-body">
+            <div id='video' align='middle'></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal"> Close </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- About Site Modal -->
+    <div class="modal fade" id="myModalAbout" role="dialog col-xs-12" align="center">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content col-xs-12">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2 class="modal-title">About This Site</h2>
+          </div> 
+            <div class="modal-body col-xs-12"> 
+              <h4>History</h4>
+              <p>I initially created this website in 2016 as a hobby project. After starting my job at the Baltimore Neighborhood Indicators Alliance (<a target="_blank" href='https://www.bniajfi.org'>BNIA</a>), the site was set aside. Rediscovered in January 2024, I decided to give it a fresh update. Enjoy!</p>
+              
+              <h4>General Information</h4>
+              <p>This site functions primarily as a media player. Your settings are saved in your local browser's memory. To keep changes permanently, please <a href="#" onclick="$('#registerModal').modal('show');">create an account</a>.</p>
+              
+              <h4>Explore Tab</h4>
+              <p>Discover new music and save YouTube links to your playlist.</p>
+              
+              <h4>Local Storage Tab</h4>
+              <p>Upload music from your desktop and manage your library.</p>
+              
+              <h4>Creating a Playlist</h4>
+              <p>Build your playlist with YouTube URLs. You can add tracks manually by entering the artist, title, and URL, or add multiple tracks from a YouTube playlist or channel. Here's how:</p>
+              <ol>
+                <li>Manually add tracks by entering their YouTube URL along with the artist and title information.</li>
+                <li>Automatically add tracks from a YouTube playlist or channel:
+                  <ul>
+                    <li>Navigate to the playlist or channel's video page.</li>
+                    <li>Ensure all desired songs are visible on the page.</li>
+                    <li>Open your browser's developer console with `Ctrl` + `Shift` + `C`.</li>
+                    <li>Enter the script (below) in the console to extract song information:</li>
+                    <li>Copy the console output into the playlist input field.</li>
+                  </ul>
+                </li>
+                    <pre style='text-align: left;'>
+var els = document.getElementsByClassName('yt-simple-endpoint style-scope ytd-playlist-video-renderer');
 var dataList = "title,id\n";
-for (var i = 0; i &lt; els.length; i++) {
+for (var i = 0; i < els.length; i++) {
     var el = els[i];
-    var curId = el.href.split('?v=')[1].split('&amp;list')[0];
+    var curId = el.href.split('?v=')[1].split('&list')[0];
     dataList += (el.title + "," + curId + "\n");
 }
 console.log(dataList);
-                    </pre></ol><p>Note: Duplicate entries will not be resaved.</p></div><div class="modal-footer col-xs-12"><button type="button" class="btn btn-default col-xs-6" data-dismiss="modal" style="float:right;margin-left:0">Close</button></div></div></div></div><div class="modal fade" id="myModalContact" role="dialog col-xs-12" align="center"><div class="modal-dialog"><div class="modal-content col-xs-12"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h2 class="modal-title">Contact Me</h2></div><div class="modal-body col-xs-12"><h3>Wanna chat?</h3><br><b>Phone:</b> 301-300-4728<br><b>Email:</b> Charles.Karpati@gmail.com<br>Contact me at any time for service in the greater tri-state area.</div><div class="modal-footer col-xs-12"><button type="button" class="btn btn-default col-xs-6" data-dismiss="modal" style="float:right;margin-left:0">Close</button></div></div></div></div><div class="modal fade" id="myModalTerms" role="dialog col-xs-12" align="center"><div class="modal-dialog"><div class="modal-content col-xs-12"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h2 class="modal-title">Terms of Use</h2></div><div class="modal-body col-xs-12"><h3>Enjoy the system?</h3><br><b>Please be respectfull:</b> Please do not abuse this server or test the validation.<br><b>Rules:</b> Compliance with the site rules means you will obey all terms of use set forth by HypeM, Billboard, Itunes, and Youtube found on their website.<br></div><div class="modal-footer col-xs-12"><button type="button" class="btn btn-default col-xs-6" data-dismiss="modal" style="float:right;margin-left:0">Close</button></div></div></div></div><script src="/music/js/login.js"></script><script src="/music/js/apple_search.js"></script><script src="/music/js/playlist.js"></script><script src="/music/js/index.js"></script></body></html>
+                    </pre>
+              </ol>
+              <p>Note: Duplicate entries will not be resaved.</p>
+            
+            </div>
+
+          <div class="modal-footer col-xs-12">
+            <!-- <button type="button" class="btn btn-default col-xs-6" style="float:left;" >Blog</button> -->
+            <button type="button" class="btn btn-default col-xs-6" data-dismiss="modal" style="float:right; margin-left: 0px; ">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Contact Modal -->
+    <div class="modal fade" id="myModalContact" role="dialog col-xs-12" align="center">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content col-xs-12">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2 class="modal-title">Contact Me</h2>
+          </div>
+          <div class="modal-body col-xs-12">
+            <h3> Wanna chat?</h3>
+            <br>
+            <b>Phone:</b> 301-300-4728 <br>
+            <b>Email:</b> Charles.Karpati@gmail.com <br> Contact me at any time for service in the greater tri-state area.
+          </div>
+          <div class="modal-footer col-xs-12">
+            <!-- <button type="button" class="btn btn-default col-xs-6" style="float:left;" >Blog</button> -->
+            <button type="button" class="btn btn-default col-xs-6" data-dismiss="modal" style="float:right; margin-left: 0px;">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Terms Modal -->
+    <div class="modal fade" id="myModalTerms" role="dialog col-xs-12" align="center">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content col-xs-12">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2 class="modal-title">Terms of Use</h2>
+          </div>
+          <div class="modal-body col-xs-12">
+            <h3> Enjoy the system?</h3>
+            <br>
+            <b>Please be respectfull:</b> Please do not abuse this server or test the validation. <br>
+            <b>Rules:</b> Compliance with the site rules means you will obey all terms of use set forth by HypeM, Billboard, Itunes, and Youtube found on their website. <br>
+          </div>
+          <div class="modal-footer col-xs-12">
+            <!-- <button type="button" class="btn btn-default col-xs-6" style="float:left;" >Blog</button> -->
+            <button type="button" class="btn btn-default col-xs-6" data-dismiss="modal" style="float:right; margin-left: 0px;">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<script src="/music/js/login.js"></script>
+<script src="/music/js/apple_search.js"></script>
+<script src="/music/js/playlist.js"></script> 
+<script src="/music/js/index.js"></script>

@@ -1,0 +1,1 @@
+/home/carlos/Documents/GitHub/ipynb2web/webpack.config.cjs

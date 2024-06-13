@@ -1,0 +1,51 @@
+digraph G {
+concentrate=true;
+splines="ortho";
+rankdir="LR";
+subgraph legend{
+    rank = min;
+    label = "legend";
+    Legend [shape=none, margin=0, label = <
+        <table cellspacing="0" cellpadding="0" border="1"><tr><td>Code2flow Legend</td></tr><tr><td>
+        <table cellspacing="0">
+        <tr><td>Regular function</td><td width="50px" bgcolor='#cccccc'></td></tr>
+        <tr><td>Trunk function (nothing calls this)</td><td bgcolor='#966F33'></td></tr>
+        <tr><td>Leaf function (this calls nothing else)</td><td bgcolor='#6db33f'></td></tr>
+        <tr><td>Function call</td><td><font color='black'>&#8594;</font></td></tr>
+        </table></td></tr></table>
+        >];
+}node_fe9fef37 [label="60: checkColumn()" name="intaker::Intake.checkColumn" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_9eb692d3 [label="63: coerce()" name="intaker::Intake.coerce" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_a825e7ee [label="81: coerceDtypes()" name="intaker::Intake.coerceDtypes" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_9a7aa54f [label="43: getAndCheck()" name="intaker::Intake.getAndCheck" shape="rect" style="rounded,filled" fillcolor="#966F33" ];
+node_882563ee [label="90: getAndCheckColumn()" name="intaker::Intake.getAndCheckColumn" shape="rect" style="rounded,filled" fillcolor="#cccccc" ];
+node_8046306b [label="16: getData()" name="intaker::Intake.getData" shape="rect" style="rounded,filled" fillcolor="#cccccc" ];
+node_75f400e8 [label="74: getdTypeAndFillNum()" name="intaker::Intake.getdTypeAndFillNum" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_3a0b96a5 [label="39: isPandas()" name="intaker::Intake.isPandas" shape="rect" style="rounded,filled" fillcolor="#6db33f" ];
+node_9eb692d3 -> node_a825e7ee [color="#009E73" penwidth="2"];
+node_9eb692d3 -> node_a825e7ee [color="#009E73" penwidth="2"];
+node_9eb692d3 -> node_75f400e8 [color="#009E73" penwidth="2"];
+node_9eb692d3 -> node_75f400e8 [color="#009E73" penwidth="2"];
+node_9a7aa54f -> node_882563ee [color="#CC79A7" penwidth="2"];
+node_9a7aa54f -> node_882563ee [color="#CC79A7" penwidth="2"];
+node_9a7aa54f -> node_8046306b [color="#CC79A7" penwidth="2"];
+node_9a7aa54f -> node_3a0b96a5 [color="#CC79A7" penwidth="2"];
+node_882563ee -> node_fe9fef37 [color="#D55E00" penwidth="2"];
+node_882563ee -> node_882563ee [color="#D55E00" penwidth="2"];
+node_8046306b -> node_fe9fef37 [color="#009E73" penwidth="2"];
+node_8046306b -> node_8046306b [color="#009E73" penwidth="2"];
+node_8046306b -> node_3a0b96a5 [color="#009E73" penwidth="2"];
+subgraph cluster_0b98130c {
+    label="File: intaker";
+    name="intaker";
+    style="filled";
+    graph[style=dotted];
+    subgraph cluster_44c5a802 {
+        node_8046306b node_3a0b96a5 node_9a7aa54f node_fe9fef37 node_9eb692d3 node_75f400e8 node_a825e7ee node_882563ee;
+        label="Class: Intake";
+        name="Intake";
+        style="filled";
+        graph[style=dotted];
+    };
+};
+}

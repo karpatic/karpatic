@@ -11,6 +11,8 @@ esp_lights/lib/
 tmp
 appmap.yml
 
+telegram_key.session
+
 # Node build artifacts
 .node_modules/
 node_modules
