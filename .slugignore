@@ -8,8 +8,7 @@ src/print/
 
 # Ignore other common unnecessary files
 *.log
-*.md
-*.txt
+*.md 
 *.zip
 *.tar.gz
 *.tar
