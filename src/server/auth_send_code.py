@@ -1,7 +1,6 @@
 import os
 import sys
-from telethon import TelegramClient
-from dotenv import load_dotenv
+from telethon import TelegramClient 
 
 # Optionally load environment variables from a .env file
 if not os.getenv('DYNO'):
