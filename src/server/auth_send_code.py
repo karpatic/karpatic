@@ -4,8 +4,10 @@ from telethon import TelegramClient
 from dotenv import load_dotenv
 
 # Optionally load environment variables from a .env file
-if os.path.exists('.env'):
-    load_dotenv()
+if not os.getenv('DYNO'):
+    from dotenv import load_dotenv
+    if os.path.exists('.env'):
+        load_dotenv()
 
 api_id = int(os.getenv('TELEGRAM_API_ID'))
 api_hash = os.getenv('TELEGRAM_API_HASH')
