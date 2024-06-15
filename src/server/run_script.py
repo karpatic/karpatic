@@ -1,11 +1,11 @@
 import os
 import asyncio
+from datetime import datetime, timedelta, timezone
 from telethon import TelegramClient
 
 # Optionally load environment variables from a .env file
 if not os.getenv('DYNO'):
     from dotenv import load_dotenv
-    # if os.path.exists('.env'):
     load_dotenv()
 
 api_id = int(os.getenv('TELEGRAM_API_ID'))
@@ -14,15 +14,16 @@ api_hash = os.getenv('TELEGRAM_API_HASH')
 client = TelegramClient('telegram_key', api_id, api_hash)
 
 async def main():
-    me = await client.get_me() 
-    # async for dialog in client.iter_dialogs():
-    #     print(dialog.name, 'has ID', dialog.id)
-    i = 0
-    async for message in client.iter_messages(-1001488894133):
-        i += 1
-        if i >= 100:
+    chat_id = -1001488894133
+    current_time = datetime.now(timezone.utc)
+    cutoff_time = current_time - timedelta(days=1)
+
+    async for message in client.iter_messages(chat_id):
+        if message.date < cutoff_time:
             break
-        print(message.id, message.text)
+        sender = await message.get_sender()
+        sender_name = sender.username if sender.username else sender.first_name
+        print(f"{message.id} | {message.date} | {sender_name}: {message.text}")
 
 async def main_wrapper():
     async with client:
