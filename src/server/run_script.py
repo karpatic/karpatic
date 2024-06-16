@@ -19,6 +19,8 @@ async def main(chat_id, send_message, mp3_url):
     # Determine if chat_id is a phone number or group ID
     if chat_id.startswith('-'):
         chat_id = int(chat_id)
+    else:
+        chat_id = '+' + chat_id
 
     # Fetch and print recent messages from the chat
     current_time = datetime.now(timezone.utc)
