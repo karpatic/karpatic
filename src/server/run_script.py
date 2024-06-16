@@ -1,9 +1,9 @@
 import os
 import sys
 import asyncio
-import requests
 from datetime import datetime, timedelta, timezone
 from telethon import TelegramClient
+import urllib.request
 
 # Optionally load environment variables from a .env file
 if not os.getenv('DYNO'):
@@ -30,9 +30,6 @@ async def main(chat_id, send_message, mp3_url):
             break
         messages.append(message)
 
-    # async for dialog in client.iter_dialogs():
-    #     print(dialog.name, 'has ID', dialog.id) 
-    
     # Reverse the order of messages
     messages.reverse()
     
@@ -44,16 +41,19 @@ async def main(chat_id, send_message, mp3_url):
 
     # Download and send the MP3 file
     if mp3_url:
-        response = requests.get(mp3_url)
-        if response.status_code == 200:
-            file_name = send_message if send_message else 'audio_message'
-            file_name = file_name.replace(' ', '_') + '.mp3'
-            with open(file_name, 'wb') as file:
-                file.write(response.content)
-            await client.send_file(chat_id, file_name)
-            os.remove(file_name)
-        else:
-            print("Failed to download MP3 file.")
+        try:
+            with urllib.request.urlopen(mp3_url) as response:
+                if response.status == 200:
+                    file_name = send_message if send_message else 'audio_message'
+                    file_name = file_name.replace(' ', '_') + '.mp3'
+                    with open(file_name, 'wb') as file:
+                        file.write(response.read())
+                    await client.send_file(chat_id, file_name)
+                    os.remove(file_name)
+                else:
+                    print("Failed to download MP3 file.")
+        except Exception as e:
+            print(f"Error downloading MP3 file: {e}")
     # Send the provided message
     elif send_message:
         await client.send_message(chat_id, send_message)

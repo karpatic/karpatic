@@ -1,2 +1,1 @@
 telethon==1.36.0
-requests==2.7.0
