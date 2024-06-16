@@ -29,6 +29,9 @@ async def main(chat_id, send_message, mp3_url):
         if message.date < cutoff_time:
             break
         messages.append(message)
+
+    # async for dialog in client.iter_dialogs():
+    #     print(dialog.name, 'has ID', dialog.id) 
     
     # Reverse the order of messages
     messages.reverse()
