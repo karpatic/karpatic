@@ -262,14 +262,12 @@ app.get("/telegram/auth/complete-auth", async (req, res) => {
 
 app.get("/telegram/run-script", async (req, res) => {
   try {
-    const chatId = req.query.chatId;
-    if (!chatId) {
-      return res.status(400).send("Missing chatId parameter.");
-    }
-
-    const { stdout, stderr } = await execAsync(
-      `python3 ./src/server/run_script.py ${chatId}`
-    );
+    const { chat_id, message, mp3_url } = req.query;
+    console.log(chat_id, message, mp3_url);
+    const command = `python3 ./src/server/run_script.py "${chat_id}" "${
+      message || ""
+    }" "${mp3_url || ""}"`;
+    const { stdout, stderr } = await execAsync(command);
     if (stderr) {
       console.error(`Error: ${stderr}`);
       return res.status(500).send("Error running the script.");
