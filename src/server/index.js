@@ -2,8 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const rateLimit = require("express-rate-limit"); // https://www.npmjs.com/package/express-rate-limit
 
-const fileUpload = require('express-fileupload');
-const fs = require('fs');
+const fileUpload = require("express-fileupload");
+const fs = require("fs");
 
 // Python script execution
 const { exec } = require("child_process");
@@ -24,7 +24,7 @@ const html = require("./scripts/html.js");
 
 const app = express();
 app.use(express.json());
-app.set('trust proxy', true);
+app.set("trust proxy", true);
 
 const PORT = process.env.PORT || 8080;
 
@@ -69,7 +69,7 @@ const PORT = process.env.PORT || 8080;
 // );
 
 app.post(
-  '/pdf/',
+  "/pdf/",
   rateLimit({ windowMs: 1 * 60 * 1000, max: 10 }),
   async (req, res) => {
     pdf.generate_pdf(req, res);
@@ -130,7 +130,7 @@ app.get(
 app.get("/", async (req, res) => {
   res.json({ user: "geek" });
 });
- 
+
 /*
 // https://elements.heroku.com/buttons/heroku/node-js-getting-started
 app.get('/ethers/', async (req, res) => {
@@ -150,20 +150,20 @@ app.post('/login', (req, res) => {
 
 app.use(fileUpload());
 
-app.post('/telegram/upload-session', (req, res) => {
+app.post("/telegram/upload-session", (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send('No files were uploaded.');
+    return res.status(400).send("No files were uploaded.");
   }
 
   const sessionFile = req.files.sessionFile;
   const uploadPath = sessionFile.name;
 
-  sessionFile.mv(uploadPath, function(err) {
+  sessionFile.mv(uploadPath, function (err) {
     if (err) {
       return res.status(500).send(err);
     }
 
-    res.send('Session file uploaded!');
+    res.send("Session file uploaded!");
   });
 });
 
@@ -221,13 +221,15 @@ app.get("/telegram/auth/send-code", async (req, res) => {
     return res.status(400).send("Phone number is required.");
   }
   try {
-    const { stdout, stderr } = await execAsync(`python3 ./src/server/auth_send_code.py ${phone}`);
+    const { stdout, stderr } = await execAsync(
+      `python3 ./src/server/auth_send_code.py ${phone}`
+    );
     if (stderr) {
       console.error(`Error: ${stderr}`);
       return res.status(500).send("Error sending code.");
     }
     const result = JSON.parse(stdout);
-    res.json(result);  // Send JSON response with phone_code_hash
+    res.json(result); // Send JSON response with phone_code_hash
   } catch (error) {
     console.error(`Exec error: ${error}`);
     res.status(500).send("Error executing the script.");
@@ -239,10 +241,14 @@ app.get("/telegram/auth/complete-auth", async (req, res) => {
   const code = req.query.code;
   const phone_code_hash = req.query.phone_code_hash;
   if (!phone || !code || !phone_code_hash) {
-    return res.status(400).send("Phone number, code, and phone_code_hash are required.");
+    return res
+      .status(400)
+      .send("Phone number, code, and phone_code_hash are required.");
   }
   try {
-    const { stdout, stderr } = await execAsync(`python3 ./src/server/auth_complete.py ${phone} ${code} ${phone_code_hash}`);
+    const { stdout, stderr } = await execAsync(
+      `python3 ./src/server/auth_complete.py ${phone} ${code} ${phone_code_hash}`
+    );
     if (stderr) {
       console.error(`Error: ${stderr}`);
       return res.status(500).send("Error completing authentication.");
@@ -254,10 +260,16 @@ app.get("/telegram/auth/complete-auth", async (req, res) => {
   }
 });
 
-
 app.get("/telegram/run-script", async (req, res) => {
   try {
-    const { stdout, stderr } = await execAsync("python3 ./src/server/run_script.py");
+    const chatId = req.query.chatId;
+    if (!chatId) {
+      return res.status(400).send("Missing chatId parameter.");
+    }
+
+    const { stdout, stderr } = await execAsync(
+      `python3 ./src/server/run_script.py ${chatId}`
+    );
     if (stderr) {
       console.error(`Error: ${stderr}`);
       return res.status(500).send("Error running the script.");
@@ -269,12 +281,7 @@ app.get("/telegram/run-script", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-const server = app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+const server = app.listen(PORT, () =>
+  console.log(`Server is listening on port ${PORT}`)
+);
 server.setTimeout(10 * 12 * 100); // Sets timeout to 12 seconds
