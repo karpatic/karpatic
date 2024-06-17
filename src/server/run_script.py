@@ -15,7 +15,6 @@ api_hash = os.getenv('TELEGRAM_API_HASH')
 
 client = TelegramClient('telegram_key', api_id, api_hash)
 
-
 async def main(chat_id, send_message, mp3_url):
     # Determine if chat_id is a phone number or group ID
     if chat_id.startswith('-'):
@@ -35,24 +34,12 @@ async def main(chat_id, send_message, mp3_url):
 
     # Reverse the order of messages
     messages.reverse()
-    
 
     for message in messages:
-        # msgattr = message.__dict__.keys()
-        # print('msgattr: ', msgattr)
-
         sender = await message.get_sender()
         sender_name = sender.username if sender.username else sender.first_name
         formatted_date = message.date.strftime('%Y-%m-%d %H:%M:%S')
         print(f"{formatted_date} | {sender_name}: {message.text}")
-
-        # if media is present, print the media type and url
-        # if message.media: 
-        #     chat_id_str = str(chat_id).replace('-100', '')  # Removing the -100 prefix for private/group chats
-        #     message_link = f"https://t.me/c/{chat_id_str}/{message.id}"
-        #     print(f"Media type: {type(message.media).__name__}")
-        #     print(f"Message link: {message_link}")   
-
 
     # Download and send the MP3 file
     if mp3_url:
@@ -70,15 +57,13 @@ async def main(chat_id, send_message, mp3_url):
         except Exception as e:
             print(f"Error downloading MP3 file: {e}")
 
-
     # Send the provided message
     elif send_message:
         await client.send_message(chat_id, send_message)
 
-
 async def main_wrapper(chat_id, message, mp3_url):
-    async with client:  # Assuming `client` is defined elsewhere
-        await main(chat_id, message, mp3_url)  # Assuming `main` is defined elsewhere
+    async with client:
+        await main(chat_id, message, mp3_url)
 
 async def run_with_timeout(chat_id, message, mp3_url, timeout):
     try:
@@ -94,15 +79,11 @@ if __name__ == "__main__":
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError:
-        loop = None
-
-    if loop and loop.is_running():
-        asyncio.ensure_future(run_with_timeout(chat_id, message, mp3_url, 12))
-    else:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        try:
-            loop.run_until_complete(run_with_timeout(chat_id, message, mp3_url, 12))
-        finally:
-            loop.run_until_complete(loop.shutdown_asyncgens())
-            loop.close()
+
+    try:
+        loop.run_until_complete(run_with_timeout(chat_id, message, mp3_url, 12))
+    finally:
+        loop.run_until_complete(loop.shutdown_asyncgens())
+        loop.close()
