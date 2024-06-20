@@ -1,11 +1,14 @@
 window.w = window;
 
-const shorten = (str, len = 12) => str.trim().slice(0, len) + (str.length > len + 1 ? "..." : "");
+const shorten = (str, len = 12) =>
+  str.trim().slice(0, len) + (str.length > len + 1 ? "..." : "");
 const capitalize = (str) => str.replace(/\b\w/g, (c) => c.toUpperCase());
-const formatLink = (str) => shorten(capitalize(str.replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "")));
-const displayLink = (str) => capitalize(str.replace(/^\d+/g, "").replaceAll("_", " "));
+const formatLink = (str) =>
+  shorten(capitalize(str.replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "")));
+const displayLink = (str) =>
+  capitalize(str.replace(/^\d+/g, "").replaceAll("_", " "));
 
-const create_url = (link, sitemap) => { 
+const create_url = (link, sitemap) => {
   // Relative Links comparing URI, current Meta, the desired post's Meta
   // Use in populate template and create nav
   let fromSubpath = location.pathname.split("/").length >= 3;
@@ -38,7 +41,7 @@ w.addEventListener(
     w.meta.template ||= "article";
     if (meta.template !== document.body.getAttribute("data-template")) {
       let url = `/templates/${meta.template}`;
-      try{
+      try {
         console.log("~~~~~~~~~> INSERT_TEMPLATE"); // :URL:, url);
         document.body.setAttribute("data-template", meta.template);
         document.body.innerHTML = await (await fetch(`${url}.html`)).text();
@@ -49,43 +52,52 @@ w.addEventListener(
           `<style>${await (await fetch(`${url}.css`)).text()}</style>`
         );
 
-        // Forceload scripts. Moves main.js to footer. 
-        Array.from(document.getElementsByTagName("script")).forEach((script) => {
-          
-          console.log("~~~~~~~~~> REINJECT_TEMPLATE_SCRIPTS"); //":SCRIPT: ", script['src']);
-          const newScript = document.createElement("script");
-          ["src", "type", "async", "textContent"].forEach(
-            (attr) => script[attr] && (newScript[attr] = script[attr])
-          );
-          document.body.appendChild(newScript);
-          script.parentNode.removeChild(script);
-        });
+        // Forceload scripts. Moves main.js to footer.
+        Array.from(document.getElementsByTagName("script")).forEach(
+          (script) => {
+            console.log("~~~~~~~~~> REINJECT_TEMPLATE_SCRIPTS"); //":SCRIPT: ", script['src']);
+            const newScript = document.createElement("script");
+            ["src", "type", "async", "textContent"].forEach(
+              (attr) => script[attr] && (newScript[attr] = script[attr])
+            );
+            document.body.appendChild(newScript);
+            script.parentNode.removeChild(script);
+          }
+        );
+      } catch (err) {
+        console.log("~~~~~~~~~> INJECT_SCRIPTS:ERROR:", err);
       }
-      catch(err){ console.log("~~~~~~~~~> INJECT_SCRIPTS:ERROR:", err) }
     }
 
     // Add Sitemap Stylesheet
     let sm = location.pathname.split("/")[1].replace(".html", "") || "index";
     if (w.sitemap && !w.meta.hide_sitemap) {
-      let url = false
-      try{
-        if (!w.sitemap_content) { 
+      let url = false;
+      try {
+        if (!w.sitemap_content) {
           url = `${location.origin}/templates/${w.meta.template}_sitemap.css`;
           console.log("~~~~~~~~~> INSERT_SITEMAP_STYLE"); //Stylesheet: ", url);
           let txt = await (await fetch(url)).text();
-          document.body.insertAdjacentHTML("beforeend", `<style>${txt}</style>`);
+          document.body.insertAdjacentHTML(
+            "beforeend",
+            `<style>${txt}</style>`
+          );
         }
         if (w.sm_name != sm) {
           w.sm_name = sm;
-          url = `${location.origin}/posts/${sm_name}_map.json`
+          url = `${location.origin}/posts/${sm_name}_map.json`;
           console.log("~~~~~~~~~> GET_SITEMAP_CONTENT"); // :", url);
-          w.sitemap_content = await ( await fetch(url) ).json();
+          w.sitemap_content = await (await fetch(url)).json();
+          console.log("~~~~~~~~~> SITEMAP_CONTENT:", w.sitemap_content);
+          let sm2 = await await fetch(
+            `https://cdn.charleskarpati.com/notes/sitemap.json`
+          );
+          console.log({ sm2 });
         }
       } catch (e) {
-        console.log("~~~~~~~~~> INSERT_SITEMAP:ERROR:", url, e)
+        console.log("~~~~~~~~~> INSERT_SITEMAP:ERROR:", url, e);
       }
     }
-
 
     document.title = w.meta.title;
     // Delay poptemplte iff refresh not for an anchor link so the page animation can run to it's midpoint.
@@ -97,15 +109,15 @@ w.addEventListener(
         "animationend",
         async () => (pageT.style.animation = "none"),
         { once: true }
-      ); 
-      setTimeout(async () => { 
-        let resp = await populateTemplate()  
-      }, 1100); 
-    } else { 
-      populateTemplate(); 
-    } 
+      );
+      setTimeout(async () => {
+        let resp = await populateTemplate();
+      }, 1100);
+    } else {
+      populateTemplate();
+    }
   },
-  { passive: true } 
+  { passive: true }
 );
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,7 +151,7 @@ const populateTemplate = async () => {
   });
 
   // Populate Floating Sitemap
-  await createNav(); 
+  await createNav();
 
   // Give headers an anchor tag.
   [...document.querySelectorAll("h2, h3, h4")].forEach((header) => {
@@ -163,11 +175,11 @@ const populateTemplate = async () => {
       document.getElementsByTagName("aside").length > 0 ? "block" : "none");
 
   // console.log(w.meta)
-  if(w.audio){
-    w.audio.style.display = w.meta.audio ? "flex" : "none"
-    w.audio.title = w.meta.audio
+  if (w.audio) {
+    w.audio.style.display = w.meta.audio ? "flex" : "none";
+    w.audio.title = w.meta.audio;
     // get the nested audio element
-    w.audio.querySelector("audio").src = w.meta.audio
+    w.audio.querySelector("audio").src = w.meta.audio;
   }
 
   // Restart Observer on new page if included in article_lazy
@@ -179,8 +191,8 @@ const populateTemplate = async () => {
       el.id || formatLink(el.innerText) + Math.floor(Math.random() * 1000000);
   });
 
-  w.updateRedirectListeners?.(); 
-  return true
+  w.updateRedirectListeners?.();
+  return true;
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,27 +202,32 @@ const populateTemplate = async () => {
 // open when bigger than 900 px. also aligns left of main content.
 // toc when bigger then 1100 px aligns right of main content.
 // refreshTemplat will toggleSitemap closed if change in sm_name
-const createNav = async () => {  
-  let currentTab = w.meta.tab||w.meta.filename 
-  lbl = (x) => x.tab || x.filename;  
+const createNav = async () => {
+  let currentTab = w.meta.tab || w.meta.filename;
+  lbl = (x) => x.tab || x.filename;
 
   // Skip or Continue sitemap creation
   const skip = w.meta.hide_sitemap;
-  if (w.sitemap) w.sitemap.style.visibility = w.meta.hide_sitemap ? "hidden" : "visible";
+  if (w.sitemap)
+    w.sitemap.style.visibility = w.meta.hide_sitemap ? "hidden" : "visible";
   if (!w.sitemap || skip) return;
-  
-  console.log("~~~~~~~~~~~~~~~> CREATE_NAV: \n\n", {currentTab, sitemap_content:w.sitemap_content} ) 
+
+  console.log("~~~~~~~~~~~~~~~> CREATE_NAV: \n\n", {
+    currentTab,
+    sitemap_content: w.sitemap_content,
+  });
 
   // Section Links
-  let navLinks = w.sitemap_content.map( (x) => `
+  let navLinks = w.sitemap_content.map(
+    (x) => `
   <a id="${lbl(x) == currentTab ? "currentPage" : "link_" + lbl(x)}" 
       id='link_${lbl(x)}' 
       href="${create_url(x.filename, w.sm_name)}.html" 
       title="${lbl(x)}">
       ${shorten(displayLink(lbl(x)), 20)}
   </a>`
-  )
-  
+  );
+
   // Container
   w.sitemap.innerHTML = `
   <label tabindex="0" for="toggle_sitemap">
@@ -221,22 +238,22 @@ const createNav = async () => {
   <div id='sitemap-content'>
     <a id="link_Home" href="./../index.html" title="Home">Home</a>
     ${navLinks.join("")}
-  </div>` 
+  </div>`;
 
-  document.getElementById('toggle_sitemap').checked=true;
+  document.getElementById("toggle_sitemap").checked = true;
   // Toc Links
-  
+
   // Skip or Continue TOC creation
   if (!("toc" in w.meta) || w.meta.toc.toLowerCase() == "false") return;
 
   // Create TOC Link
   // tocNode = document.createElement("div");
   // tocNode.setAttribute("id", "toc"); // for Stylesheet
-  let tocNode = w["tocHere"] || w["toc"]
-  console.log({tocNode})
+  let tocNode = w["tocHere"] || w["toc"];
+  console.log({ tocNode });
   tocNode.innerHTML = [...document.querySelectorAll("h2, h3, h4")]
     .map((header) => {
-      let x = header.innerText || header.textContent
+      let x = header.innerText || header.textContent;
       const z = formatLink(x);
       const spaces = "&emsp;".repeat(header.tagName.slice(1) - 1);
       return `${spaces}<a href='#${z}' title="${x}">${displayLink(x)}</a>`;
@@ -244,13 +261,12 @@ const createNav = async () => {
     .join("<br/>");
 
   // const currentPage = w.sitemap.querySelector(`a[title="${lbl(w.meta)}"]`);
-  // currentPage?.parentNode.insertBefore(tocNode, currentPage.nextSibling); 
+  // currentPage?.parentNode.insertBefore(tocNode, currentPage.nextSibling);
 
-  console.log('YEEEHAW')
+  console.log("YEEEHAW");
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

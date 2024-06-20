@@ -261,21 +261,21 @@ app.get("/telegram/auth/complete-auth", async (req, res) => {
 });
 
 app.get("/telegram/run-script", async (req, res) => {
+  const { chat_id, message, mp3_url } = req.query;
+  const command = `python3 ./src/server/run_script.py "${chat_id}" "${
+    message || ""
+  }" "${mp3_url || ""}"`;
+
   try {
-    const { chat_id, message, mp3_url } = req.query;
-    console.log(chat_id, message, mp3_url);
-    const command = `python3 ./src/server/run_script.py "${chat_id}" "${
-      message || ""
-    }" "${mp3_url || ""}"`;
-    const { stdout, stderr } = await execAsync(command);
+    const { stdout, stderr } = await execAsync(command, { timeout: 5000 }); // Set timeout to 5000ms
     if (stderr) {
-      console.error(`Error: ${stderr}`);
-      return res.status(500).send("Error running the script.");
+      console.error(`Python Error: ${stderr}`);
+      return res.status(500).send(`Error running the script: ${stderr}`);
     }
     res.send(stdout);
   } catch (error) {
-    console.error(`Exec error: ${error}`);
-    res.status(500).send("Error executing the script.");
+    console.error(`Execution Error: ${error}`);
+    res.status(500).send(`Error executing the script: ${error.message}`);
   }
 });
 

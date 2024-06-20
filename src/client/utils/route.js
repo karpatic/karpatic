@@ -9,7 +9,7 @@ window.w = window;
 // User Clicked a Relative Link: Scroll up and reload or scroll to an anchor.
 // Browser Back/FWD remembers prior scrollbar position and does not call this fn.
 export const navEvent = async () => {
-  console.log("~~~> navEvent");
+  console.group("route: navEvent");
 
   let href = location.href;
 
@@ -21,11 +21,13 @@ export const navEvent = async () => {
   // Reload
   if (href.split("#")[0] != w.href?.split("#")[0])
     await handleRoute(), (w.href = href);
+
+  console.groupEnd();
 };
 
 // Loads a route and it's dependencies via it's meta data obtained from it's path.
 export const handleRoute = async () => {
-  console.log("~~~~~~> HANDLE_ROUTE");
+  console.group("route: HANDLE_ROUTE");
 
   if (location.pathname.includes("undefined")) return;
 
@@ -34,41 +36,52 @@ export const handleRoute = async () => {
 
   // Import template Once
   w.toast ||
-    (await import(
-      /* webpackChunkName: "template" */ "./refresh_template.js"
-    ));
+    (await import(/* webpackChunkName: "template" */ "./refresh_template.js"));
 
   // Get Route
   let route =
     location.pathname == "/"
       ? "index"
       : location.pathname
-        .replaceAll("./", "")
-        .replaceAll("../", "")
-        .replace(".html", "")
-        .replace(/^\//, "")
-        .replace(/\/$/, "");
+          .replaceAll("./", "")
+          .replaceAll("../", "")
+          .replace(".html", "")
+          .replace(/^\//, "")
+          .replace(/\/$/, "");
 
   // Create or Get Routes Metadata/ YAML
-  let url = !isLocal || preRendering ? `${location.origin}/posts/${route}.json` : `../../ipynb/${route}.ipynb`
-  let content = {}
+  let url =
+    !isLocal || preRendering
+      ? `${location.origin}/posts/${route}.json`
+      : `../../ipynb/${route}.ipynb`;
+  let content = {};
   try {
     console.log("~~~~~~> handleRoute:GET_CONTENT"); //:PATH:", url );
     content = await (!isLocal || preRendering
-      ? (await (async () => { return (await fetch(url)).json() })() )
-      : (await (async () => {
-        let x = await import(/* webpackChunkName: "convert" */ "../../dev/ipynb2web/src/convert.mjs")
-        return x
-      })()
-      ).nb2json(url));
-  }
-  catch (err) {
+      ? await (async () => {
+          return (await fetch(url)).json();
+        })()
+      : (
+          await (async () => {
+            let x = await import(
+              /* webpackChunkName: "convert" */ "../../dev/ipynb2web/src/convert.mjs"
+            );
+            return x;
+          })()
+        ).nb2json(url));
+  } catch (err) {
     // No Json or Ipynb found. Reload the page.
-    console.log("~~~~~~~~~> handleRoute:GET_CONTENT:ERROR", {givenPath: location.pathname, route: route })
-    if (location.hash != "#reload") { location.hash = "reload"; location.reload() }
-    else{ console.log(err) }
+    console.log("~~~~~~~~~> handleRoute:GET_CONTENT:ERROR", {
+      givenPath: location.pathname,
+      route: route,
+    });
+    if (location.hash != "#reload") {
+      location.hash = "reload";
+      location.reload();
+    } else {
+      console.log(err);
+    }
   }
-
 
   // Swap Metadata old and new
   w.oldMeta = w.meta;
@@ -78,7 +91,7 @@ export const handleRoute = async () => {
   // Dispatch pageLoaded event for template/ content hooks
   // Listeners in template.html and | template.js -> Populates w.newTemplate & updates toc.
   w.dispatchEvent(new CustomEvent("load_template"));
-
+  console.groupEnd();
 };
 
 const registerServiceWorker = async () => {

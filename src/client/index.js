@@ -29,7 +29,8 @@ w.preRendering ||
 
 // Simple analytics
 w.pingServer = async (event = false) => {
-  w.content && console.log('INDEX:pingServer') &&
+  w.content &&
+    console.log("INDEX:pingServer") &&
     navigator.sendBeacon(
       "https://ping.charleskarpati.com/",
       `{"from":"${oldRoute || location.href}","to":"${
@@ -41,8 +42,8 @@ w.pingServer = async (event = false) => {
 
 // Called in head.js to trigger handleRoute
 w.redirect = async (event = false) => {
-  console.log("Event:POPSTATE",)
-  event?.preventDefault?.(); 
+  console.group("INDEX:Event:POPSTATE");
+  event?.preventDefault?.();
   !w.navEvent &&
     ({ handleRoute: w.handleRoute, navEvent: w.navEvent } = await import(
       /* webpackChunkName: "route" */ "./utils/route.js"
@@ -51,10 +52,12 @@ w.redirect = async (event = false) => {
   event.type == "click"
     ? (history.pushState({}, "", event.target.href), navEvent())
     : handleRoute();
+  console.groupEnd();
 };
 addEventListener("popstate", redirect);
 
 w.updateRedirectListeners = () => {
+  console.group("INDEX:updateRedirectListeners");
   // updateRedirectListeners for relative hyperlinks
   document
     .querySelectorAll('a[href^="./"]')
@@ -63,5 +66,6 @@ w.updateRedirectListeners = () => {
         f.call(l, "click", redirect)
       )
     );
+  console.groupEnd();
 };
-updateRedirectListeners(); 
+updateRedirectListeners();
