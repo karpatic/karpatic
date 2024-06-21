@@ -16,6 +16,12 @@ api_hash = os.getenv('TELEGRAM_API_HASH')
 client = TelegramClient('telegram_key', api_id, api_hash)
 
 async def main(chat_id, send_message, mp3_url):
+    # if send_message is equal to 'dialogs'
+    if send_message == 'dialogs':
+            # You can print all the dialogs/conversations that you are part of:
+        async for dialog in client.iter_dialogs():
+            print(dialog.name, 'has ID', dialog.id)
+
     # Determine if chat_id is a phone number or group ID
     if chat_id.startswith('-'):
         chat_id = int(chat_id)
