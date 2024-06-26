@@ -43,7 +43,10 @@ async def main(chat_id, send_message, mp3_url):
     
     for message in messages:
         sender = await message.get_sender()
-        sender_name = sender.username if sender.username else sender.first_name
+        if sender:
+            sender_name = sender.username if sender.username else sender.first_name
+        else:
+            sender_name = "Unknown"
         formatted_date = message.date.strftime('%Y-%m-%d %H:%M:%S')
         print(f"{formatted_date} | {sender_name}: {message.text}")
 

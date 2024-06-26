@@ -17,6 +17,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
       .replace(".html", "") || "index";
 
   // Defaults
+  console.log("HEAD:FETCHING: ./header.json");
   let hr = await (await fetch((await import(`./header.json`)).default)).json();
 
   // console.log('HEAD:', { url, page, pathname: location.pathname });
@@ -28,7 +29,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 
   // Merge to defaults
   try {
-    console.log('HEAD:FETCHING:', url)
+    console.log("HEAD:FETCHING:", url);
     let rsp = await fetch(url);
     hr = { ...hr, ...(await (await fetch(url)).json()).meta };
   } catch (e) {
@@ -132,6 +133,8 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
   });
 
   // 1. Render the route using main.redirect()
+
+  console.log("HEAD:Dispatching index:redirect()");
   window.redirect?.();
 
   // 2. Wait for the remainder of the page to load then do some clean up

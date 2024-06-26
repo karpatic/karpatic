@@ -9,7 +9,7 @@ window.w = window;
 // User Clicked a Relative Link: Scroll up and reload or scroll to an anchor.
 // Browser Back/FWD remembers prior scrollbar position and does not call this fn.
 export const navEvent = async () => {
-  console.group("route: navEvent");
+  console.group("Route: navEvent");
 
   let href = location.href;
 
@@ -27,7 +27,7 @@ export const navEvent = async () => {
 
 // Loads a route and it's dependencies via it's meta data obtained from it's path.
 export const handleRoute = async () => {
-  console.group("route: HANDLE_ROUTE");
+  console.group("Route: HandleRoute");
 
   if (location.pathname.includes("undefined")) return;
 
@@ -56,7 +56,7 @@ export const handleRoute = async () => {
       : `../../ipynb/${route}.ipynb`;
   let content = {};
   try {
-    console.log("~~~~~~> handleRoute:GET_CONTENT"); //:PATH:", url );
+    console.log("Get:", url);
     content = await (!isLocal || preRendering
       ? await (async () => {
           return (await fetch(url)).json();
@@ -71,7 +71,7 @@ export const handleRoute = async () => {
         ).nb2json(url));
   } catch (err) {
     // No Json or Ipynb found. Reload the page.
-    console.log("~~~~~~~~~> handleRoute:GET_CONTENT:ERROR", {
+    console.log("GET_CONTENT:ERROR", {
       givenPath: location.pathname,
       route: route,
     });
@@ -90,8 +90,9 @@ export const handleRoute = async () => {
 
   // Dispatch pageLoaded event for template/ content hooks
   // Listeners in template.html and | template.js -> Populates w.newTemplate & updates toc.
-  w.dispatchEvent(new CustomEvent("load_template"));
+  console.log("Dispatching load_template");
   console.groupEnd();
+  w.dispatchEvent(new CustomEvent("load_template"));
 };
 
 const registerServiceWorker = async () => {

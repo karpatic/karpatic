@@ -57,7 +57,7 @@ w.redirect = async (event = false) => {
 addEventListener("popstate", redirect);
 
 w.updateRedirectListeners = () => {
-  console.group("INDEX:updateRedirectListeners");
+  console.log("INDEX:updateRedirectListeners");
   // updateRedirectListeners for relative hyperlinks
   document
     .querySelectorAll('a[href^="./"]')
@@ -66,6 +66,5 @@ w.updateRedirectListeners = () => {
         f.call(l, "click", redirect)
       )
     );
-  console.groupEnd();
 };
 updateRedirectListeners();

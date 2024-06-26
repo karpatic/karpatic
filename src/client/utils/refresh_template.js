@@ -35,18 +35,19 @@ const create_url = (link, sitemap) => {
 w.addEventListener(
   "load_template",
   async () => {
-    console.log("Event:LOAD_TEMPLATE");
+    console.group("refresh_template:Event:LOAD_TEMPLATE");
 
     // Load a template on route change or local init
     w.meta.template ||= "article";
     if (meta.template !== document.body.getAttribute("data-template")) {
       let url = `/templates/${meta.template}`;
       try {
-        console.log("~~~~~~~~~> INSERT_TEMPLATE"); // :URL:, url);
+        console.log("Insert html:", url);
         document.body.setAttribute("data-template", meta.template);
         document.body.innerHTML = await (await fetch(`${url}.html`)).text();
 
         // Add Basic Stylesheet ;
+        console.log("Insert css");
         document.body.insertAdjacentHTML(
           "beforeend",
           `<style>${await (await fetch(`${url}.css`)).text()}</style>`
@@ -55,7 +56,7 @@ w.addEventListener(
         // Forceload scripts. Moves main.js to footer.
         Array.from(document.getElementsByTagName("script")).forEach(
           (script) => {
-            console.log("~~~~~~~~~> REINJECT_TEMPLATE_SCRIPTS"); //":SCRIPT: ", script['src']);
+            console.log("Refresh Script: ", script["src"]);
             const newScript = document.createElement("script");
             ["src", "type", "async", "textContent"].forEach(
               (attr) => script[attr] && (newScript[attr] = script[attr])
@@ -65,7 +66,7 @@ w.addEventListener(
           }
         );
       } catch (err) {
-        console.log("~~~~~~~~~> INJECT_SCRIPTS:ERROR:", err);
+        console.log("INJECT_SCRIPTS:ERROR:", err);
       }
     }
 
@@ -76,7 +77,7 @@ w.addEventListener(
       try {
         if (!w.sitemap_content) {
           url = `${location.origin}/templates/${w.meta.template}_sitemap.css`;
-          console.log("~~~~~~~~~> INSERT_SITEMAP_STYLE"); //Stylesheet: ", url);
+          console.log("Insert sitemap css", url);
           let txt = await (await fetch(url)).text();
           document.body.insertAdjacentHTML(
             "beforeend",
@@ -86,16 +87,16 @@ w.addEventListener(
         if (w.sm_name != sm) {
           w.sm_name = sm;
           url = `${location.origin}/posts/${sm_name}_map.json`;
-          console.log("~~~~~~~~~> GET_SITEMAP_CONTENT"); // :", url);
+          console.log("Fetch sitemap:", url);
           w.sitemap_content = await (await fetch(url)).json();
-          console.log("~~~~~~~~~> SITEMAP_CONTENT:", w.sitemap_content);
+          console.log("SITEMAP_CONTENT:", w.sitemap_content);
           let sm2 = await await fetch(
             `https://cdn.charleskarpati.com/notes/sitemap.json`
           );
           console.log({ sm2 });
         }
       } catch (e) {
-        console.log("~~~~~~~~~> INSERT_SITEMAP:ERROR:", url, e);
+        console.log("INSERT_SITEMAP:ERROR:", url, e);
       }
     }
 
@@ -116,13 +117,14 @@ w.addEventListener(
     } else {
       populateTemplate();
     }
+    console.groupEnd();
   },
   { passive: true }
 );
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const populateTemplate = async () => {
-  console.log("~~~~~~~~~~~~> POPULATE_TEMPLATE");
+  console.group("POPULATE_TEMPLATE");
 
   // Create relative hyperlinks for each
   // location.pathname.split("/").split("/").slice(1).map( (x,i) => {return '../'.repeat(i)+x } )
@@ -192,6 +194,7 @@ const populateTemplate = async () => {
   });
 
   w.updateRedirectListeners?.();
+  console.groupEnd();
   return true;
 };
 
@@ -212,7 +215,7 @@ const createNav = async () => {
     w.sitemap.style.visibility = w.meta.hide_sitemap ? "hidden" : "visible";
   if (!w.sitemap || skip) return;
 
-  console.log("~~~~~~~~~~~~~~~> CREATE_NAV: \n\n", {
+  console.log("CREATE_NAV: \n\n", {
     currentTab,
     sitemap_content: w.sitemap_content,
   });
@@ -263,7 +266,7 @@ const createNav = async () => {
   // const currentPage = w.sitemap.querySelector(`a[title="${lbl(w.meta)}"]`);
   // currentPage?.parentNode.insertBefore(tocNode, currentPage.nextSibling);
 
-  console.log("YEEEHAW");
+  console.groupEnd();
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
