@@ -11,10 +11,10 @@ const HTMLInlineCSSWebpackPlugin =
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
-
+const rmlogs = true; 
 // auto-generate a PWA manifest + assets using webpack.config + a header.json file that you can copy to src/ for future deploys.
 // add '_projectname' to each generated asset and header.js will inject the manifest tag contingently.
-const hr = require("./src/client/header.json");
+const hr = require("./src/header.json");
 
 const WebpackPwaManifest = require("webpack-pwa-manifest");
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
@@ -45,9 +45,9 @@ module.exports = (env, args) => {
   return {
     cache: false,
     entry: {
-      index: "./src/client/index.js",
-      head: "./src/client/head.js",
-      "service-worker": "./src/client/utils/service-worker.js",
+      index: "./src/index.js",
+      head: "./src/head.js",
+      "service-worker": "./src/utils/service-worker.js",
     },
     output: {
       path: path.resolve("./docs"),
@@ -70,7 +70,7 @@ module.exports = (env, args) => {
           // config default parser
           terserOptions: {
             parse: { html5_comments: false },
-            // compress: { pure_funcs: ['console.log'], toplevel: true },
+            compress: rmlogs ? { pure_funcs: ['console.log'], toplevel: true } : false,
             sourceMap: { url: "inline" },
             keep_classnames: true,
             keep_fnames: true,
@@ -210,31 +210,36 @@ module.exports = (env, args) => {
           { from: "./CNAME", to: "CNAME", toType: "file" },
           // { from: './src/404.html', to: '404.html', toType: 'file' },
           {
-            from: "./src/client/utils/service-worker.js",
+            from: "./src/utils/service-worker.js",
             to: "utils/service-worker.js",
             toType: "file",
           },
           {
-            from: "./src/client/templates/article.html",
+            from: "./src/templates/article.html",
             to: "templates/article.html",
             toType: "file",
           },
           {
-            from: "./src/client/templates/article_lazy.js",
+            from: "./src/templates/article_lazy.js",
             to: "templates/article_lazy.js",
             toType: "file",
           },
-          { from: "./src/ipynb", to: "./ipynb", toType: "dir" }, 
-          { from: "./src/music", to: "./music", toType: "dir", globOptions: {
-            ignore: ["**/.git/**", "**/.gitignore", "**/.gitmodules"], }
-          },
-          { from: "./src/client/cdn", to: "./cdn", toType: "dir" },
-          { from: "./src/client/posts", to: "./posts", toType: "dir" },
-          { from: "./src/client/images", to: "./images", toType: "dir" },
-          { from: "./src/client/utils", to: "./utils", toType: "dir" },
-          { from: "./src/client/audio", to: "./audio", toType: "dir" },
+          { from: "./src/ipynb", to: "./ipynb", toType: "dir" },
+          // {
+          //   from: "./src/music",
+          //   to: "./music",
+          //   toType: "dir",
+          //   globOptions: {
+          //     ignore: ["**/.git/**", "**/.gitignore", "**/.gitmodules"],
+          //   },
+          // },
+          { from: "./src/cdn", to: "./cdn", toType: "dir" },
+          { from: "./src/posts", to: "./posts", toType: "dir" },
+          { from: "./src/images", to: "./images", toType: "dir" },
+          { from: "./src/utils", to: "./utils", toType: "dir" },
+          { from: "./src/audio", to: "./audio", toType: "dir" },
           {
-            from: "src/client/templates/*.css",
+            from: "src/templates/*.css",
             to: "./templates/[name].css",
             transform: (basePath, path) => {
               console.log(
@@ -249,65 +254,65 @@ module.exports = (env, args) => {
         ],
       }),
       !addPwa
-        ? () => { }
+        ? () => {}
         : new WebpackPwaManifest({
-          name: hr.longName,
-          short_name: hr.shortName,
-          description: hr.description,
-          background_color: "#ff55ff",
-          crossorigin: "use-credentials", //inject:false glitches and results in the icons not being included..
-          fingerprints: false,
-          start_url: "./",
-          display: "standalone",
-          theme_color: hr.themecolor,
-          dir: "rtl",
-          lang: "ar",
-          icons: [
-            {
-              src: path.resolve("src/images/icon512.png"),
-              sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
-              destination: "docs/images",
-              type: "image/webp",
-            },
-            {
-              src: path.resolve("src/images/icon512.png"),
-              size: "512x512",
-              destination: "docs/images",
-              purpose: "maskable",
-            },
-          ],
-        }),
+            name: hr.longName,
+            short_name: hr.shortName,
+            description: hr.description,
+            background_color: "#ff55ff",
+            crossorigin: "use-credentials", //inject:false glitches and results in the icons not being included..
+            fingerprints: false,
+            start_url: "./",
+            display: "standalone",
+            theme_color: hr.themecolor,
+            dir: "rtl",
+            lang: "ar",
+            icons: [
+              {
+                src: path.resolve("src/images/icon512.png"),
+                sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+                destination: "docs/images",
+                type: "image/webp",
+              },
+              {
+                src: path.resolve("src/images/icon512.png"),
+                size: "512x512",
+                destination: "docs/images",
+                purpose: "maskable",
+              },
+            ],
+          }),
       isDev
-        ? () => { }
+        ? () => {}
         : new HtmlMinimizerPlugin({
-          minimizerOptions: { minifyJS: true },
-          // test: /template_article\.html$/,
-          exclude: [/tables/, /maps/, /music/],
-        }),
-      isDev ? () => { } : new WebpWebpackPlugin(),
-      !analyze ? () => { } : new BundleAnalyzerPlugin(),
+            minimizerOptions: { minifyJS: true },
+            // test: /template_article\.html$/,
+            exclude: [/tables/, /maps/, /music/],
+          }),
+      isDev ? () => {} : new WebpWebpackPlugin(),
+      !analyze ? () => {} : new BundleAnalyzerPlugin(),
       isDev || !compress
-        ? () => { }
+        ? () => {}
         : new CompressionPlugin({
-          filename: "[path][base].br",
-          algorithm: "brotliCompress",
-          test: /\.(ico|js|css|html|svg)$/,
-          compressionOptions: { level: 11 },
-          threshold: 10240,
-          minRatio: 0.8,
-          deleteOriginalAssets: false,
-        }),
+            filename: "[path][base].br",
+            algorithm: "brotliCompress",
+            test: /\.(ico|js|css|html|svg)$/,
+            compressionOptions: { level: 11 },
+            threshold: 10240,
+            minRatio: 0.8,
+            deleteOriginalAssets: false,
+          }),
       isDev || !compress
-        ? () => { }
+        ? () => {}
         : new CompressionPlugin({
-          filename: "[path][base].gz",
-          algorithm: "gzip",
-          test: /\.(ico|js|css|html|svg)$/,
-          compressionOptions: { level: 9 },
-          threshold: 10240,
-          minRatio: 0.8,
-          deleteOriginalAssets: false,
-        }),
+            filename: "[path][base].gz",
+            algorithm: "gzip",
+            test: /\.(ico|js|css|html|svg)$/,
+            compressionOptions: { level: 9 },
+            threshold: 10240,
+            minRatio: 0.8,
+            deleteOriginalAssets: false,
+          }),
     ],
     devServer: {
       open: true,

@@ -19,6 +19,9 @@ node_modules
 dist
 package-lock.json
 
+.pio/ 
+notes/
+
 # Local development
 .venv/
 *.env
@@ -29,3 +32,5 @@ package-lock.json
 # Docker
 Dockerfile
 docker-compose.yml
+
+remote-debug-profile

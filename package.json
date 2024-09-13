@@ -5,42 +5,15 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --mode development --devtool eval-source-map --progress",
-    "bild": "webpack --mode production --profile --progress",
-    "deploy": "make pages; npm run bild",
-    "postbild": "react-snap",
+    "build": "webpack --mode production --profile --progress && node react_snap_replacement.js",
+    "deploy": "make pages; npm run build",
     "postreact-snap": "ls",
-    "server": "nodemon --optimize_for_size --max_old_space_size=460 src/server/index.js",
     "test": "nodemon src/server/scripts/test.js",
     "watchPages": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'npm run makePages'",
     "makePages": "make pages",
     "makeAudio": "make audio",
-    "pydia": "node ./src/tests/diagram.js"
-  },
-  "reactSnap": {
-    "headless": true,
-    "skipThirdPartyRequests": false,
-    "concurrency": 6,
-    "inlineCss": false,
-    "source": "./docs",
-    "puppeteerArgs": [
-      "--no-sandbox",
-      "--disable-setuid-sandbox"
-    ],
-    "removeStyleTags": false,
-    "preloadImages": false,
-    "asyncScriptTags": false,
-    "removeScriptTags": false,
-    "include": [
-      "/index.html"
-    ],
-    "puppeteer": {
-      "cache": false
-    },
-    "minifyHtml": {
-      "collapseWhitespace": true,
-      "removeComments": true
-    },
-    "destination": "./docs"
+    "pydia": "node ./src/tests/diagram.js",
+    "server": "nodemon --optimize_for_size --max_old_space_size=460 src/server/index.js"
   },
   "browserslist": [
     "defaults"
@@ -87,17 +60,24 @@
   "dependencies": {
     "acorn": "^8.11.3",
     "axios": "^1.4.0",
+    "bcrypt": "^5.1.1",
     "chromium": "^3.0.3",
     "dotenv": "^16.3.1",
-    "express": "^4.15.2",
+    "express": "^4.19.2",
     "express-fileupload": "^1.5.0",
+    "express-history-api-fallback": "^2.2.1",
     "express-rate-limit": "^6.6.0",
     "fs": "^0.0.1-security",
     "handlebars": "^4.7.7",
+    "html-minifier": "^4.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mkdirp": "^3.0.1",
     "nodemon": "^3.0.1",
     "openai": "^4.16.1",
     "path": "^0.12.7",
-    "puppeteer": "^19.1.0"
+    "puppeteer": "^22.13.1",
+    "serve-static": "^1.15.0",
+    "Web3": "npm:web3@^4.11.0"
   },
   "engines": {
     "node": "18.13",

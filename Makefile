@@ -13,42 +13,38 @@ hello:
 pages:
 	make mainpages
 	make lights
-	make software
-	make notes 
+	make software 
 	make dataplay
 	make labs
 	make blog
 	make sitemap 
 
 audio:
-	node ./src/dev/ipynb2web/bin/ipynb2web.cli.cjs audio
+	node ./../ipynb2web.cli.cjs audio
 	
 sitemap:
     # Final Step, creates sitemap.txt
-	node ./src/dev/ipynb2web/src/cli.js sitemap
+	node ./../ipynb2web/src/cli.js sitemap
 	
 mainpages:
     # Function: Creates a sitemap and the corresponding series of pages
     # Args: input output mapname file,file,files..
-	node ./src/dev/ipynb2web/src/cli.js 
+	node ./../ipynb2web/src/cli.js 
 	
 labs:
-	node ./src/dev/ipynb2web/src/cli.js labs
+	node ./..//ipynb2web/src/cli.js labs
 
 dataplay:
-	node ./src/dev/ipynb2web/src/cli.js dataplay
+	node ./..//ipynb2web/src/cli.js dataplay
 
 lights:
-	node ./src/dev/ipynb2web/src/cli.js lights
-
-notes:
-	node ./src/dev/ipynb2web/src/cli.js notes
+	node ./..//ipynb2web/src/cli.js lights
 
 software:
-	node ./src/dev/ipynb2web/src/cli.js software
+	node ./..//ipynb2web/src/cli.js software
 
 blog:
-	node ./src/dev/ipynb2web/src/cli.js blog
+	node ./../ipynb2web/src/cli.js blog
 
 watchPages:
 	nodemon --watch 'src/ipynb/*' --exec make pages

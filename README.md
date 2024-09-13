@@ -5,21 +5,24 @@
 
 # Hello! 👋
 
-I am Carlos Karpati, 29 years old, resident of Bethesda, Maryland. I have an MS in information systems from [UMBC](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) (May 2020). 
+I am Carlos Karpati, 29 years old, resident of Bethesda, Maryland. I have an MS in information systems from [UMBC](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) (May 2020).
 
-Learn more at https://charleskarpati.com 
+Learn more at https://charleskarpati.com
 
-Summary: 
+Summary:
 
-I took my first programming class at the age of 14. After recieving my BS in Information Systems (IS) at UMBC I went immidately for my MS in IS while working full-time as a developer at the University of Baltimore ([UB](https://bniajfi.org/))'s BNIA-JFI. Later, I started working for [Voxels.com](https://Voxels.com) - an Ethereum based virtual world (3D) where users create their own assets and own their own property. Now, I am the cofounder of [Addy-AI](https://addy-ai.com); an AI that can draft-emails.   
+I took my first programming class at the age of 14. After recieving my BS in Information Systems (IS) at UMBC I went immidately for my MS in IS while working full-time as a developer at the University of Baltimore ([UB](https://bniajfi.org/))'s BNIA-JFI. Later, I started working for [Voxels.com](https://Voxels.com) - an Ethereum based virtual world (3D) where users create their own assets and own their own property. Now, I am the cofounder of [Addy-AI](https://addy-ai.com); an AI that can draft-emails.
 
 Should you have any questions or concerns, I am only a text away: 301-300-4728 (or through charles.karpati@gmail.com).
 
 Thanks for reading!
 
-Carlos 
-___
+Carlos
+
+---
+
 Past Works:
+
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary> @ Addy AI</summary> 
   <figure align="center">
@@ -54,9 +57,9 @@ Past Works:
 </details>
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
-  <summary> @ Voxels</summary> 
+  <summary> @ Voxels</summary>
 
-  - A lot of what I worked on was in-game. I mostly fixed bugs and the UI, but put in a few features like video streaming, [POAP](https://poap.xyz/)'s, and user-user crypto payments.
+- A lot of what I worked on was in-game. I mostly fixed bugs and the UI, but put in a few features like video streaming, [POAP](https://poap.xyz/)'s, and user-user crypto payments.
   <figure align="center">
     <img style="height:100px; padding-right:15px;"  src="https://images.charleskarpati.com/voxels_logo_rainbow.svg"/>
     <figcaption><a href='https://Voxels.com'>Voxels.com</a> Logo.</figcaption>
@@ -78,9 +81,9 @@ Past Works:
     <figcaption>BNIA-JFI's Logo.</figcaption>
   </figure>
 
-  - I created, or modified just about everything in this [repository](https://github.com/bniajfi). It includes 150+ python scripts to process and raw data and create quality of life indicators, to scrape databases, websites, and more.
-  - I also taught data science and created pedagogical python libraries: [5](https://github.com/BNIA/dataplay), [7](https://github.com/BNIA/dataguide), [8](https://github.com/BNIA/labs). 
-  - And managed or made countless analytical websites. References: [1](https://github.com/BNIA/VitalSigns), [2](https://geoloom.org), [3](https://bniajfi.org/bold/), [4](https://bniajfi.org/greenpatterns/)
+- I created, or modified just about everything in this [repository](https://github.com/bniajfi). It includes 150+ python scripts to process and raw data and create quality of life indicators, to scrape databases, websites, and more.
+- I also taught data science and created pedagogical python libraries: [5](https://github.com/BNIA/dataplay), [7](https://github.com/BNIA/dataguide), [8](https://github.com/BNIA/labs).
+- And managed or made countless analytical websites. References: [1](https://github.com/BNIA/VitalSigns), [2](https://geoloom.org), [3](https://bniajfi.org/bold/), [4](https://bniajfi.org/greenpatterns/)
   <figure align="center">
     <img src="https://images.charleskarpati.com/bnia_bniajfi.png"/>
     <figcaption>BNIA-JFI's Homepage.</figcaption>
@@ -105,7 +108,7 @@ Past Works:
     <img src="https://images.charleskarpati.com/bnia_guidepost_compare_table.png"/>
     <figcaption>Comparison of Neighborhood Data.</figcaption>
   </figure> 
-</details>   
+</details>
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary> Independent </summary>
@@ -118,29 +121,9 @@ Past Works:
     <caption>A 3D printed map of Baltimore. Dynamically generated using census data. Heights represent the percent of households with no internet. Code on <a href='https://observablehq.com/@karpatic?tab=notebooks'>ObservableHQ</a></caption>
   </figure> 
   
-</details>  
+</details>
 
 <figure align="center">
   <img src="https://images.charleskarpati.com/photos/ReadyPlayerMe-Avatar.png"/>
   <caption>A VRM I made of myself.</caption>
-</figure> 
-
-cd ./node_modules/react-snap
-npm install puppeteer@latest
-puppeteer_utils.js:215 - await page._client.send("ServiceWorker.disable");
-to
-const client = await page.target().createCDPSession();
-await client.send('ServiceWorker.disable');
-
-
-// process.removeListener("SIGINT", onSigint);
-process.off('SIGINT', onSigint);
-// process.removeListener("unhandledRejection", onUnhandledRejection);
-process.off('unhandledRejection', onUnhandledRejection);
-
-// page.removeListener("request", onStarted);
-page.off("request", onStarted);
-// page.removeListener("requestfinished", onFinished);
-page.off("requestfinished", onFinished);
-// page.removeListener("requestfailed", onFinished);
-page.off("requestfailed", onFinished);
+</figure>
