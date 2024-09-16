@@ -18,7 +18,7 @@
 
 ## About Me:
 
-I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) and have been making software since I was 14 (Go <img src="https://carlos-a-diez.com/images/WJ_logo_transparent.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> wildcats!). I worked making data products at a research institute at the University of Baltimore, contributed to Ethereum-based projects like [Voxels](https://voxels.com), co-founded [Addy-AI](https://addy-ai.com), and currently serve as the lead developer at [AutoApply](https://autoapply.org).
+I have an MS in Information Systems from [<img src="https://carlos-a-diez.com/images/umbc_logo_acc.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/>](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) <img src="https://carlos-a-diez.com/images/umbc_mascot_dog.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> and have been making software since I was 14 (Go <img src="https://carlos-a-diez.com/images/wj_logo_2.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> wildcats!). I worked making data products at a research institute at the University of Baltimore <img src="https://carlos-a-diez.com/images/ub_mascot.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/>, contributed to Ethereum-based projects like [Voxels](https://voxels.com), co-founded [Addy-AI](https://addy-ai.com), and currently serve as the lead developer at [AutoApply](https://autoapply.org).
 
 ### My Specialties Include:
 
@@ -43,10 +43,10 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
     <td align="center">
       <img src="https://carlos-a-diez.com/images/addy_langdrive_stars.png" width="200" height="200" alt="3D Printed Map of Baltimore"/>
       <br>
-      <strong>Star Chart</strong>
+      <strong>100+ GitHub Stars</strong>
       <br>
     </td>
-  </tr>
+  </tr> 
 </table> 
 
 ---
@@ -107,15 +107,38 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
 </details>
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
-  <summary><img src="https://carlos-a-diez.com/images/nsf_logo.jpeg" style="height:40px;" /><b style="font-size:18px;">National Science Foundation</b></summary>
-  <table align="center"> 
-    <tr> 
-      <td align="center">
-        <img src="https://carlos-a-diez.com/images/nsf_data_science_corps_modified.png" style="max-width: 90%; height: auto;" />
-      </td>
-    </tr>
-  </table>
+  <summary><img src="https://carlos-a-diez.com/images/nsf_logo.jpeg" style="height:40px;" /><b style="font-size:18px;">National Science Foundation - Data Science Corps</b></summary> 
+  Under an NSF grant, I taught 'Programming with Big Data' to a Data Science Corps comprised of graduate students from Maryland universities and it taught <i><b>ME</b></i> a lot. 
+
+<table align="center">
+  <tr> 
+    <td align="center">
+      <img src="https://carlos-a-diez.com/images/nsf_data_science_corps_modified.png" style="max-width: 90%; height: auto;" />
+      <br /><em>Zoom Meeting</em>
+    </td>
+  </tr>
+</table>
+
+I also mentored students through various research projects, which are showcased below.
+
+<table align="center">
+  <tr> 
+    <td align="center">
+      <img src="https://carlos-a-diez.com/images/nsf_aexploration-of-data-works-mds-membership_.png" style="max-width: 30%; height: auto;" />
+      <br /><em>Project: Exploration of Data Works Membership</em>
+    </td>
+    <td align="center">
+      <img src="https://carlos-a-diez.com/images/nsf_analysis-of-baltimore-city-e-scooter-distribution_.png" style="max-width: 30%; height: auto;" />
+      <br /><em>Project: Analysis of Baltimore City E-Scooter Distribution</em>
+    </td>
+    <td align="center">
+      <img src="https://carlos-a-diez.com/images/nsf_asocial-media-alert-system-for-covid-19-illicit-behavior.png" style="max-width: 30%; height: auto;" />
+      <br /><em>Project: Social Media Alert System for COVID-19 Illicit Behavior</em>
+    </td>
+  </tr>
+</table>
 </details>
+
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary><img src="https://carlos-a-diez.com/images/bnia_icon_list.png" style="max-width: 90%; height: 40px;" /><b style="font-size:18px;">Baltimore Neighborhood Indicators Association</b></summary>
@@ -178,15 +201,34 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
 </details>
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary>
-  <img src="https://carlos-a-diez.com/images/github_logo.png" style="height:40px;" /><b style='font-size:18px;'>
-  <img src="https://carlos-a-diez.com/images/addy_logo_VentureBridge.png" style="height:40px;" /><b style='font-size:18px;'>
-  Accelerators
-  </b></summary>
-  <img src="https://carlos-a-diez.com/images/github_addyai.png" style="max-width: 90%; height: auto;" />   
-  <img src="https://carlos-a-diez.com/images/addy-ai-accelerator.png" style="max-width: 90%; max-height: 600px;" />
+    <img src="https://carlos-a-diez.com/images/github_logo.png" style="height:40px;" /><b style='font-size:18px;'>
+    <img src="https://carlos-a-diez.com/images/addy_logo_VentureBridge.png" style="height:40px;" />
+    <b style='font-size:18px;'> Accelerators </b>
+  </summary>
+  <table> 
+  <tr> 
+   <td align="center">
+    Github - 2024
+  </td>  </tr> 
+  <tr> 
+   <td align="center">
+    <img src="https://carlos-a-diez.com/images/github_addyai.png" style="max-width: 90%; height: auto;" />   
+  </td>  </tr> 
+  <tr> 
+   <td align="center">
+    Venture Bridge - 2023
+  </td>  </tr> 
+  <tr> 
+   <td align="center">
+    <img src="https://carlos-a-diez.com/images/addy-ai-accelerator.png" style="max-width: 90%; max-height: 600px;" />
+  </td>  </tr>  
+  </table>
 </details>
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
-  <summary><img src="https://carlos-a-diez.com/images/photos/NatisWeddingAug2023-modified.png" style="height:40px;" /><b style='font-size:18px;'>Independent</b></summary>
+  <summary>
+    <img src="https://carlos-a-diez.com/images/photos/NatisWeddingAug2023-modified.png" style="height:40px;" />
+    <b style='font-size:18px;'>Independent</b>
+  </summary>
   <table align="center">
     <tr>
       <td align="center">
