@@ -18,7 +18,7 @@
 
 ## About Me:
 
-I have an MS in Information Systems from [<img src="https://carlos-a-diez.com/images/umbc_logo_acc.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/>](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) <img src="https://carlos-a-diez.com/images/umbc_mascot_dog.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> and have been making software since I was 14 (Go <img src="https://carlos-a-diez.com/images/wj_logo_2.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> wildcats!). I worked making data products at a research institute at the University of Baltimore <img src="https://carlos-a-diez.com/images/ub_mascot.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/>, contributed to Ethereum-based projects like [Voxels](https://voxels.com), co-founded [Addy-AI](https://addy-ai.com), and currently serve as the lead developer at [AutoApply](https://autoapply.org).
+I have an MS in Information Systems from <img src="https://carlos-a-diez.com/images/umbc_mascot_dog.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [UMBC](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) and have been making software since I was 14 - Go [<img src="https://carlos-a-diez.com/images/wj_logo_2.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/>](https://www.montgomeryschoolsmd.org/schools/wjhs/) Wildcats! I worked making data products at a research institute at the <img src="https://carlos-a-diez.com/images/ub_mascot.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [University](https://data-bniajfi.opendata.arcgis.com/) of Baltimore, contributed to Ethereum-based projects like [Voxels](https://voxels.com), co-founded [Addy-AI](https://addy-ai.com), and currently serve as the lead developer at [AutoApply](https://autoapply.org).
 
 ### My Specialties Include:
 
@@ -51,7 +51,7 @@ I have an MS in Information Systems from [<img src="https://carlos-a-diez.com/im
 
 ---
 
-## Past Works:
+## Past Works: 
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary><img src="https://images.charleskarpati.com/addy_logo.png" style="height:40px;" /><b style='font-size:18px;'>Addy AI</b></summary>
@@ -65,19 +65,7 @@ I have an MS in Information Systems from [<img src="https://carlos-a-diez.com/im
         <img src="https://images.charleskarpati.com/addy_langdrive_promotional_3.png" style="max-width: 45%; height: auto;" />
         <img src="https://images.charleskarpati.com/addy_langdrive_promotional_2.png" style="max-width: 45%; height: auto;" />
       </td>
-    </tr>
-    <tr>
-      <td>
-        <strong>Title:</strong> LangDrive Demo Video<br>
-        <strong>Description:</strong> Demo of LangDrive built for developers.
-      </td>
-      <td align="center">
-        <video controls loop style="max-width: 100%; height: auto;">
-          <source src="https://carlos-a-diez.com/images/addy_langdrive_demo_code.gif" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      </td>
-    </tr>
+    </tr> 
     <tr>
       <td>
         <strong>Title:</strong> Final Promotional Image<br>
@@ -105,9 +93,13 @@ I have an MS in Information Systems from [<img src="https://carlos-a-diez.com/im
     </tr>
   </table>
 </details>
-
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
-  <summary><img src="https://carlos-a-diez.com/images/nsf_logo.jpeg" style="height:40px;" /><b style="font-size:18px;">National Science Foundation - Data Science Corps</b></summary> 
+  <summary>
+    <img src="https://carlos-a-diez.com/images/umbc_shield_logo.png" style="height:40px;" />
+    <img src="https://carlos-a-diez.com/images/ub_logo_short.png" style="height:40px;" /> 
+    <img src="https://carlos-a-diez.com/images/nsf_logo.jpeg" style="height:40px;" />
+    <b style="font-size:18px;">National Science Foundation - Data Science Corps</b>
+  </summary> 
   Under an NSF grant, I taught 'Programming with Big Data' to a Data Science Corps comprised of graduate students from Maryland universities and it taught <i><b>ME</b></i> a lot. 
 
 <table align="center">
@@ -141,7 +133,11 @@ I also mentored students through various research projects, which are showcased 
 
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
-  <summary><img src="https://carlos-a-diez.com/images/bnia_icon_list.png" style="max-width: 90%; height: 40px;" /><b style="font-size:18px;">Baltimore Neighborhood Indicators Association</b></summary>
+  <summary>
+    <img src="https://carlos-a-diez.com/images/bnia_icon_list.png" style="max-width: 90%; height: 40px;" />
+    <b style="font-size:18px;">Baltimore Neighborhood Indicators Association</b>
+    <img src="https://carlos-a-diez.com/images/ub_jfi_logo_cover.png" style="max-width: 90%; height: 40px;" />
+  </summary>
   <table align="center"> 
     <tr>
       <td>
@@ -202,6 +198,7 @@ I also mentored students through various research projects, which are showcased 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary>
     <img src="https://carlos-a-diez.com/images/github_logo.png" style="height:40px;" /><b style='font-size:18px;'>
+    <img src="https://carlos-a-diez.com/images/cmu_logo_text_white.png" style="height:40px;" /><b style='font-size:18px;'>
     <img src="https://carlos-a-diez.com/images/addy_logo_VentureBridge.png" style="height:40px;" />
     <b style='font-size:18px;'> Accelerators </b>
   </summary>
