@@ -30,27 +30,24 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
 
 ---
 
-## Featured Projects:
+## Featured Project: [Langdrive](https://docs.langdrive.ai/docs/getting-started)
 
 <table align="center">
   <tr>
     <td align="center">
-      <img src="https://carlos-a-diez.com/images/lights_video_weBT_mesh-optimized.gif" width="400" height="200" alt="Lighting Effect in Web-Based Mesh"/>
+      <img src="https://carlos-a-diez.com/images/addy_langdrive_demo_code.gif" width="400" height="200" alt="Lighting Effect in Web-Based Mesh"/>
       <br>
-      <strong>Web-Based Mesh Lighting Effect</strong>
-      <br>
-      Interactive lighting effects built using web technologies.
+      <strong>RAG based AI Chatbots</strong>
+      <br> 
     </td>
     <td align="center">
-      <img src="https://images.charleskarpati.com/3DprintV2.jpg" width="200" height="200" alt="3D Printed Map of Baltimore"/>
+      <img src="https://carlos-a-diez.com/images/addy_langdrive_stars.png" width="200" height="200" alt="3D Printed Map of Baltimore"/>
       <br>
-      <strong>3D Printed Map of Baltimore</strong>
+      <strong>Star Chart</strong>
       <br>
-      Dynamically generated map using census data; code available on <a href='https://observablehq.com/@karpatic'>ObservableHQ</a>.
     </td>
   </tr>
-</table>
-
+</table> 
 
 ---
 
@@ -76,7 +73,7 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
       </td>
       <td align="center">
         <video controls loop style="max-width: 100%; height: auto;">
-          <source src="https://images.charleskarpati.com/addy_langdrive_demo_code.mp4" type="video/mp4">
+          <source src="https://carlos-a-diez.com/images/addy_langdrive_demo_code.gif" type="video/mp4">
           Your browser does not support the video tag.
         </video>
       </td>
@@ -91,7 +88,8 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
       </td>
     </tr>
   </table>
-</details>
+</details> 
+
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary><img src="https://images.charleskarpati.com/voxels_logo_rainbow.svg" style="height:40px;" /><b style="font-size:18px;">Voxels</b></summary>
@@ -109,7 +107,18 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
 </details>
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
-  <summary><img src="https://images.charleskarpati.com/bnia_logo_new.png" style="max-width: 90%; height: 40px;" /></summary>
+  <summary><img src="https://carlos-a-diez.com/images/nsf_logo.jpeg" style="height:40px;" /><b style="font-size:18px;">National Science Foundation</b></summary>
+  <table align="center"> 
+    <tr> 
+      <td align="center">
+        <img src="https://carlos-a-diez.com/images/nsf_data_science_corps_modified.png" style="max-width: 90%; height: auto;" />
+      </td>
+    </tr>
+  </table>
+</details>
+
+<details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
+  <summary><img src="https://carlos-a-diez.com/images/bnia_icon_list.png" style="max-width: 90%; height: 40px;" /><b style="font-size:18px;">Baltimore Neighborhood Indicators Association</b></summary>
   <table align="center"> 
     <tr>
       <td>
@@ -167,29 +176,40 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
     </tr>
   </table>
 </details>
-
----
-
-## Awards:
-
-
-  <table>
-    <tr> 
+<details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
+  <summary>
+  <img src="https://carlos-a-diez.com/images/github_logo.png" style="height:40px;" /><b style='font-size:18px;'>
+  <img src="https://carlos-a-diez.com/images/addy_logo_VentureBridge.png" style="height:40px;" /><b style='font-size:18px;'>
+  Accelerators
+  </b></summary>
+  <img src="https://carlos-a-diez.com/images/github_addyai.png" style="max-width: 90%; height: auto;" />   
+  <img src="https://carlos-a-diez.com/images/addy-ai-accelerator.png" style="max-width: 90%; max-height: 600px;" />
+</details>
+<details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
+  <summary><img src="https://carlos-a-diez.com/images/photos/NatisWeddingAug2023-modified.png" style="height:40px;" /><b style='font-size:18px;'>Independent</b></summary>
+  <table align="center">
+    <tr>
       <td align="center">
-        <img src="https://carlos-a-diez.com/images/github_addyai.png" style="max-width: 90%; height: auto;" />
+        <img src="https://carlos-a-diez.com/images/lights_video_weBT_mesh-optimized.gif" width="400" height="200" alt="Lighting Effect in Web-Based Mesh"/>
+        <br>
+        <strong>Web-Based Mesh Lighting Effect</strong>
+        <br>
+        Interactive lighting effects built using web technologies.
       </td>
-    </tr>
-    <tr> 
       <td align="center">
-        <img src="https://carlos-a-diez.com/images/addy-ai-accelerator.png" style="max-width: 90%; max-height: 600px;" />
+        <img src="https://images.charleskarpati.com/3DprintV2.jpg" width="200" height="200" alt="3D Printed Map of Baltimore"/>
+        <br>
+        <strong>3D Printed Map of Baltimore</strong>
+        <br>
+        Dynamically generated map using census data; code available on <a href='https://observablehq.com/@karpatic'>ObservableHQ</a>.
       </td>
     </tr>
   </table>
+</details> 
 
 ---
 
-## 📫 Let's Connect!
-Feel free to reach out to me via any of the platforms below:
+## 📫 Let's Connect! 
 
 <table align="center">
   <tr>
