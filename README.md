@@ -18,7 +18,7 @@
 
 ## About Me:
 
-I have an MS in Information Systems from <img src="https://carlos-a-diez.com/images/umbc_mascot_dog.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [UMBC](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) and have been making software since I was 14 - Go [<img src="https://carlos-a-diez.com/images/wj_logo_2.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/>](https://www.montgomeryschoolsmd.org/schools/wjhs/) Wildcats! I worked making data products at a research institute at the <img src="https://carlos-a-diez.com/images/ub_mascot.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [University](https://data-bniajfi.opendata.arcgis.com/) of Baltimore, contributed to Ethereum-based projects like [Voxels](https://voxels.com), co-founded [Addy-AI](https://addy-ai.com), and currently serve as the lead developer at [AutoApply](https://autoapply.org).
+I have an MS in Information Systems from <img src="https://carlos-a-diez.com/images/umbc_mascot_dog.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [UMBC](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) and have been making software since I was 14 -> Go [<img src="https://carlos-a-diez.com/images/wj_logo_2.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/>](https://www.montgomeryschoolsmd.org/schools/wjhs/) Wildcats! I worked making data products at a research institute at the <img src="https://carlos-a-diez.com/images/ub_mascot.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [University](https://data-bniajfi.opendata.arcgis.com/) of Baltimore, contributed to Ethereum-based projects like [Voxels](https://voxels.com), co-founded [Addy-AI](https://addy-ai.com), and currently serve as the lead developer at [AutoApply](https://autoapply.org).
 
 ### My Specialties Include:
 
@@ -34,20 +34,26 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
 
 <table align="center">
   <tr>
-    <td align="center">
-      <img src="https://carlos-a-diez.com/images/addy_langdrive_demo_code.gif" width="400" height="200" alt="Lighting Effect in Web-Based Mesh"/>
-      <br>
-      <strong>RAG based AI Chatbots</strong>
-      <br> 
+    <td>
+      <strong>Title:</strong> RAG based AI Chatbots<br>
+      <strong>Description:</strong> A demo showcasing RAG-based AI chatbots in action.
     </td>
     <td align="center">
-      <img src="https://carlos-a-diez.com/images/addy_langdrive_stars.png" width="200" height="200" alt="3D Printed Map of Baltimore"/>
-      <br>
-      <strong>100+ GitHub Stars</strong>
-      <br>
+      <img src="https://carlos-a-diez.com/images/addy_langdrive_demo_code.gif" style="max-width: 90%; height: auto;" alt="RAG based AI Chatbots" />
     </td>
-  </tr> 
-</table> 
+  </tr>
+  <tr>
+    <td>
+      <strong>Title:</strong> 100+ GitHub Stars<br>
+      <strong>Description:</strong> An image highlighting a project with over 100 stars on GitHub.
+    </td>
+    <td align="center">
+      <img src="https://carlos-a-diez.com/images/addy_langdrive_stars.png" style="max-width: 90%; height: auto;" alt="100+ GitHub Stars" />
+    </td>
+  </tr>
+</table>
+
+
 
 ---
 
@@ -100,15 +106,17 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
     <img src="https://carlos-a-diez.com/images/nsf_logo.jpeg" style="height:40px;" />
     <b style="font-size:18px;">National Science Foundation - Data Science Corps</b>
   </summary> 
-  Under an NSF grant, I taught 'Programming with Big Data' to a Data Science Corps comprised of graduate students from Maryland universities and it taught <i><b>ME</b></i> a lot. 
-
 <table align="center">
-  <tr> 
+  <tr>
+    <td>
+      <strong>Title:</strong> Voxels Virtual Village<br>
+      <strong>Description:</strong> Under an NSF grant, I taught 'Programming with Big Data' to a Data Science Corps comprised of graduate students from Maryland universities and it taught <i><b>ME</b></i> a lot. 
+    </td>
     <td align="center">
       <img src="https://carlos-a-diez.com/images/nsf_data_science_corps_modified.png" style="max-width: 90%; height: auto;" />
       <br /><em>Zoom Meeting</em>
     </td>
-  </tr>
+  </tr> 
 </table>
 
 I also mentored students through various research projects, which are showcased below.
@@ -228,23 +236,26 @@ I also mentored students through various research projects, which are showcased 
   </summary>
   <table align="center">
     <tr>
-      <td align="center">
-        <img src="https://carlos-a-diez.com/images/lights_video_weBT_mesh-optimized.gif" width="400" height="200" alt="Lighting Effect in Web-Based Mesh"/>
-        <br>
-        <strong>Web-Based Mesh Lighting Effect</strong>
-        <br>
-        Interactive lighting effects built using web technologies.
+      <td>
+        <strong>Title:</strong> Dynamically Generated Map<br>
+        <strong>Description:</strong> A dynamically generated map using census data; code available on <a href='https://observablehq.com/@karpatic'>ObservableHQ</a>.
       </td>
       <td align="center">
-        <img src="https://images.charleskarpati.com/3DprintV2.jpg" width="200" height="200" alt="3D Printed Map of Baltimore"/>
-        <br>
-        <strong>3D Printed Map of Baltimore</strong>
-        <br>
-        Dynamically generated map using census data; code available on <a href='https://observablehq.com/@karpatic'>ObservableHQ</a>.
+        <img src="https://images.charleskarpati.com/3DprintV2.jpg" style="max-width: 90%; height: auto;" alt="3D Printed Map of Baltimore" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Title:</strong> Interactive Lighting Effects<br>
+        <strong>Description:</strong> Lighting effects built using web-based technologies with interactive features.
+      </td>
+      <td align="center">
+        <img src="https://carlos-a-diez.com/images/lights_video_weBT_mesh-optimized.gif" style="max-width: 90%; height: auto;" alt="Lighting Effect in Web-Based Mesh" />
       </td>
     </tr>
   </table>
 </details> 
+
 
 ---
 
