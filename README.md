@@ -18,7 +18,7 @@
 
 ## About Me:
 
-I have an MS in Information Systems from <img src="https://carlos-a-diez.com/images/umbc_mascot_dog.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [UMBC](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) and have been making software since I was 14 -> Go [<img src="https://carlos-a-diez.com/images/wj_logo_2.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/>](https://www.montgomeryschoolsmd.org/schools/wjhs/) Wildcats! I worked making data products at a research institute at the <img src="https://carlos-a-diez.com/images/ub_mascot.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [University](https://data-bniajfi.opendata.arcgis.com/) of Baltimore, contributed to Ethereum-based projects like [Voxels](https://voxels.com), co-founded [Addy-AI](https://addy-ai.com), and currently serve as the lead developer at [AutoApply](https://autoapply.org).
+I have an MS in Information Systems from <img src="https://carlos-a-diez.com/images/umbc_mascot_dog.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [UMBC](https://informationsystems.umbc.edu/home/graduate-programs/master-of-science-programs/master-of-science-in-information-systems/) and have been making software since I was 14 -> Go <img src="https://carlos-a-diez.com/images/wj_logo_2.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/><a href='https://www.montgomeryschoolsmd.org/schools/wjhs/'>Wildcats</a>! I worked making data products at a research institute at the <img src="https://carlos-a-diez.com/images/ub_mascot.png" width="20px" alt="Lighting Effect in Web-Based Mesh"/> [University](https://data-bniajfi.opendata.arcgis.com/) of Baltimore, contributed to Ethereum-based projects like [Voxels](https://voxels.com), co-founded [Addy-AI](https://addy-ai.com), and currently serve as the lead developer at [AutoApply](https://autoapply.org).
 
 ### My Specialties Include:
 
@@ -32,56 +32,63 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
 
 ## Featured Project: [Langdrive](https://docs.langdrive.ai/docs/getting-started)
 
-<table align="center">
-  <tr>
-    <td>
-      <strong>Title:</strong> RAG based AI Chatbots<br>
-      <strong>Description:</strong> A demo showcasing RAG-based AI chatbots in action.
-    </td>
-    <td align="center">
+<table align="center"> 
+  <tr> 
+    <td align="center" colspan="2">
       <img src="https://carlos-a-diez.com/images/addy_langdrive_demo_code.gif" style="max-width: 90%; height: auto;" alt="RAG based AI Chatbots" />
     </td>
   </tr>
   <tr>
-    <td>
-      <strong>Title:</strong> 100+ GitHub Stars<br>
-      <strong>Description:</strong> An image highlighting a project with over 100 stars on GitHub.
-    </td>
+    <td align="left">
+      <strong>RAG based AI Chatbots w/ 100+ GitHub Stars</strong>
+    </td> 
     <td align="center">
       <img src="https://carlos-a-diez.com/images/addy_langdrive_stars.png" style="max-width: 90%; height: auto;" alt="100+ GitHub Stars" />
     </td>
   </tr>
 </table>
 
-
-
----
-
 ## Past Works: 
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
-  <summary><img src="https://images.charleskarpati.com/addy_logo.png" style="height:40px;" /><b style='font-size:18px;'>Addy AI</b></summary>
+  <summary>
+    <img src="https://carlos-a-diez.com/images/github_logo.png" style="height:40px;" />  
+    <img src="https://carlos-a-diez.com/images/cmu_logo_text_white.png" style="height:40px;" />  
+    <img src="https://images.charleskarpati.com/addy_logo.png" style="height:40px;" /> 
+    <b style='font-size:18px;'>Addy AI</b>
+  </summary>
   <table align="center"> 
     <tr>
       <td>
-        <strong>Title:</strong> LangDrive Promotion<br>
-        <strong>Description:</strong> Promotional images for Addy-AI's LangDrive feature.
+        Addy AI has been part of two accelerators while working on AI technology services
       </td>
       <td align="center">
         <img src="https://images.charleskarpati.com/addy_langdrive_promotional_3.png" style="max-width: 45%; height: auto;" />
         <img src="https://images.charleskarpati.com/addy_langdrive_promotional_2.png" style="max-width: 45%; height: auto;" />
       </td>
     </tr> 
-    <tr>
-      <td>
-        <strong>Title:</strong> Final Promotional Image<br>
-        <strong>Description:</strong> One more promotional image for LangDrive.
-      </td>
-      <td align="center">
+    <tr> 
+      <td align="center" colspan="2">
         <img src="https://images.charleskarpati.com/addy_langdrive_promotional_1.png" style="max-width: 90%; height: auto;" />
       </td>
     </tr>
-  </table>
+  <tr> 
+   <td align="center" colspan="2">
+    Github - 2024
+  </td>  </tr> 
+  <tr> 
+   <td align="center" colspan="2">
+    <img src="https://carlos-a-diez.com/images/github_addyai.png" style="max-width: 90%; height: auto;" />   
+  </td>  </tr> 
+  <tr> 
+   <td align="center" colspan="2">
+    Venture Bridge - 2023
+  </td>  </tr> 
+  <tr> 
+   <td align="center" colspan="2">
+    <img src="https://carlos-a-diez.com/images/addy-ai-accelerator.png" style="max-width: 90%; max-height: 600px;" />
+  </td>  </tr>  
+  </table> 
 </details> 
 
 
@@ -90,8 +97,7 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
   <table align="center"> 
     <tr>
       <td>
-        <strong>Title:</strong> Voxels Virtual Village<br>
-        <strong>Description:</strong> An image showcasing a virtual village from Voxels.
+        Voxels Virtual Village: This is a picture of my home in the ethereum based metaverse. While there I led efforts to squash bugs and redesign the site. I also added a few cool features like support for livestreams, HLS .m3u8 files, and sending money in-game.
       </td>
       <td align="center">
         <img src="https://images.charleskarpati.com/voxels_village.jpg" style="max-width: 90%; height: auto;" />
@@ -101,27 +107,25 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
 </details>
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary>
-    <img src="https://carlos-a-diez.com/images/umbc_shield_logo.png" style="height:40px;" />
-    <img src="https://carlos-a-diez.com/images/ub_logo_short.png" style="height:40px;" /> 
+    <img src="https://carlos-a-diez.com/images/logos/usm_logo.png" style="height:40px;" /> 
     <img src="https://carlos-a-diez.com/images/nsf_logo.jpeg" style="height:40px;" />
-    <b style="font-size:18px;">National Science Foundation - Data Science Corps</b>
+    <b style="font-size:18px;">Data Science Corps</b>
   </summary> 
 <table align="center">
   <tr>
     <td>
-      <strong>Title:</strong> Voxels Virtual Village<br>
-      <strong>Description:</strong> Under an NSF grant, I taught 'Programming with Big Data' to a Data Science Corps comprised of graduate students from Maryland universities and it taught <i><b>ME</b></i> a lot. 
+      Under an NSF grant, I taught 'Programming with Big Data' to a Data Science Corps comprised of graduate students from participating Maryland universities
     </td>
     <td align="center">
       <img src="https://carlos-a-diez.com/images/nsf_data_science_corps_modified.png" style="max-width: 90%; height: auto;" />
       <br /><em>Zoom Meeting</em>
     </td>
   </tr> 
-</table>
-
-I also mentored students through various research projects, which are showcased below.
-
-<table align="center">
+  <tr>
+    <td align="center" colspan="2">
+      I also mentored students through various research projects, which are showcased
+    </td>
+  </tr>
   <tr> 
     <td align="center">
       <img src="https://carlos-a-diez.com/images/nsf_aexploration-of-data-works-mds-membership_.png" style="max-width: 30%; height: auto;" />
@@ -142,15 +146,21 @@ I also mentored students through various research projects, which are showcased 
 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary>
+    <img src="https://carlos-a-diez.com/images/ub_logo_short.png" style="height:40px;" /> 
     <img src="https://carlos-a-diez.com/images/bnia_icon_list.png" style="max-width: 90%; height: 40px;" />
-    <b style="font-size:18px;">Baltimore Neighborhood Indicators Association</b>
-    <img src="https://carlos-a-diez.com/images/ub_jfi_logo_cover.png" style="max-width: 90%; height: 40px;" />
+    <b style="font-size:18px;">BNIA</b>
   </summary>
   <table align="center"> 
     <tr>
       <td>
-        <strong>Title:</strong> BNIA-JFI Homepage<br>
-        <strong>Description:</strong> Image of BNIA-JFI's homepage.
+        <strong>Title:</strong> The Baltimore Neighborhood Indicator Association, Jacob France Institute's (BNIA-JFI) Homepage<br>
+        <strong>Description:</strong>I inherited this website and built it out over the years.
+        <br>
+        <div align="center">
+          <img  src="https://carlos-a-diez.com/images/logos/ub_cover_merrick.jpg" style="max-width: 90%; height: 80px;" />
+          <br>
+          <img src="https://carlos-a-diez.com/images/ub_jfi_logo_cover.png" style="max-width: 90%; height: 40px;" /> 
+        </div> 
       </td>
       <td align="center">
         <img src="https://images.charleskarpati.com/bnia_bniajfi.png" style="max-width: 90%; max-height: 600px;" />
@@ -158,8 +168,31 @@ I also mentored students through various research projects, which are showcased 
     </tr>
     <tr>
       <td>
+        <strong>Title:</strong> Community Guidepost<br>
+        <strong>Description:</strong> A longitudinal neighborhood data visualizer built in collaboration with innovation works.
+        <br>
+    <img src="https://carlos-a-diez.com/images/innovation_works_logo.png" style="height:50px;" />
+      </td>
+      <td align="center">
+        <img src="https://images.charleskarpati.com/bnia_guidepost_longitudinal.png" style="max-width: 90%; max-height: 600px;" />
+      </td>
+    </tr>
+  </table>
+</details> 
+
+<details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
+  <summary>
+    <img src="https://carlos-a-diez.com/images/md_logo.png" style="height:35px;" />
+    <img src="https://carlos-a-diez.com/images/baltimore_city_logo.jpg" style="height:40px;" />
+    <img src="https://carlos-a-diez.com/images/forest_services_logo2-removebg-preview.png" style="height:40px;" />
+    <img src="https://carlos-a-diez.com/images/NatisWeddingAug2023-modified.png" style="height:40px;" />
+    <b style='font-size:18px;'>Contracted</b>
+  </summary>
+  <table align="center">
+    <tr>
+      <td>
         <strong>Title:</strong>Green Patterns Map<br>
-        <strong>Description:</strong> Water usage map in the city.
+        <strong>Description:</strong>A web-based map application to visualize longitudinal water usage throughout Baltimore City, aiding city-wide environmental and planning decisions.
       </td>
       <td align="center">
         <img src="https://images.charleskarpati.com/greenPatterns.PNG" style="max-width: 90%; max-height: 600px;" />
@@ -167,9 +200,8 @@ I also mentored students through various research projects, which are showcased 
     </tr>
     <tr>
       <td>
-        <strong>Title:</strong> MD Dept. Labor Dashboard<br>
-        <strong>Description:</strong> Dashboard for the Maryland Department of Labor.
-      </td>
+        <strong>Title:</strong>State of Maryland, Dept. Labor Dashboard<br>
+        <strong>Description:</strong>Updated quarterly and hosted on the official departments' website</td>
       <td align="center">
         <img src="https://carlos-a-diez.com/images/bnia_dllr.jpg" style="max-width: 90%; max-height: 600px;" />
       </td>
@@ -177,7 +209,7 @@ I also mentored students through various research projects, which are showcased 
     <tr>
       <td>
         <strong>Title:</strong> Baltimore Open Land Data<br>
-        <strong>Description:</strong> A tool to study vacancies and foreclosures in Baltimore.
+        <strong>Description:</strong> This application streamlines data collection and analysis for stakeholders working to revitalize Baltimore’s neighborhoods by providing insights into vacancy and foreclosure trends. It is designed to support informed decision-making for community redevelopment efforts.
       </td>
       <td align="center">
         <img src="https://images.charleskarpati.com/screenshot_bold.PNG" style="max-width: 90%; height: auto;" />
@@ -186,53 +218,18 @@ I also mentored students through various research projects, which are showcased 
     <tr>
       <td>
         <strong>Title:</strong> Business Integration Partnership<br>
-        <strong>Description:</strong> Portal for minority business search.
+        <strong>Description:</strong>A portal to search for minority business, sponsored by an org of the same name.
       </td>
       <td align="center">
         <img src="https://images.charleskarpati.com/bnia_screenshot_bippic1.PNG" style="max-width: 90%; height: auto;" />
       </td>
     </tr>
-    <tr>
-      <td>
-        <strong>Title:</strong> Community Guidepost<br>
-        <strong>Description:</strong> Longitudinal Neighborhood Data Visualizer.
-      </td>
-      <td align="center">
-        <img src="https://images.charleskarpati.com/bnia_guidepost_longitudinal.png" style="max-width: 90%; max-height: 600px;" />
-      </td>
-    </tr>
   </table>
-</details>
-<details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
-  <summary>
-    <img src="https://carlos-a-diez.com/images/github_logo.png" style="height:40px;" /><b style='font-size:18px;'>
-    <img src="https://carlos-a-diez.com/images/cmu_logo_text_white.png" style="height:40px;" /><b style='font-size:18px;'>
-    <img src="https://carlos-a-diez.com/images/addy_logo_VentureBridge.png" style="height:40px;" />
-    <b style='font-size:18px;'> Accelerators </b>
-  </summary>
-  <table> 
-  <tr> 
-   <td align="center">
-    Github - 2024
-  </td>  </tr> 
-  <tr> 
-   <td align="center">
-    <img src="https://carlos-a-diez.com/images/github_addyai.png" style="max-width: 90%; height: auto;" />   
-  </td>  </tr> 
-  <tr> 
-   <td align="center">
-    Venture Bridge - 2023
-  </td>  </tr> 
-  <tr> 
-   <td align="center">
-    <img src="https://carlos-a-diez.com/images/addy-ai-accelerator.png" style="max-width: 90%; max-height: 600px;" />
-  </td>  </tr>  
-  </table>
-</details>
+</details> 
 <details style="border:1px dashed black; margin-bottom:12px; padding:8px;">
   <summary>
     <img src="https://carlos-a-diez.com/images/photos/NatisWeddingAug2023-modified.png" style="height:40px;" />
-    <b style='font-size:18px;'>Independent</b>
+    <b>Personal</b>
   </summary>
   <table align="center">
     <tr>
