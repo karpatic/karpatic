@@ -63,7 +63,7 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
         As CTO and technical co-founder at <a href='https://addy.so/chrome-extension'>Addy-AI</a>, we generated AI products which garnered over 10k+ users and accrued $400k in support from programs like 
         <a href='https://startup.google.com/programs/'>
           <img src="https://carlos-a-diez.com/images/google_for_startups.png" style="height:20px;" style="max-width: 90%; height: auto;" alt="Google For Startups" />
-        </a>, two accelerators (Github, CMU), and a whole crew of amazing, supporting investors.
+        </a>, two accelerators (Github, CMU), and a whole crew of amazing, supporting investors. Codebase mostly private.
       </td>
       <td align="center">
         <img src="https://images.charleskarpati.com/addy_langdrive_promotional_3.png" style="max-width: 45%; height: auto;" /> 
@@ -103,7 +103,7 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
   <table align="center"> 
     <tr>
       <td>
-        Voxels Virtual Village: This is a picture of <a href='https://www.voxels.com/play?coords=N@1447E,1128S'>my home</a> in the ethereum based metaverse. While there, I led efforts to squash bugs and redesign the site. I also added a few cool features like support for livestreams, HLS .m3u8 files, and sending money in-game. 
+        Voxels Virtual Village: This is a picture of <a href='https://www.voxels.com/play?coords=N@1447E,1128S'>my home</a> in the ethereum based metaverse. While there, I led efforts to squash bugs and redesign the site. I also added a few cool features like support for livestreams, HLS .m3u8 files, and sending money in-game. Codebase private. 
       </td>
       <td align="center">
         <img src="https://images.charleskarpati.com/voxels_village.jpg" style="max-width: 90%; height: auto;" />
@@ -131,13 +131,15 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
       Under a National Science Foundation grant I taught 'Programming with Big Data' to a Data Science Corps comprised of graduate students from participating institutions from the University System of Maryland.
     </td>
     <td align="center">
-      <img src="https://carlos-a-diez.com/images/nsf_data_science_corps.png" style="max-width: 90%; height: auto;" />
+      <img src="https://carlos-a-diez.com/images/nsf_data_science_corps_modified.png" style="max-width: 90%; height: auto;" />
       <br /><em>Zoom Meeting</em>
     </td>
   </tr> 
+</table>
+<table align="center">
   <tr>
     <td align="center" colspan="2">
-      I also mentored students through various research projects, which are showcased
+      I also mentored students through various research projects, which are showcased below:
     </td>
   </tr>
   <tr> 
@@ -201,21 +203,21 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
         <strong>Description:</strong>To aid development, a suite of tools were made. 
       </td>
       <td align="center">
-          <img src="https://carlos-a-diez.com/images/logos/tidyaddr_logo.png" style="height:40px;" />
-          <img src="https://carlos-a-diez.com/images/logos/close_crawl_logo.png" style="height:40px;" />  
+          <img src="https://carlos-a-diez.com/images/logos/tidyaddr_logo.png" style="max-width: 430%; max-height: 280px;" />
+          <img src="https://carlos-a-diez.com/images/logos/close_crawl_logo.png" style="max-width: 43%; max-height: 280px;" />  
       </td>
     </tr>
     <tr>
       <td>
-        <strong>Title:</strong> Mayors Office of Technology<br>
-        <strong>Description:</strong> We had a strong working relation with several of the mayors offices. I did some contract development for them (which can not be shown) and we helped set up <a href='https://data.baltimorecity.gov/'>their</a> open data portal, among other things.
+        <strong>Title:</strong> Mayors Office of Information Technology<br>
+        <strong>Description:</strong> We had a strong working relation with several of the mayors offices. I did some contract development for them (which can not be shown) and we helped set up <a href='https://data.baltimorecity.gov/'>their</a> open data portal, and more.
         <div align="center">
           <br>
-          <img src="https://carlos-a-diez.com/images/logos/baltimore_city_moit_full.png" style="height:50px;" />
+          <img src="https://carlos-a-diez.com/images/logos/baltimore_city_moit_full.png" style="height:100px;" />
         </div> 
       </td>
       <td align="center"> 
-          <img src="https://carlos-a-diez.com/images/baltimore_moit_opendata.png" style="height:40px;" />
+          <img src="https://carlos-a-diez.com/images/baltimore_moit_opendata.png" style="max-width: 90%; max-height: 600px;" />
       </td>
     </tr>
   </table>
