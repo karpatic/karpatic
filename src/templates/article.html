@@ -66,10 +66,10 @@
     )
   );
 
-  // Intersection Observer for TOC lin-through and Scroll-shaking
+  // Intersection Observer for TOC line-through and Scroll-shaking
   w.activeHeader = null;
   w.observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
+    entries.forEach((entry) => { 
       let e = entry.target;
       let txt = "0.5s ease-in-out 0s 2 normal none running wiggle";
       let pos = e.getBoundingClientRect().top;
@@ -77,9 +77,12 @@
         (e.parentNode?.nodeName == "SUMMARY" && e.parentNode.style) || e.style;
       el.animation = txt;
       if (!entry.isIntersecting) return (el.animation = "");
-      if (pos < 300 || pos > 300) {
-        w.activeHeader && (w.activeHeader.style.textDecoration = "none"); // unset previous active header
-        let tocLink = document.querySelector(`#toc a[href="#${e.id}"]`);
+      if (pos < 300 || pos > 300) { 
+        w.activeHeader && (
+          (w.activeHeader.style.textDecoration = "none"),
+          (w.activeHeader.style.animation = '')
+        ); // unset previous active TOC header
+        let tocLink = document.querySelector(`#toc-content a[href="#${e.id}"]`);
         tocLink &&
           ((tocLink.style.animation = txt),
           (tocLink.style.textDecoration = "line-through"));

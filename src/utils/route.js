@@ -2,7 +2,7 @@ window.w = window;
 
 //
 // Routes.js
-//
+// 
 // index.redirect -> (navEvent or handleRoute)
 //
 // Main Function: handleRoute
@@ -77,12 +77,14 @@ export const handleRoute = async () => {
             );
             return x;
           })()
-        ).nb2json(url));
+        ).nb2json(url, true));
   } catch (err) {
     try{ 
       // split and grab last part of route
       let txt = route.split('/').pop();
-      let tryThisUrl = 'https://carlos-a-diez.com/cms/notes/' + txt; 
+      // console.log('Trying to get content from:', route);
+      let path = route.replace("/", "_").replace(/./, c => c.toUpperCase());
+      let tryThisUrl = 'https://carlos-a-diez.com/cms/notes/' + path; 
       let text = await (await fetch(tryThisUrl)).text();
       content = {meta: {title: txt, markdown: 'true'}, content: text};
       console.log('Pulled text from ', tryThisUrl, content);

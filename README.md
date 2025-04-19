@@ -170,7 +170,7 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
     <tr>
       <td>
         <strong>Title:</strong> The Baltimore Neighborhood Indicator Association, Jacob France Institute's (BNIA-JFI) Homepage<br>
-        <strong>Description:</strong> I inherited this website and built it out over the years. Each year we recieved ~50 data sources and produced 150 quality of life indicators form it that we called <a href='https://vital-signs-bniajfi.hub.arcgis.com/'>Vital Signs</a>. I was responsible for data injestion, processing, and dissemination. 
+        <strong>Description:</strong> I inherited this website and built it out over the years. Each year we recieved ~50 administrative data sources and produced 150 quality of life indicators form it that we called <a href='https://vital-signs-bniajfi.hub.arcgis.com/'>Vital Signs</a>. I was responsible for data injestion, processing, and dissemination. 
         <br>
         <div align="center">
           <br>
@@ -185,7 +185,7 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
     </tr>
     <tr>
       <td>
-        <strong>Title:</strong>Community Guidepost<br>
+        <strong>Title:</strong> Community Guidepost<br>
         <strong>Description:</strong> A longitudinal neighborhood data visualizer built in collaboration with innovation works.
         <br>
         <div align="center">
@@ -199,8 +199,8 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
     </tr>
     <tr>
       <td>
-        <strong>Title:</strong>Internal Tools<br>
-        <strong>Description:</strong>To aid development, a suite of tools were made. 
+        <strong>Title:</strong> Internal Tools<br>
+        <strong>Description:</strong> To aid development, a suite of tools were made. 
       </td>
       <td align="center">
           <img src="https://carlos-a-diez.com/images/logos/tidyaddr_logo.png" style="max-width: 430%; max-height: 280px;" />
@@ -233,7 +233,7 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
   <table align="center">
     <tr>
       <td>
-        <strong>Title:</strong>Green Patterns Map<br>
+        <strong>Title:</strong> Green Patterns Map<br>
         <strong>Description:</strong> A web-based map application to visualize longitudinal water usage throughout Baltimore City, aiding city-wide environmental and planning decisions.
         <div align="center">
           <br>
@@ -249,8 +249,8 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
     </tr>
     <tr>
       <td>
-        <strong>Title:</strong>State of Maryland, Dept. Labor Dashboard<br>
-        <strong>Description:</strong>Updated quarterly and hosted on the official departments' website
+        <strong>Title:</strong> State of Maryland, Dept. Labor Dashboard<br>
+        <strong>Description:</strong> Updated quarterly and hosted on the official departments' website
         <div align="center">
           <br>
           <img src="https://carlos-a-diez.com/images/logos/md_logo.png" style="height:40px;" /> 
@@ -276,7 +276,7 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
     <tr>
       <td>
         <strong>Title:</strong> Business Integration Partnership<br>
-        <strong>Description:</strong>A portal to search for minority business, sponsored by an org of the same name.
+        <strong>Description:</strong> A portal to search for minority business, sponsored by an org of the same name.
         <div align="center">
           <br>
           <img src="https://carlos-a-diez.com/images/logos/BIP_logo_text.png" style="height:50px;" /> 
@@ -309,7 +309,7 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
         <strong>Description:</strong> Lighting effects built using web-based technologies with interactive features.
       </td>
       <td align="center">
-        <img src="https://carlos-a-diez.com/images/lights_video_weBT_mesh-optimized.gif" style="max-width: 90%; height: auto;" alt="Lighting Effect in Web-Based Mesh" />
+        <img src="https://carlos-a-diez.com/images/lights_video_weBT_mesh-optimized.gif" style="max-width: 90%; height: auto; max-height:320px;" alt="VR Me" />
       </td>
     </tr>
   </table>

@@ -19,6 +19,7 @@ Possible Key's: Sample Values
 - `keywords`: ['seo_term', 'another_term]
 - `meta.prettify: true`
 - `hide: true`
+- content, template, hide_sitemap, title, breadcrumbs, audio, summary, filename, tab, toc, hide
 
 ## Cell Flags
 

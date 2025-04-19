@@ -80,8 +80,6 @@ summary:hover .anchor::after {
 .anchor {
   position: absolute;
   left: 0px; 
-}
-#sitemap-content>a, .anchor{
   text-decoration:none;
 }
 

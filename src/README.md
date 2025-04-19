@@ -102,12 +102,14 @@ Webpack compiles the client as so:
 
 - Header.js renders (r-snap/ dev) and then remove itself for (prod).
 - - Uses: [header.json,posts/{dir}{file}.json]
-- - `Head.json`: uses src/client/images/ for meta tags
+- - `Head.json`: uses src/images/ for meta tags
 - - Dispatches router
 
 - Router.js
 - - Updates [template,content,sitemap,metadata(title),breadcrumbs]
 - - Dispatches 'refreshTemplate' which triggers [refresh_template]
+
+w["tocHere"] || w["toc"]
 
 - Refresh_template.js
 - - Sitemap.js injects template content and conditionally refreshes sitemap/TOC

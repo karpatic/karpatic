@@ -36,16 +36,16 @@ window.w = window;
 //
 // template intersection observer interacts with createNav
 
-const shorten = (str, len = 12) =>
-  str.trim().slice(0, len) + (str.length > len + 1 ? "..." : "");
-const capitalize = (str) => str.replace(/\b\w/g, (c) => c.toUpperCase());
-const formatLink = (str) =>
-  shorten(capitalize(str.replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "")));
-const displayLink = (str) =>
-  capitalize(str.replace(/^\d+/g, "").replaceAll("_", " "));
+const getsm = () => location.pathname.split("/")[1].replace(".html", "") || "index";
+const shorten = (str, len = 12) => str?.trim().slice(0, len) + (str?.length > len + 1 ? "..." : "");
+const capitalize = (str) => str?.replace(/\b\w/g, (c) => c.toUpperCase());
+const formatLink = (str) => shorten(capitalize(str?.replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "")));
+const displayLink = (str) => capitalize(str.toLowerCase().replace(getsm() + '_', '').replace(/^\d+/g, "").replaceAll("_", " "));
 
 //
-const create_url = (link, sitemap) => {
+const create_url = (link, sitemap) => { 
+  // Remove sm prefix from link (ignore case)
+  link = link.replace(new RegExp(`^${sitemap}_`, 'i'), ''); 
   // Relative Links comparing URI, current Meta, the desired post's Meta
   // Use in populate template and create nav
   let fromSubpath = location.pathname.split("/").length >= 3;
@@ -107,7 +107,7 @@ w.addEventListener(
     }
 
     // Add or Replace Sitemap Stylesheet
-    let sm = location.pathname.split("/")[1].replace(".html", "") || "index";
+    let sm = getsm();
     // Takes the first element as the sitemap name
     // exe1: /index.html -> index
     // exe2: /notes/ -> notes
@@ -115,33 +115,34 @@ w.addEventListener(
     // exe3: /notes/2021/01/01/index.html -> notes
 
     if (w.sitemap && !w.meta.hide_sitemap) {
-      let url = false;
-      try {
-        if (!w.sitemap_content) {
-          url = `${location.origin}/templates/${w.meta.template}_sitemap.css`;
-          console.log("Insert sitemap css", url);
-          let txt = await (await fetch(url)).text();
-          document.body.insertAdjacentHTML(
-            "beforeend",
-            `<style>${txt}</style>`
-          );
-        }
-        if (w.sm_name != sm) {
-          w.sm_name = sm;
-          url = `${location.origin}/posts/${sm_name}_map.json`;
-          console.log("Fetch sitemap:", url);
-          w.sitemap_content = await (await fetch(url)).json();
-          console.log("SITEMAP_CONTENT:", w.sitemap_content);
-          let sm2 = await (await fetch(`https://carlos-a-diez.com/cms/sitemap.json`)).json();
-          let filter = ["food", "life", "history"];
-          // filter obj arr where obj.fileName starts with filter
-          sm2 = sm2.filter((x) => filter.some((y) => x.filename.toLowerCase().startsWith(y)));
-          // console.log({ sm2 }); 
-          w.sitemap_content = [...w.sitemap_content, ...sm2];
-        }
-      } catch (e) {
-        console.log("INSERT_SITEMAP:ERROR:", url, e);
+      let url = false; 
+      if (!w.sitemap_content) {
+        url = `${location.origin}/templates/${w.meta.template}_sitemap.css`;
+        console.log("Insert sitemap css", url);
+        let txt = await (await fetch(url)).text();
+        document.body.insertAdjacentHTML(
+          "beforeend",
+          `<style>${txt}</style>`
+        );
       }
+      if (w.sm_name != sm) {
+        w.sm_name = sm;
+        url = `${location.origin}/posts/${sm_name}_map.json`;
+        // console.log("Fetch sitemap:", url);
+        w.sitemap_content = await (await fetch(url)).json();
+        // console.log("SITEMAP_CONTENT:", w.sitemap_content);
+        let sm2 = await (await fetch(`https://carlos-a-diez.com/cms/sitemap.json`)).json(); 
+        sm = Object.values(sm2).filter(x => {
+          let flag = x.filename.toLowerCase().startsWith(sm_name.toLowerCase() + '_')
+          return !flag ? false : {
+            filename: x.filename || "Unknown",
+            summary: x.summary || "Unknown"
+          }
+        }); 
+        // for each obj in sm2, filter for filenames that start with the end path of the url 
+        // filter obj arr where obj.fileName starts with filter 
+        w.sitemap_content = [...w.sitemap_content, ...sm];
+      } 
     }
 
     document.title = w.meta.title;
@@ -251,9 +252,12 @@ const populateTemplate = async (transitionable = false) => {
 
 // IPYNB Requires: meta.{summary, filename} Optionally: meta.{hide_sitemap, toc, tab} in the YAML header.
 const createNav = async () => {
-  console.group("createNav");
-  let currentTab = w.meta.tab || w.meta.filename;
-  lbl = (x) => x.tab || x.filename;
+  console.group("createNav");  
+
+  let toc = getToc(); // false or html string 
+  console.log("TOC:", toc);
+  let tocNode = false; //w["tocHere"] || w["toc"]; 
+  // if (tocNode) tocNode.innerHTML = toc;
 
   // Skip sitemap creation
   const skip = w.meta.hide_sitemap;
@@ -263,61 +267,79 @@ const createNav = async () => {
     return;
   }
 
-  console.log("CREATE_NAV: \n\n", {
-    currentTab,
+  console.log("CREATE_NAV: \n\n", { 
     sitemap_content: w.sitemap_content,
-  });
-
-  // Create Sitemap Links
-  let navLinks = w.sitemap_content.map((x) => {
-    let tab = lbl(x);
-    return `
-  <a id="${tab == currentTab ? "currentPage" : "link_" + tab}"  
-      href="${create_url(x.filename, w.sm_name)}.html" 
-      title="${tab}">
-      ${shorten(displayLink(tab), 20)}
-  </a>`;
   });
 
   // Insert Links Into Container
   w.sitemap.innerHTML = `
-  <label tabindex="0" for="toggle_sitemap">
-      <span>&#x21e8;</span> Sitemap 
-      <span>&#x2715;</span>
-  </label>
-  <hr/>
-  <div id='sitemap-content'>
+    <input type="checkbox" id="toggle_sitemap" class="nav-toggle" />
+    <label tabindex="0" for="toggle_sitemap" class="nav-label">
+      <span class="nav-arrow">&#x21e8;</span> Navigation 
+      <span class="nav-close">&#x2715;</span>
+    </label>
+    <hr/>
     <a id="link_Home" href="./../index.html" title="Home">Home</a>
-    ${navLinks.join("")}
-  </div>`;
+    ${(tocNode || !toc) ? "" : `
+    <input type="checkbox" id="toggle_toc" class="toc-toggle" />
+    <label class="toc-label" for="toggle_toc">
+      Table of Contents → 
+    </label>
+    <label class="toc-label-back" for="toggle_toc">
+      ← Back to Navigation
+    </label>
+    <div id='toc-content'> 
+      <h3>Table of Contents</h3>
+      ${toc} 
+    </div>
+    `}
+    <div id='sitemap-content'>  
+    ${w.sitemap_content.map((x, i) => {
+      // First entry is an H3
+      let tab = x.tab || x.filename; 
+      let content = `
+        <a id="${x.filename == w.meta.filename ? "currentPage" : "link_" + tab}"  
+            href="${create_url(x.filename, w.sm_name)}.html" 
+            title="${tab}">
+            ${shorten(displayLink(tab), 20)}
+        </a>`; 
+        return i === 0 ? `<h3>${content}</h3>` : content;
+  }).join("")}
+  
+    </div>`;
 
   document.getElementById("toggle_sitemap").checked = true;
-  // Toc Links
+
+  console.groupEnd();
+};
+
+const getToc = () => {
+  console.group("createToc");
 
   // Skip or Continue TOC creation
   if (!("toc" in w.meta) || w.meta.toc.toLowerCase() == "false") {
     console.groupEnd();
-    return;
+    return false;
   }
 
-  // Create TOC Link
-  // tocNode = document.createElement("div");
-  // tocNode.setAttribute("id", "toc"); // for Stylesheet
-  let tocNode = w["tocHere"] || w["toc"];
-  console.log({ tocNode });
-  tocNode.innerHTML = [...document.querySelectorAll("h2, h3, h4")]
+  let toc = [...document.querySelectorAll("h2, h3, h4")]
     .map((header) => {
       let x = header.innerText || header.textContent;
       const z = formatLink(x);
-      const spaces = "&emsp;".repeat(header.tagName.slice(1) - 1);
+      const spaces = "".repeat(header.tagName.slice(1) - 1); // "&emsp;"
       return `${spaces}<a href='#${z}' title="${x}">${displayLink(x)}</a>`;
     })
-    .join("<br/>");
+    .join("");
+
+  console.groupEnd();
+  return toc
 
   // const currentPage = w.sitemap.querySelector(`a[title="${lbl(w.meta)}"]`);
   // currentPage?.parentNode.insertBefore(tocNode, currentPage.nextSibling);
 
-  console.groupEnd();
+  // const currentPage = w.sitemap.querySelector(`a[title="${lbl(w.meta)}"]`);
+  // currentPage?.parentNode.insertBefore(tocNode, currentPage.nextSibling);
+
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

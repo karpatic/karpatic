@@ -11,40 +11,40 @@ hello:
 # ipynb_publish uses convert.mjs?type=module if not meta.hide and converts the filename from/to yaml
 
 pages:
-	make mainpages
-	make lights
-	make software 
-	make dataplay
-	make labs
-	make blog
 	make sitemap 
+	make mainpages 
+	make blog
+	make datascience
+	make labs 
+	make software   
+	make webdev
 
 audio:
 	node ./../ipynb2web.cli.cjs audio
 	
 sitemap:
     # Final Step, creates sitemap.txt
-	node ./../ipynb2web/src/cli.js sitemap
+	node ./../ipynb2web/src/cli.js sitemap 
 	
 mainpages:
     # Function: Creates a sitemap and the corresponding series of pages
     # Args: input output mapname file,file,files..
-	node ./../ipynb2web/src/cli.js 
+	node ./../ipynb2web/src/cli.js '' './src/posts/' './src/ipynb'
+	
+blog:
+	node ./../ipynb2web/src/cli.js blog ./src/posts/ ./src/ipynb/
+
+datascience:
+	node ./../ipynb2web/src/cli.js datascience ./src/posts/ ./src/ipynb/
 	
 labs:
-	node ./..//ipynb2web/src/cli.js labs
-
-dataplay:
-	node ./..//ipynb2web/src/cli.js dataplay
-
-lights:
-	node ./..//ipynb2web/src/cli.js lights
+	node ./..//ipynb2web/src/cli.js labs ./src/posts/ ./src/ipynb/
 
 software:
-	node ./..//ipynb2web/src/cli.js software
+	node ./..//ipynb2web/src/cli.js software ./src/posts/ ./src/ipynb/
 
-blog:
-	node ./../ipynb2web/src/cli.js blog
-
+webdev:
+	node ./..//ipynb2web/src/cli.js webdev ./src/posts/ ./src/ipynb/
+ 
 watchPages:
 	nodemon --watch 'src/ipynb/*' --exec make pages

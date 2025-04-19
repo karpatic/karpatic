@@ -31,6 +31,6 @@ notes/
 
 # Docker
 Dockerfile
-docker-compose.yml
+docker-compose.yml 
 
 remote-debug-profile

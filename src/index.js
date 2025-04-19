@@ -55,7 +55,7 @@ w.redirect = async (event = false) => {
 };
 addEventListener("popstate", redirect);
 
-// Remove redirect evt listeners then attach them for relative hyperlinks. Called from refresh template.
+// Removes then Reattaches the redirect fn. Called from refresh template.
 w.setRedirectListeners = () => {
   console.log("INDEX:setRedirectListeners");
   document
