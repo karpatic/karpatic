@@ -131,7 +131,7 @@ w.addEventListener(
         // console.log("Fetch sitemap:", url);
         w.sitemap_content = await (await fetch(url)).json();
         // console.log("SITEMAP_CONTENT:", w.sitemap_content);
-        let sm2 = await (await fetch(`https://carlos-a-diez.com/cms/sitemap.json`)).json(); 
+        let sm2 = await (await fetch(`https://carlos-a-diez.com/cms/notes.json`)).json(); 
         sm = Object.values(sm2).filter(x => {
           let flag = x.filename.toLowerCase().startsWith(sm_name.toLowerCase() + '_')
           return !flag ? false : {

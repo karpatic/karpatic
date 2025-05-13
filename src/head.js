@@ -41,7 +41,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
     let rsp = await fetch(url);
     hr = { ...hr, ...(await (await fetch(url)).json()).meta };
   } catch (e) {
-    console.error(
+    console.log(
       "<~~~~~ HEADER CONFIG DATA ERROR ~~~~~>",
       e,
       location.pathname,

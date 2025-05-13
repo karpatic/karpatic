@@ -80,14 +80,18 @@ export const handleRoute = async () => {
         ).nb2json(url, true));
   } catch (err) {
     try{ 
+      console.log('Get Failed. Trying to get content from CMS.');
       // split and grab last part of route
       let txt = route.split('/').pop();
+      // todo: read in yaml from markdown.
       // console.log('Trying to get content from:', route);
-      let path = route.replace("/", "_").replace(/./, c => c.toUpperCase());
+      let path = route.split('/').map(segment => segment.charAt(0).toUpperCase() + segment.slice(1)).join('_');
       let tryThisUrl = 'https://carlos-a-diez.com/cms/notes/' + path; 
-      let text = await (await fetch(tryThisUrl)).text();
-      content = {meta: {title: txt, markdown: 'true'}, content: text};
-      console.log('Pulled text from ', tryThisUrl, content);
+      let text = await (await fetch(tryThisUrl)).text();  
+      
+      let marked = await import('/src/utils/marked.js'); 
+      
+      content = {meta: {title: txt, markdown: 'true'}, content: marked.marked(text)};
     }
     catch{
       console.log('Unable to get content');
