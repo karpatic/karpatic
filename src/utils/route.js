@@ -86,7 +86,7 @@ export const handleRoute = async () => {
       // todo: read in yaml from markdown.
       // console.log('Trying to get content from:', route);
       let path = route.split('/').map(segment => segment.charAt(0).toUpperCase() + segment.slice(1)).join('_');
-      let tryThisUrl = 'https://carlos-a-diez.com/cms/notes/' + path; 
+      let tryThisUrl = 'https://getfrom.net/cms/notes/' + path; 
       let text = await (await fetch(tryThisUrl)).text();  
       
       let marked = await import('/src/utils/marked.js'); 

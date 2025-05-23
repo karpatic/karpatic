@@ -91,6 +91,16 @@ input {
   overflow: hidden;
   white-space: nowrap;
 } 
+
+li>input{
+  position: inherit;
+  width: auto;
+  clip: auto;
+  overflow: visible;
+  white-space: normal;
+  max-height: 23px;
+}
+
 /* Expanding hover effect */
 a::before {
   content: "";

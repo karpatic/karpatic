@@ -5,15 +5,9 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --mode development --devtool eval-source-map --progress",
-    "build": "webpack --mode production --profile --progress && node react_snap_replacement.js",
-    "deploy": "make pages; npm run build",
-    "postreact-snap": "ls",
-    "test": "nodemon src/server/scripts/test.js",
-    "watchPages": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'npm run makePages'",
-    "makePages": "make pages",
-    "makeAudio": "make audio",
-    "pydia": "node ./src/tests/diagram.js",
-    "server": "nodemon --optimize_for_size --max_old_space_size=460 src/server/index.js"
+    "build": "make pages; webpack --mode production --profile --progress && node react_snap_replacement.js", 
+    "audio": "node ./../ipynb2web/ipynb2web.cli.cjs audio",  
+    "write": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'make pages'"
   },
   "browserslist": [
     "defaults"

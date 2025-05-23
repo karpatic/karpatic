@@ -113,8 +113,8 @@ w.addEventListener(
     // exe2: /notes/ -> notes
     // exe2: /notes/uniquepage.html -> notes
     // exe3: /notes/2021/01/01/index.html -> notes
-
-    if (w.sitemap && !w.meta.hide_sitemap) {
+    const skip = w.meta.hide_sitemap?.toLowerCase() == "true";
+    if (w.sitemap && !skip) {
       let url = false; 
       if (!w.sitemap_content) {
         url = `${location.origin}/templates/${w.meta.template}_sitemap.css`;
@@ -156,7 +156,8 @@ w.addEventListener(
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const populateTemplate = async (transitionable = false) => {
   const pageT = w.page_transition;
-  if (transitionable && pageT) {
+  let skip = w.meta.hide_sitemap?.toLowerCase() == "true";
+  if (transitionable && pageT && skip) {
     pageT.style.animation =
       "page_transition 1s alternate 2, gradient 1s alternate 2";
     pageT.addEventListener(
@@ -256,11 +257,11 @@ const createNav = async () => {
 
   let toc = getToc(); // false or html string 
   console.log("TOC:", toc);
-  let tocNode = false; //w["tocHere"] || w["toc"]; 
-  // if (tocNode) tocNode.innerHTML = toc;
+  let tocNode = w["tocHere"] || w["toc"]; 
+  if (tocNode) tocNode.innerHTML = toc;
 
   // Skip sitemap creation
-  const skip = w.meta.hide_sitemap;
+  const skip = w.meta.hide_sitemap?.toLowerCase() == "true";
   if (w.sitemap) w.sitemap.style.visibility = skip ? "hidden" : "visible";
   if (!w.sitemap || skip) {
     console.groupEnd();
@@ -317,9 +318,10 @@ const getToc = () => {
   console.group("createToc");
 
   // Skip or Continue TOC creation
-  if (!("toc" in w.meta) || w.meta.toc.toLowerCase() == "false") {
+  const skip = w.meta.hide_toc?.toLowerCase() == "true";
+  if ( skip ) {
     console.groupEnd();
-    return false;
+    return '';
   }
 
   let toc = [...document.querySelectorAll("h2, h3, h4")]

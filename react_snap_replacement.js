@@ -143,8 +143,7 @@ const crawl = async (opt) => {
         if (options.waitFor) await page.waitFor(options.waitFor);
         if (options.crawl) {
           console.log(`🕸 Got Page for ${route}`);
-          const links = await getLinks({ page });
-          console.log('links', links);
+          const links = await getLinks({ page }); 
           links.forEach(addToQueue);
         }
         if (afterFetch) await afterFetch({ page, route, browser, addToQueue });
@@ -153,6 +152,7 @@ const crawl = async (opt) => {
       } catch (e) {
         if (!shuttingDown) {
           console.log(`🔥  error at ${route}`, e);
+          console.log('links', links);
         }
         shuttingDown = true;
       }
