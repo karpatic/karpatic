@@ -200,21 +200,20 @@ details > details > summary {
 #content > *, */
 details{
   padding: 12px 0px 12px 0px;
-} 
-details > details
-{
-  padding: 12px 0px 12px 16px;
-  margin: 0px;
-}
-#content > div{ padding: 0px; }
 
-details > details {
-  border-left: 1px solid rgb(var(--near-black));
-}
-@media only screen and (max-width: 769px) {
+  details{
+    border-left: 1px solid rgb(var(--near-black));
+    padding: 12px 0px 12px 16px;
+    margin: 0px;
+  }
+
+}  
+#content > div{ padding: 0px; }
+ 
+@media only screen and (max-width: 800px) {
   details > details,
   #content > * {
-    padding-right: 2px;
+    padding: 0rem 1rem; 
   }
   #content {
     border-width: 28px 0px 28px 8px;

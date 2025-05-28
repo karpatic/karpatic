@@ -128,3 +128,57 @@ Pre-render the pages locally during the build step and rehydration and navigatio
 The following are being used internally.
 
 - `Robots.txt` -> specify sitemaps and nofollow noindex section/links. More [info](https://search.google.com/search-console/welcome), [here](https://support.google.com/webmasters/answer/7451001). 
+
+
+
+
+
+
+
+# IPYNB MD Notes
+
+Each notebook should start with a yaml cell. Processing instructions can be modified on a per-cell basis.
+
+## Yaml
+
+Typically looks like:
+
+```
+# Page Header
+> A brief description of what this page has to offer.
+
+- key: value
+- anotherKey: anotherVvalue
+```
+
+Possible Key's: Sample Values
+
+- `keywords`: ['seo_term', 'another_term]
+- `meta.prettify: true`
+- `hide: true`
+- content, template, hide_sitemap, title, breadcrumbs, audio, summary, filename, tab, toc, hide
+
+## Cell Flags
+
+- `%%javascript`: will rm the input and display output if not error
+- `#input_show`: equivilant to %%javascript but saves input
+- `%%capture`
+- `hide `
+
+```
+((note:footnote content))
+(((warning::Some warning message)))
+(((tip::Some tip message)))
+(((info::Some info message)))
+```
+
+## Text Decorators
+
+- `(((note:: footnote content)))`
+- `(([blockquote content]))`
+
+
+## Misc
+
+%%capture will not show input source
+- Prefix a ipynb file with `_` to have it be excluded from the sitemap and processing.

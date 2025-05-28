@@ -191,7 +191,10 @@ const populateTemplate = async (transitionable = false) => {
   ].join("/");
 
   console.log("Populate content, title, summary, breadcrumbs");
-  ["content", "title", "summary", "breadcrumbs"].map((id) => {
+  let insert = ["content", "title", "summary"]  
+  const hide_breadcrumbs = w.meta.hide_sitemap?.toLowerCase() == "true";
+  !hide_breadcrumbs && insert.push("breadcrumbs"); 
+  insert.map((id) => {
     if (!meta[id]) return;
     // console.log("id", id, meta[id])
     const el = document.getElementById(id);
@@ -251,19 +254,19 @@ const populateTemplate = async (transitionable = false) => {
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// IPYNB Requires: meta.{summary, filename} Optionally: meta.{hide_sitemap, toc, tab} in the YAML header.
+// IPYNB Requires: meta.{summary, filename} Optionally: meta.{hide_sitemap, hide_toc, hide_breadcrumbs, tab} in the YAML header.
 const createNav = async () => {
   console.group("createNav");  
 
   let toc = getToc(); // false or html string 
-  console.log("TOC:", toc);
+  const hide_sitemap = w.meta.hide_sitemap?.toLowerCase() == "true"; 
+  
   let tocNode = w["tocHere"] || w["toc"]; 
-  if (tocNode) tocNode.innerHTML = toc;
-
-  // Skip sitemap creation
-  const skip = w.meta.hide_sitemap?.toLowerCase() == "true";
-  if (w.sitemap) w.sitemap.style.visibility = skip ? "hidden" : "visible";
-  if (!w.sitemap || skip) {
+  if (tocNode  && !hide_sitemap) tocNode.innerHTML = toc;
+  
+  // Skip sitemap creation 
+  if (w.sitemap) w.sitemap.style.visibility = hide_sitemap ? "hidden" : "visible";
+  if (!w.sitemap || hide_sitemap) {
     console.groupEnd();
     return;
   }
