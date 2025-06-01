@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --mode development --devtool eval-source-map --progress",
-    "build": "make pages; webpack --mode production --profile --progress && node react_snap_replacement.js", 
+    "build": "make pages; webpack --mode production --profile --progress && node prerendererest.js", 
     "audio": "node ./../ipynb2web/ipynb2web.cli.cjs audio",  
     "write": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'make pages'"
   },

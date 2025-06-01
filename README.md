@@ -139,7 +139,7 @@ I have an MS in Information Systems from <img src="https://carlos-a-diez.com/ima
 <table align="center">
   <tr>
     <td align="center" colspan="2">
-      I also mentored students through various research projects, which are showcased below:
+      I also mentored students through various research projects. A few final reports are shown below:
     </td>
   </tr>
   <tr> 

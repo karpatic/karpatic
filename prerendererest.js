@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const puppeteer = require("puppeteer");
 const express = require("express");
 const serveStatic = require("serve-static");
@@ -7,6 +9,12 @@ const nativeFs = require("fs");
 const mkdirp = require("mkdirp");
 const minify = require("html-minifier").minify;
 
+// Main flow:
+// run() → startServer() → crawl() → fetchPage() → save HTML files
+
+// Usage:
+// node react_snap_replacement.js --include "/index.html,/about.html" --source "./build" --headless
+
 const defaultOptions = {
 
   port: 45678,
@@ -14,7 +22,7 @@ const defaultOptions = {
   source: "./docs",
   destination: "./docs",
   include: ["/index.html"],
-  userAgent: "ReactSnap",
+  userAgent: "Prerendererest",
   headless: false,
   puppeteerArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
   puppeteer: { cache: false },
@@ -30,6 +38,7 @@ const defaultOptions = {
   preloadImages: false,
   asyncScriptTags: false,
   removeScriptTags: false,
+  skipExistingCheck: false,
 };
 
 const defaults = userOptions => {
@@ -49,26 +58,25 @@ const crawl = async (opt) => {
     publicPath,
     sourceDir
   } = opt;
-  let shuttingDown = false;
   let streamClosed = false;
+  const errorReport = {
+    pageErrors: [],
+    consoleErrors: [],
+    httpErrors: [],
+    fetchErrors: []
+  };
 
   // exit process
   const onSigint = () => {
-    if (shuttingDown) {
-      process.exit(1);
-    } else {
-      shuttingDown = true;
-      console.log(
-        "\nGracefully shutting down. To exit immediately, press ^C again"
-      );
-    }
+    console.log("\nGracefully shutting down...");
+    process.exit(1);
   };
   process.on("SIGINT", onSigint);
  
   // Exit on unhandled promise rejections
   process.on("unhandledRejection", error => {
     console.log("🔥  UnhandledPromiseRejectionWarning", error);
-    shuttingDown = true;
+    errorReport.pageErrors.push({ route: 'global', error: error.message });
   });
 
   const queue = [];
@@ -119,7 +127,7 @@ const crawl = async (opt) => {
     }
   
     // Crawl the page if it's not already crawled and it's not a third-party URL
-    if (!shuttingDown && !skipExistingFile) {
+    if (!skipExistingFile) {
         console.log(`🕸 Pulling file ${route}`);
       try {
         const page = await browser.newPage();
@@ -128,7 +136,9 @@ const crawl = async (opt) => {
         await page.setCacheEnabled(options.puppeteer.cache);
         if (options.viewport) await page.setViewport(options.viewport);
         if (options.skipThirdPartyRequests) await skipThirdPartyRequests({ page, options, basePath });
-        enableLogging({ page, options, route, onError: () => { shuttingDown = true; }, sourcemapStore });
+        enableLogging({ page, options, route, onError: (error) => { 
+          errorReport.pageErrors.push({ route, error }); 
+        }, sourcemapStore, errorReport });
         if (beforeFetch) await beforeFetch({ page, route });
         await page.setUserAgent(options.userAgent);
         const tracker = createTracker(page);
@@ -142,19 +152,16 @@ const crawl = async (opt) => {
         }
         if (options.waitFor) await page.waitFor(options.waitFor);
         if (options.crawl) {
-          console.log(`🕸 Got Page for ${route}`);
+          console.log(`🕸 Crawling Rendered Page: ${route}`);
           const links = await getLinks({ page }); 
           links.forEach(addToQueue);
         }
         if (afterFetch) await afterFetch({ page, route, browser, addToQueue });
         await page.close();
-        console.log(`✅  crawledd ${processed + 1} out of ${enqued} (${route})`);
+        console.log(`✅  crawled ${processed + 1} out of ${enqued} (${route})`);
       } catch (e) {
-        if (!shuttingDown) {
-          console.log(`🔥  error at ${route}`, e);
-          console.log('links', links);
-        }
-        shuttingDown = true;
+        console.log(`🔥  error at ${route}`, e);
+        errorReport.fetchErrors.push({ route, error: e.message });
       }
     } 
     else{
@@ -171,15 +178,60 @@ const crawl = async (opt) => {
     options.include.map(x => addToQueue(`${basePath}${x}`));
   }
 
-  while (queue.length > 0 && !shuttingDown) {
+  while (queue.length > 0) {
     await Promise.all(
       queue.splice(0, options.concurrency).map(fetchPage)
     );
   }
 
   await browser.close();
+  
+  // Print error report
+  console.log('\n📊 CRAWLING COMPLETE - ERROR REPORT:');
+  console.log('=====================================');
+  
+  const totalErrors = errorReport.pageErrors.length + errorReport.consoleErrors.length + 
+                     errorReport.httpErrors.length + errorReport.fetchErrors.length;
+  
+  if (totalErrors === 0) {
+    console.log('✅ No errors detected during crawling!');
+  } else {
+    console.log(`❌ Total errors found: ${totalErrors}\n`);
+    
+    if (errorReport.fetchErrors.length > 0) {
+      console.log(`🔥 Fetch Errors (${errorReport.fetchErrors.length}):`);
+      errorReport.fetchErrors.forEach(({ route, error }) => {
+        console.log(`  - ${route}: ${error}`);
+      });
+      console.log('');
+    }
+    
+    if (errorReport.pageErrors.length > 0) {
+      console.log(`🔥 Page Errors (${errorReport.pageErrors.length}):`);
+      errorReport.pageErrors.forEach(({ route, error }) => {
+        console.log(`  - ${route}: ${error}`);
+      });
+      console.log('');
+    }
+    
+    if (errorReport.consoleErrors.length > 0) {
+      console.log(`🔥 Console Errors (${errorReport.consoleErrors.length}):`);
+      errorReport.consoleErrors.forEach(({ route, error }) => {
+        console.log(`  - ${route}: ${error}`);
+      });
+      console.log('');
+    }
+    
+    if (errorReport.httpErrors.length > 0) {
+      console.log(`⚠️  HTTP Errors (${errorReport.httpErrors.length}):`);
+      errorReport.httpErrors.forEach(({ route, error }) => {
+        console.log(`  - ${route}: ${error}`);
+      });
+      console.log('');
+    }
+  }
+  
   onEnd && onEnd();
-  if (shuttingDown) throw new Error("");
 };
 
 const run = async (userOptions, { fs } = { fs: nativeFs }) => {
@@ -196,8 +248,8 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
     return server;
   };
 
-  if (fs.existsSync(path.join(sourceDir, "200.html"))) {
-    throw new Error("Cannot run react-snap twice - this will break the build");
+  if (!options.skipExistingCheck && fs.existsSync(path.join(sourceDir, "200.html"))) {
+    throw new Error("Cannot run prerendererest - this will break the build");
   }
 
   fs.createReadStream(path.join(sourceDir, "index.html")).pipe(fs.createWriteStream(path.join(sourceDir, "200.html")));
@@ -232,14 +284,11 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
       const routePath = route.replace(options.publicPath || '/', "");
       const filePath = path.join(destinationDir, routePath);
  
-      // check if file exists
-        if (!fs.existsSync(path.dirname(filePath))) {
-            fs.mkdirSync(path.dirname(filePath), { recursive: true });
-        }
-        else {
-            console.log('File exists');
-        }
-        fs.writeFileSync(filePath, minifiedContent);
+      // Create directories if they do not exist
+      if (!fs.existsSync(path.dirname(filePath))) {
+          fs.mkdirSync(path.dirname(filePath), { recursive: true });
+      }
+      fs.writeFileSync(filePath, minifiedContent);
     },
     onEnd: () => {
       server.close();
@@ -248,7 +297,107 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
 };
 
 if (require.main === module) {
-  const userOptions = {}; // Add logic here to load user options if needed
+  const args = process.argv.slice(2);
+  const userOptions = {};
+  
+  // Show help if requested
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log(`
+Usage: prerendererest [options]
+
+Options:
+  --source <path>              Source directory (default: ./docs)
+  --destination <path>         Destination directory (default: same as source)
+  --include <pages>            Comma-separated list of pages to include (default: /index.html)
+  --headless                   Run browser in headless mode
+  --crawl                      Enable automatic crawling (default: true)
+  --no-crawl                   Disable automatic crawling
+  --port <number>              Port for local server (default: 45678)
+  --concurrency <number>       Number of concurrent processes (default: 1)
+  --userAgent <string>         Custom user agent (default: Prerendererest)
+  --viewport <json>            Viewport size as JSON object (default: {"width":480,"height":850})
+  --skipThirdPartyRequests     Block external requests during rendering
+  --skipExistingCheck          Skip the 200.html existence check
+  --minifyHtml <json>          HTML minification options as JSON
+  --removeScriptTags           Remove script tags from HTML
+  --removeStyleTags            Remove style tags from HTML
+  --asyncScriptTags            Add async attribute to script tags
+  --inlineCss                  Inline CSS styles
+  --preloadImages              Add preload hints for images
+  --puppeteerArgs <args>       Comma-separated Puppeteer arguments
+  -h, --help                   Show this help message
+
+Examples:
+  prerendererest --source ./build --headless
+  prerendererest --include "/index.html,/about.html" --source ./build --headless
+  prerendererest --source ./build --destination ./dist --crawl --concurrency 4
+`);
+    process.exit(0);
+  }
+  
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--include' && args[i + 1]) {
+      userOptions.include = args[i + 1].split(',');
+      i++;
+    } else if (args[i] === '--source' && args[i + 1]) {
+      userOptions.source = args[i + 1];
+      i++;
+    } else if (args[i] === '--destination' && args[i + 1]) {
+      userOptions.destination = args[i + 1];
+      i++;
+    } else if (args[i] === '--headless') {
+      userOptions.headless = true;
+    } else if (args[i] === '--port' && args[i + 1]) {
+      userOptions.port = parseInt(args[i + 1], 10);
+      i++;
+    } else if (args[i] === '--crawl') {
+      userOptions.crawl = true;
+    } else if (args[i] === '--no-crawl') {
+      userOptions.crawl = false;
+    } else if (args[i] === '--userAgent' && args[i + 1]) {
+      userOptions.userAgent = args[i + 1];
+      i++;
+    } else if (args[i] === '--puppeteerArgs' && args[i + 1]) {
+      userOptions.puppeteerArgs = args[i + 1].split(',');
+      i++;
+    } else if (args[i] === '--puppeteer.cache' && args[i + 1]) {
+      userOptions.puppeteer = userOptions.puppeteer || {};
+      userOptions.puppeteer.cache = args[i + 1] === 'true';
+      i++;
+    } else if (args[i] === '--minifyHtml' && args[i + 1]) {
+      try {
+        userOptions.minifyHtml = JSON.parse(args[i + 1]);
+      } catch {
+        // ignore parse error
+      }
+      i++;
+    } else if (args[i] === '--viewport' && args[i + 1]) {
+      try {
+        userOptions.viewport = JSON.parse(args[i + 1]);
+      } catch {
+        // ignore parse error
+      }
+      i++;
+    } else if (args[i] === '--skipThirdPartyRequests') {
+      userOptions.skipThirdPartyRequests = true;
+    } else if (args[i] === '--concurrency' && args[i + 1]) {
+      userOptions.concurrency = parseInt(args[i + 1], 10);
+      i++;
+    } else if (args[i] === '--inlineCss') {
+      userOptions.inlineCss = true;
+    } else if (args[i] === '--removeStyleTags') {
+      userOptions.removeStyleTags = true;
+    } else if (args[i] === '--preloadImages') {
+      userOptions.preloadImages = true;
+    } else if (args[i] === '--asyncScriptTags') {
+      userOptions.asyncScriptTags = true;
+    } else if (args[i] === '--removeScriptTags') {
+      userOptions.removeScriptTags = true;
+    } else if (args[i] === '--skipExistingCheck') {
+      userOptions.skipExistingCheck = true;
+    }
+  }
+  
   run(userOptions).catch(e => {
     console.error(e);
     process.exit(1);
@@ -273,7 +422,7 @@ const skipThirdPartyRequests = async opt => {
 };
 
 const enableLogging = opt => {
-  const { page, options, route, onError, sourcemapStore } = opt;
+  const { page, options, route, onError, sourcemapStore, errorReport } = opt;
   page.on("console", msg => {
     const text = msg.text();
     if (text === "JSHandle@object") {
@@ -281,16 +430,18 @@ const enableLogging = opt => {
         console.log(`💬  console.log at ${route}:`, ...args)
       );
     } else if (text === "JSHandle@error") {
-      Promise.all(msg.args().map(errorToString)).then(args =>
-        console.log(`💬  console.log at ${route}:`, ...args)
-      );
+      Promise.all(msg.args().map(errorToString)).then(args => {
+        console.log(`💬  console.log at ${route}:`, ...args);
+        errorReport.consoleErrors.push({ route, error: args.join(' ') });
+      });
     } else {
       console.log(`️️️💬  console.log at ${route}:`, text);
     }
   });
   page.on("error", msg => {
     console.log(`🔥  error at ${route}:`, msg);
-    onError && onError();
+    errorReport.pageErrors.push({ route, error: msg.message });
+    onError && onError(msg.message);
   });
   page.on("pageerror", e => {
     if (options.sourceMaps) {
@@ -304,35 +455,32 @@ const enableLogging = opt => {
             stackRows.findIndex(x => x.includes("puppeteer")) ||
             stackRows.length - 1;
 
-          console.log(
-            `🔥  pageerror at ${route}: ${(e.stack || e.message).split(
-              "\n"
-            )[0] + "\n"}${stackRows.slice(0, puppeteerLine).join("\n")}`
-          );
+          const errorMsg = `${(e.stack || e.message).split("\n")[0] + "\n"}${stackRows.slice(0, puppeteerLine).join("\n")}`;
+          console.log(`🔥  pageerror at ${route}: ${errorMsg}`);
+          errorReport.pageErrors.push({ route, error: errorMsg });
         })
         .catch(e2 => {
           console.log(`🔥  pageerror at ${route}:`, e);
-          console.log(
-            `️️️⚠️  warning at ${route} (error in source maps):`,
-            e2.message
-          );
+          console.log(`️️️⚠️  warning at ${route} (error in source maps):`, e2.message);
+          errorReport.pageErrors.push({ route, error: e.message });
         });
     } else {
       console.log(`🔥  pageerror at ${route}:`, e);
+      errorReport.pageErrors.push({ route, error: e.message });
     }
-    onError && onError();
+    onError && onError(e.message);
   });
   page.on("response", response => {
     if (response.status() >= 400) {
-      let route = "";
+      let responseRoute = "";
       try {
-        route = response._request
+        responseRoute = response._request
           .headers()
           .referer.replace(`http://localhost:${options.port}`, "");
       } catch (e) {}
-      console.log(
-        `️️️⚠️  warning at ${route}: got ${response.status()} HTTP code for ${response.url()}`
-      );
+      const errorMsg = `got ${response.status()} HTTP code for ${response.url()}`;
+      console.log(`️️️⚠️  warning at ${responseRoute}: ${errorMsg}`);
+      errorReport.httpErrors.push({ route: responseRoute, error: errorMsg });
     }
   });
 };
@@ -397,8 +545,30 @@ const createTracker = (page) => {
   };
 };
 
-const objectToJson = jsHandle => jsHandle.jsonValue();
-
+const objectToJson = async jsHandle => {
+  try {
+    return await jsHandle.jsonValue();
+  } catch (e) {
+    // If jsonValue fails, try to get a string representation
+    try {
+      return await jsHandle.evaluate(obj => {
+        if (obj === null) return 'null';
+        if (obj === undefined) return 'undefined';
+        if (typeof obj === 'function') return obj.toString();
+        if (typeof obj === 'object') {
+          try {
+            return JSON.stringify(obj, null, 2);
+          } catch {
+            return Object.prototype.toString.call(obj);
+          }
+        }
+        return String(obj);
+      });
+    } catch {
+      return jsHandle.toString();
+    }
+  }
+};
 const errorToString = async jsHandle => {
     try {
       return await jsHandle.evaluate(error => error.toString());
@@ -406,4 +576,3 @@ const errorToString = async jsHandle => {
       return jsHandle.toString();
     }
   };
-  

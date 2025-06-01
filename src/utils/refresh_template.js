@@ -159,7 +159,7 @@ const populateTemplate = async (transitionable = false) => {
   let skip = w.meta.hide_sitemap?.toLowerCase() == "true";
   if (transitionable && pageT && skip) {
     pageT.style.animation =
-      "page_transition 1s alternate 2, gradient 1s alternate 2";
+      "page_transition 0.375s alternate 2, gradient 0.375s alternate 2";
     pageT.addEventListener(
       "animationend",
       async () => (pageT.style.animation = "none"),
@@ -167,9 +167,10 @@ const populateTemplate = async (transitionable = false) => {
     );
     setTimeout(async () => {
       let resp = await populateTemplate();
-    }, 1100);
+    }, 450);
     return;
   }
+
   console.group("refresh_template:POPULATE_TEMPLATE");
 
   // Create relative hyperlinks for each fragment along the path.
