@@ -61,9 +61,13 @@ export const handleRoute = async () => {
   // Create or Get Routes Metadata/ YAML
   let url =
     !isLocal || preRendering
-      ? `${location.origin}/posts/${route}.json`
-      : `../../ipynb/${route}.ipynb`;
+      ? `/rsc/posts/${route}.json`
+      : `/ipynb/${route}.ipynb`;
   let content = {};
+
+  
+  // console.log("Route:", { route, url: url });
+
   try {
     console.log("Get:", url);
     content = await (!isLocal || preRendering
@@ -89,7 +93,7 @@ export const handleRoute = async () => {
       let tryThisUrl = 'https://getfrom.net/cms/notes/' + path; 
       let text = await (await fetch(tryThisUrl)).text();  
       
-      let marked = await import('/src/utils/marked.js'); 
+      let marked = await import('/rsc/cdn/marked.js'); 
       
       content = {meta: {title: txt, markdown: 'true'}, content: marked.marked(text)};
     }

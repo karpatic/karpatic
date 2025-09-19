@@ -72,11 +72,12 @@ w.addEventListener(
   "load_template",
   async () => {
     console.group("refresh_template:Event:LOAD_TEMPLATE");
+    console.log("hello world"); // Log on template load
 
     // Load a template on route change or local init
     w.meta.template ||= "article";
     if (meta.template !== document.body.getAttribute("data-template")) {
-      let url = `/templates/${meta.template}`;
+      let url = `/rsc/templates/${meta.template}`;
       try {
         console.log("Insert html:", url);
         document.body.setAttribute("data-template", meta.template);
@@ -117,22 +118,31 @@ w.addEventListener(
     if (w.sitemap && !skip) {
       let url = false; 
       if (!w.sitemap_content) {
-        url = `${location.origin}/templates/${w.meta.template}_sitemap.css`;
-        console.log("Insert sitemap css", url);
+        url = `/rsc/templates/${w.meta.template}_sitemap.css`;
+        // console.log("Insert sitemap css", url);
         let txt = await (await fetch(url)).text();
         document.body.insertAdjacentHTML(
           "beforeend",
           `<style>${txt}</style>`
         );
       }
+      // console.log("Sitemap Name:", sm);
       if (w.sm_name != sm) {
         w.sm_name = sm;
-        url = `${location.origin}/posts/${sm_name}_map.json`;
-        // console.log("Fetch sitemap:", url);
+        url = `/rsc/posts/${sm_name}_map.json`;
+        console.log("Fetch json:", url);
         w.sitemap_content = await (await fetch(url)).json();
         // console.log("SITEMAP_CONTENT:", w.sitemap_content);
-        let sm2 = await (await fetch(`https://carlos-a-diez.com/cms/notes.json`)).json(); 
-        sm = Object.values(sm2).filter(x => {
+        let sm2 = [] 
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 100);
+          sm2 = await (await fetch(`https://carlos-a-diez.com/cms/notes.json`, { signal: controller.signal })).json();
+          clearTimeout(timeoutId);
+        } catch {
+          sm2 = [];
+        }
+        sm = !sm2 ? [] : Object.values(sm2).filter(x => {
           let flag = x.filename.toLowerCase().startsWith(sm_name.toLowerCase() + '_')
           return !flag ? false : {
             filename: x.filename || "Unknown",
@@ -175,7 +185,7 @@ const populateTemplate = async (transitionable = false) => {
 
   // Create relative hyperlinks for each fragment along the path.
   meta.breadcrumbs = [
-    `<a href="./../index.html">Home</a>`,
+    `<a href="/index.html">Home</a>`,
     location.pathname
       .split("/")
       .slice(1)
@@ -197,8 +207,9 @@ const populateTemplate = async (transitionable = false) => {
   !hide_breadcrumbs && insert.push("breadcrumbs"); 
   insert.map((id) => {
     if (!meta[id]) return;
-    // console.log("id", id, meta[id])
+    // console.log("insert id: ", id, typeof meta[id])
     const el = document.getElementById(id);
+    // console.log("~~~~~~~~~~~~> POPULATE_TEMPLATE:", { id, el, content: meta[id] });
     el.innerHTML = "";
     // console.log("~~~~~~~~~~~~> POPULATE_TEMPLATE:", meta[id]);
     el.appendChild(document.createRange().createContextualFragment(meta[id]));

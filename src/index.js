@@ -6,7 +6,7 @@ import "./index.css";
 // Main.js
 //
 // Description: Jumping point for the app. Adds event listeners to lazy load the router.
-// Head.js will call the router then remove itself from the build.
+// Head.js calls the router then remove itself from the build.
 //
 
 // Page Load Logic and Routing
@@ -39,7 +39,7 @@ w.pingServer = async (event = false) => {
 };
 !isLocal && w.pingServer();
 
-// Called in head.js to trigger handleRoute.
+// Called in head.js to trigger handleRoute when in dev.
 w.redirect = async (event = false) => {
   console.group("INDEX:Event:POPSTATE");
   event?.preventDefault?.();
@@ -55,7 +55,7 @@ w.redirect = async (event = false) => {
 };
 addEventListener("popstate", redirect);
 
-// Removes then Reattaches the redirect fn. Called from refresh template.
+// Removes then Reattaches redirects. Called on refresh template.
 w.setRedirectListeners = () => {
   console.log("INDEX:setRedirectListeners");
   document

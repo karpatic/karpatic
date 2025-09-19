@@ -6,7 +6,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 // Head.js
 //
 // 1. Render the header tags
-// 2. Calls main.redirect()
+// 2. Calls main.redirect() when done.
 // 3. Removes its own script tag from the html.
 //
 // Only used in dev/ during build.
@@ -32,8 +32,10 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 
   // Path to it's YAML or Manifest
   const url = `/${
-    (hr.pwapages.split(",").some((x) => page == x) ? "" : "./posts/") + page
+    (hr.pwapages.split(",").some((x) => page == x) ? "" : "./rsc/posts/") + page
   }.json`;
+
+  // TODO: Fallback if no ./post/ exists.
 
   // Merge to defaults
   try {
@@ -128,7 +130,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
     </HelmetProvider>
   );
 
-  // Remove the prerender scripts. Runs in Dev / React Snap.
+  // Remove the prerender scripts. Runs in Dev / on Prerender.
   Array.from(document.getElementsByTagName("script")).forEach((script) => {
     if (
       new RegExp("head|helmet", "i").test(script.getAttribute("src")) ||

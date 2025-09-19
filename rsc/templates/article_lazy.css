@@ -1,0 +1,8 @@
+@keyframes footer-bars {
+  0% {
+    clip-path: var(--path2);
+  }
+  100% {
+    clip-path: var(--path1);
+  }
+}

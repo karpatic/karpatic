@@ -73,10 +73,6 @@ a {color: rgb(var(--near-black));
 */
 } 
 
-summary:hover .anchor::after {
-  content: "🔗";
-  height: 0.8em;
-}
 .anchor {
   position: absolute;
   left: 0px; 
@@ -187,6 +183,11 @@ details > summary {
   position: relative;
 }
 
+summary:hover .anchor::after {
+  content: "🔗";
+  height: 0.8em;
+}
+
 details > summary::before {
   content: "⇨";
   display: inline-block;
@@ -210,4 +211,18 @@ summary {
 hr {
   margin: 1px 1px 10px 1px;
   border-top: 1px solid rgba(var(--near-black), 0.1);
+}
+
+
+img {
+  background: repeating-linear-gradient(
+    45deg,
+    rgb(var(--background)),
+    rgb(var(--background)) 10px,
+    rgb(var(--foreground)) 10px,
+    rgb(var(--foreground)) 20px
+  ); 
+  display: inline-block;
+  object-fit: contain;
+  border: 2px dashed rgb(var(--near-black));
 }

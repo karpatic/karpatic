@@ -34,7 +34,7 @@ const BundleAnalyzerPlugin =
 
 module.exports = (env, args) => {
   // process.env is different from env here
-  const isDev = args.mode === "development";
+  const isDev = args.mode === "development"; 
   const addPwa = isDev ? false : false; // No need to inject PWA
   let template = `
   <!DOCTYPE html>
@@ -184,10 +184,11 @@ module.exports = (env, args) => {
         },
       ],
     },
-
+    
     plugins: [
       new webpack.DefinePlugin({
         CACHEBUST: JSON.stringify(Math.floor(Math.random() * 100000000)),
+        ASSETBASE: JSON.stringify(isDev ? "/src/" : "/docs/"), 
       }),
       new MiniCssExtractPlugin({
         filename: "[name].css",
@@ -203,56 +204,6 @@ module.exports = (env, args) => {
       }),
       new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
       new HTMLInlineCSSWebpackPlugin({ leaveCSSFile: true }),
-      new CopyWebpackPlugin({
-        patterns: [
-          { from: "./robots.txt", to: "robots.txt", toType: "file" },
-          { from: "./sitemap.txt", to: "sitemap.txt", toType: "file" },
-          { from: "./CNAME", to: "CNAME", toType: "file" },
-          // { from: './src/404.html', to: '404.html', toType: 'file' },
-          {
-            from: "./src/utils/service-worker.js",
-            to: "utils/service-worker.js",
-            toType: "file",
-          },
-          {
-            from: "./src/templates/article.html",
-            to: "templates/article.html",
-            toType: "file",
-          },
-          {
-            from: "./src/templates/article_lazy.js",
-            to: "templates/article_lazy.js",
-            toType: "file",
-          },
-          { from: "./src/ipynb", to: "./ipynb", toType: "dir" },
-          // {
-          //   from: "./src/music",
-          //   to: "./music",
-          //   toType: "dir",
-          //   globOptions: {
-          //     ignore: ["**/.git/**", "**/.gitignore", "**/.gitmodules"],
-          //   },
-          // },
-          { from: "./src/cdn", to: "./cdn", toType: "dir" },
-          { from: "./src/posts", to: "./posts", toType: "dir" },
-          { from: "./src/images", to: "./images", toType: "dir" },
-          { from: "./src/utils", to: "./utils", toType: "dir" },
-          { from: "./src/audio", to: "./audio", toType: "dir" },
-          {
-            from: "src/templates/*.css",
-            to: "./templates/[name].css",
-            transform: (basePath, path) => {
-              console.log(
-                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Transforming: ",
-                path
-              );
-              return postcss([postcssPresetEnv(), cssnano()])
-                .process(basePath, { from: path })
-                .then((result) => result.css);
-            },
-          },
-        ],
-      }),
       !addPwa
         ? () => {}
         : new WebpackPwaManifest({
@@ -316,11 +267,14 @@ module.exports = (env, args) => {
     ],
     devServer: {
       open: true,
-      static: {
-        directory: "src",
-        watch: true,
-        serveIndex: true,
-      },
+      static: [
+        // live source tree exposed at /rsc
+        { directory: path.resolve(__dirname, "src"), publicPath: "/rsc", watch: true, serveIndex: true },
+        // built output exposed at /docs
+        { directory: path.resolve(__dirname, "docs"), publicPath: "/docs", watch: true, serveIndex: true },
+        // repo root for index.html, CNAME, robots.txt, etc.
+        { directory: path.resolve(__dirname, "."), publicPath: "/", watch: false, serveIndex: true },
+      ],
       // watchFiles: ['src/**/*'],
       historyApiFallback: { disableDotRule: true },
       proxy: { "/esp_lights/": "http://localhost:8081/karpatic/esp_lights" },

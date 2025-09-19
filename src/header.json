@@ -24,7 +24,5 @@
     "icon384":"/images/icon384.png",  
     "icon512":"/images/icon512.png", 
     "image":"/images/icon300.png", 
-    "type":"city",
-    "twittersite":"@cvminigames",
-    "twitterauthor":"@cvminigames"
+    "type":"city"
 }
