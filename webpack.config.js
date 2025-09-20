@@ -318,9 +318,15 @@ class CopyRootIndexPlugin {
         console.log(`\n Rewriting: ${before} -> ${after}`);
       });
 
+      // Write to index.html in root
       const destPath = path.resolve(compiler.options.context, this.filename);
       fs.writeFileSync(destPath, html);
       console.log(`\nCopied ${this.filename} to project root with asset prefixes "${this.prefix}"`);
+
+      // Also write to 404.html in root
+      const dest404Path = path.resolve(compiler.options.context, '404.html');
+      fs.writeFileSync(dest404Path, html);
+      console.log(`\nCopied ${this.filename} to 404.html in project root`);
     });
   }
 }
