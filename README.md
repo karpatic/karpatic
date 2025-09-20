@@ -1,9 +1,9 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=110&section=header" width="100%">
 
 <div align="center">
-  <img width="100%" src="https://cardivo.vercel.app/api?name=Carlos%20Karpati&description=Full-Stack%20Developer%20specializing%20in%20Blockchain,%20AI,%20and%20process%20automation.%20Currently%20teaching%20at%20AACC.&image=https%3A%2F%2Fcharleskarpati.com%2Fimages%2Fphotos%2Fself%2Fheadshot1-round.png&backgroundColor=%23f0dcd1&colorPattern=%23eaeaea&linkedin=CarlosKarpati&twitter=CarlosKarpati" alt="Carlos Karpati's Card">
-  </a>
-</div>  
+  <img width="100%" src="https://cardivo.vercel.app/api?name=Carlos%20Karpati&description=Full-Stack%20Developer%20specializing%20in%20Blockchain,%20AI,%20and%20process%20automation.%20Currently%20teaching%20at%20AACC.&image=https%3A%2F%2Fraw.githubusercontent.com%2Fkarpatic%2Fkarpatic%2Frefs%2Fheads%2Fmain%2Frsc%2Fimages%2Fphotos%2Fself%2Fheadshot1-round.png&backgroundColor=%23f0dcd1&colorPattern=%23eaeaea&linkedin=CarlosKarpati&twitter=CarlosKarpati" alt="Carlos Karpati's Card">
+</div>
+
 
 <p align="center">
 <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=9400D3&center=true&vCenter=true&width=435&lines=Blockchain+Developer;Full-Stack+Engineer;AI+Technologist;Process+Automation+Lead;" alt="Typing SVG" />

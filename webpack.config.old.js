@@ -223,8 +223,7 @@ module.exports = (env, args) => {
             from: "./src/templates/article_lazy.js",
             to: "templates/article_lazy.js",
             toType: "file",
-          },
-          { from: "./src/ipynb", to: "./ipynb", toType: "dir" }, 
+          }, 
           { from: "./src/cdn", to: "./cdn", toType: "dir" },
           { from: "./src/posts", to: "./posts", toType: "dir" },
           { from: "./src/images", to: "./images", toType: "dir" },
@@ -252,7 +251,7 @@ module.exports = (env, args) => {
             short_name: hr.shortName,
             description: hr.description,
             background_color: "#ff55ff",
-            crossorigin: "use-credentials", //inject:false glitches and results in the icons not being included..
+            crossorigin: "use-credentials", //inject:false glitches and results in the icons not being included.
             fingerprints: false,
             start_url: "./",
             display: "standalone",

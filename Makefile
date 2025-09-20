@@ -19,22 +19,22 @@ pages:
 mainpages:
     # Function: Creates a sitemap and the corresponding series of pages
     # Args: input output mapname file,file,files..
-	node ./../ipynb2web/src/cli.js '' './src/posts/' './src/ipynb'
+	node ./../ipynb2web/src/cli.js '' './rsc/posts/' './ipynb'
 	
 blog:
-	node ./../ipynb2web/src/cli.js blog ./src/posts/ ./src/ipynb/
+	node ./../ipynb2web/src/cli.js blog ./rsc/posts/ ./ipynb/
 
 datascience:
-	node ./../ipynb2web/src/cli.js datascience ./src/posts/ ./src/ipynb/
+	node ./../ipynb2web/src/cli.js datascience ./rsc/posts/ ./ipynb/
 	
 labs:
-	node ./../ipynb2web/src/cli.js labs ./src/posts/ ./src/ipynb/
+	node ./../ipynb2web/src/cli.js labs ./rsc/posts/ ./ipynb/
 
 software:
-	node ./../ipynb2web/src/cli.js software ./src/posts/ ./src/ipynb/
+	node ./../ipynb2web/src/cli.js software ./rsc/posts/ ./ipynb/
 
 webdev:
-	node ./../ipynb2web/src/cli.js webdev ./src/posts/ ./src/ipynb/
+	node ./../ipynb2web/src/cli.js webdev ./rsc/posts/ ./ipynb/
 	
 sitemap:
 	node ./../ipynb2web/src/cli.js sitemap 

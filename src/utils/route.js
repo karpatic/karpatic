@@ -37,11 +37,14 @@ export const navEvent = async (push) => {
 
 export const handleRoute = async () => {
   console.group("Route: HandleRoute");
+  console.log("Route12:");
 
   if (location.pathname.includes("undefined")) return;
+  console.log("Route:");
 
   // Call Service Worker Once
   w.meta || (!isLocal && registerServiceWorker());
+  console.log("Route:");
 
   // Import template Once
   w.toast ||
@@ -55,8 +58,10 @@ export const handleRoute = async () => {
           .replaceAll("./", "")
           .replaceAll("../", "")
           .replace(".html", "")
-          .replace(/^\//, "")
+          .replace(/^\//, "").replace("build/", "")
           .replace(/\/$/, "");
+
+  console.log("Route:", { route });
 
   // Create or Get Routes Metadata/ YAML
   let url =

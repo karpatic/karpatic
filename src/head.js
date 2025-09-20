@@ -22,18 +22,18 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
     location.pathname
       .replace("/", "")
       .replace(/\/$/, "")
-      .replace(".html", "") || "index"; // removes leading and trailing slashes
+      .replace(".html", "") || "index"; // removes leading and trailing slashes 
 
   // Defaults
-  console.log("HEAD:FETCHING: ./header.json");
-  let hr = await (await fetch((await import(`./header.json`)).default)).json();
-
-  // console.log('HEAD:', { url, page, pathname: location.pathname });
-
+  console.log("HEAD:FETCHING: ./header.json for Page:", page);
+  let hr = await (await fetch((await import(`/rsc/header.json`)).default)).json();
+ 
   // Path to it's YAML or Manifest
-  const url = `/${
+  let url = `/${
     (hr.pwapages.split(",").some((x) => page == x) ? "" : "./rsc/posts/") + page
-  }.json`;
+  }.json`; 
+  console.log('HEAD:', { url, page, pathname: location.pathname });
+
 
   // TODO: Fallback if no ./post/ exists.
 

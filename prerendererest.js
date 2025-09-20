@@ -19,9 +19,9 @@ const defaultOptions = {
 
   port: 45678,
   crawl: true,
-  source: "./docs",
-  destination: "./docs",
-  include: ["/index.html"],
+  source: "/",
+  include: ["/index.html"], 
+  destination: "./docs", 
   userAgent: "Prerendererest",
   headless: false,
   puppeteerArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -38,7 +38,8 @@ const defaultOptions = {
   preloadImages: false,
   asyncScriptTags: false,
   removeScriptTags: false,
-  skipExistingCheck: false,
+  skipExistingCheck: true,
+  keepPagesOpen: true,
 };
 
 const defaults = userOptions => {
@@ -157,7 +158,11 @@ const crawl = async (opt) => {
           links.forEach(addToQueue);
         }
         if (afterFetch) await afterFetch({ page, route, browser, addToQueue });
-        await page.close();
+        if (!options.keepPagesOpen) {
+          await page.close();
+        } else {
+          console.log(`ℹ️  keepPagesOpen enabled: page left open (${route})`);
+        }
         console.log(`✅  crawled ${processed + 1} out of ${enqued} (${route})`);
       } catch (e) {
         console.log(`🔥  error at ${route}`, e);
@@ -184,7 +189,11 @@ const crawl = async (opt) => {
     );
   }
 
-  await browser.close();
+  if (!options.keepPagesOpen) {
+    await browser.close();
+  } else {
+    console.log("ℹ️  keepPagesOpen enabled: browser left running.");
+  }
   
   // Print error report
   console.log('\n📊 CRAWLING COMPLETE - ERROR REPORT:');
@@ -291,7 +300,11 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
       fs.writeFileSync(filePath, minifiedContent);
     },
     onEnd: () => {
-      server.close();
+      if (!options.keepPagesOpen) {
+        server.close();
+      } else {
+        console.log(`ℹ️  keepPagesOpen enabled: server left running at ${basePath}`);
+      }
     },
   });
 };
@@ -318,6 +331,7 @@ Options:
   --viewport <json>            Viewport size as JSON object (default: {"width":480,"height":850})
   --skipThirdPartyRequests     Block external requests during rendering
   --skipExistingCheck          Skip the 200.html existence check
+  --keepPagesOpen              Do not close pages or browser after crawl (debug)
   --minifyHtml <json>          HTML minification options as JSON
   --removeScriptTags           Remove script tags from HTML
   --removeStyleTags            Remove style tags from HTML
@@ -395,6 +409,8 @@ Examples:
       userOptions.removeScriptTags = true;
     } else if (args[i] === '--skipExistingCheck') {
       userOptions.skipExistingCheck = true;
+    } else if (args[i] === '--keepPagesOpen') {
+      userOptions.keepPagesOpen = true;
     }
   }
   

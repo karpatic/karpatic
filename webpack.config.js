@@ -14,7 +14,7 @@ const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
 const rmlogs = true; 
 // auto-generate a PWA manifest + assets using webpack.config + a header.json file that you can copy to src/ for future deploys.
 // add '_projectname' to each generated asset and header.js will inject the manifest tag contingently.
-const hr = require("./src/header.json");
+const hr = require("./rsc/header.json");
 
 const WebpackPwaManifest = require("webpack-pwa-manifest");
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
@@ -50,8 +50,8 @@ module.exports = (env, args) => {
       "service-worker": "./src/utils/service-worker.js",
     },
     output: {
-      path: path.resolve("./docs"),
-      publicPath: "/",
+      path: path.resolve("./build"),  // Writes file to this path. Not used in browser (or while in dev)
+      publicPath: "auto", // isDev ? "/" : "./", // Basepath from which all loaded assets are retrieved.
       filename: (pathData) => {
         // [name] defers to id when it doesn't exist.
         // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', pathData)
@@ -187,8 +187,7 @@ module.exports = (env, args) => {
     
     plugins: [
       new webpack.DefinePlugin({
-        CACHEBUST: JSON.stringify(Math.floor(Math.random() * 100000000)),
-        ASSETBASE: JSON.stringify(isDev ? "/src/" : "/docs/"), 
+        CACHEBUST: JSON.stringify(Math.floor(Math.random() * 100000000)), 
       }),
       new MiniCssExtractPlugin({
         filename: "[name].css",
@@ -199,8 +198,8 @@ module.exports = (env, args) => {
         chunks: ["index", "head"],
         // excludeChunks: ["???"],
         templateContent: template,
-        inlineSource: "index.*.js$",
-        inject: "head",
+        // inlineSource: "index.*.js$",
+        // inject: "head",
       }),
       new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
       new HTMLInlineCSSWebpackPlugin({ leaveCSSFile: true }),
@@ -213,22 +212,22 @@ module.exports = (env, args) => {
             background_color: "#ff55ff",
             crossorigin: "use-credentials", //inject:false glitches and results in the icons not being included..
             fingerprints: false,
-            start_url: "./",
+            start_url: "/",
             display: "standalone",
             theme_color: hr.themecolor,
             dir: "rtl",
             lang: "ar",
             icons: [
               {
-                src: path.resolve("src/images/icon512.png"),
+                src: path.resolve("rsc/images/icons/icon512.png"),
                 sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
-                destination: "docs/images",
+                destination: "rsc/images/icons",
                 type: "image/webp",
               },
               {
-                src: path.resolve("src/images/icon512.png"),
+                src: path.resolve("rsc/images/icons/icon512.png"),
                 size: "512x512",
-                destination: "docs/images",
+                destination: "rsc/images/icons",
                 purpose: "maskable",
               },
             ],
@@ -240,7 +239,7 @@ module.exports = (env, args) => {
             // test: /template_article\.html$/,
             exclude: [/tables/, /maps/, /music/],
           }),
-      isDev ? () => {} : new WebpWebpackPlugin(),
+      // isDev ? () => {} : new WebpWebpackPlugin(),
       !analyze ? () => {} : new BundleAnalyzerPlugin(),
       isDev || !compress
         ? () => {}
@@ -264,14 +263,21 @@ module.exports = (env, args) => {
             minRatio: 0.8,
             deleteOriginalAssets: false,
           }),
+      isDev
+        ? () => {}
+        : new CopyRootIndexPlugin({
+            enabled: true,
+            filename: 'index.html',
+            prefix: '/build/' // adjust if you deploy under a subpath
+          }),
     ],
     devServer: {
       open: true,
       static: [
         // live source tree exposed at /rsc
         { directory: path.resolve(__dirname, "src"), publicPath: "/rsc", watch: true, serveIndex: true },
-        // built output exposed at /docs
-        { directory: path.resolve(__dirname, "docs"), publicPath: "/docs", watch: true, serveIndex: true },
+        // built output exposed at /build
+        { directory: path.resolve(__dirname, "build"), publicPath: "/build", watch: true, serveIndex: true },
         // repo root for index.html, CNAME, robots.txt, etc.
         { directory: path.resolve(__dirname, "."), publicPath: "/", watch: false, serveIndex: true },
       ],
@@ -281,6 +287,43 @@ module.exports = (env, args) => {
     },
   };
 };
+
+
+class CopyRootIndexPlugin {
+  constructor(opts = {}) {
+    this.enabled = opts.enabled !== false;
+    this.filename = opts.filename || 'index.html';
+    this.prefix = opts.prefix || '/build/'; // how to prefix asset paths in root copy
+  }
+  apply(compiler) {
+    compiler.hooks.afterEmit.tap('CopyRootIndexPlugin', (compilation) => {
+      if (!this.enabled) return;
+      const srcPath = path.join(compiler.options.output.path, this.filename);
+      if (!fs.existsSync(srcPath)) return;
+      let html = fs.readFileSync(srcPath, 'utf-8');
+
+      // Only rewrite when we create the root copy (so original stays untouched)
+      // Prefix relative (no leading /, http, https, data:, mailto:, #) asset refs.
+      const matches = [];
+      html = html.replace(
+        /(src|href)=["'](?!\/|https?:|data:|mailto:|#)([^"']+)["']/g,
+        (m, attr, asset) => {
+          const before = m;
+          const after = `${attr}="${this.prefix}${asset}"`;
+          matches.push({ before, after });
+          return after;
+        }
+      );
+      matches.forEach(({ before, after }) => {
+        console.log(`\n Rewriting: ${before} -> ${after}`);
+      });
+
+      const destPath = path.resolve(compiler.options.context, this.filename);
+      fs.writeFileSync(destPath, html);
+      console.log(`\nCopied ${this.filename} to project root with asset prefixes "${this.prefix}"`);
+    });
+  }
+}
 
 // Converts images in output to webp
 class WebpWebpackPlugin {
