@@ -30,11 +30,6 @@
 /labs/elly_satellltes
 /labs/naomi_geo
 /labs/naomi_nlp
-/webdev/webdev
-/webdev/fonts_unicode_ascii
-/webdev/javascript
-/webdev/visualization_notes
-/webdev/websites
 /software/software
 /software/01_github
 /software/02_colabs
@@ -47,3 +42,8 @@
 /software/09_browser_extensions
 /software/10_path
 /software/11_termux
+/webdev/webdev
+/webdev/fonts_unicode_ascii
+/webdev/javascript
+/webdev/visualization_notes
+/webdev/websites

@@ -292,7 +292,7 @@ module.exports = (env, args) => {
 class CopyRootIndexPlugin {
   constructor(opts = {}) {
     this.enabled = opts.enabled !== false;
-    this.filename = opts.filename || 'index.html';
+    this.filename = opts.filename || '404.html';
     this.prefix = opts.prefix || '/build/'; // how to prefix asset paths in root copy
   }
   apply(compiler) {
@@ -317,13 +317,15 @@ class CopyRootIndexPlugin {
       matches.forEach(({ before, after }) => {
         console.log(`\n Rewriting: ${before} -> ${after}`);
       });
+ 
 
       // Write to index.html in root
       const destPath = path.resolve(compiler.options.context, this.filename);
       fs.writeFileSync(destPath, html);
       console.log(`\nCopied ${this.filename} to project root with asset prefixes "${this.prefix}"`);
 
-      // Also write to 404.html in root
+      // Edit: index.html copied to 404.html in rerendererest.js then index is prerendered in place.
+      // Write to 404.html in root to serve as ERR fallback on github pages
       const dest404Path = path.resolve(compiler.options.context, '404.html');
       fs.writeFileSync(dest404Path, html);
       console.log(`\nCopied ${this.filename} to 404.html in project root`);

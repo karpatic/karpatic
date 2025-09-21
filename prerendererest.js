@@ -13,15 +13,30 @@ const minify = require("html-minifier").minify;
 // run() → startServer() → crawl() → fetchPage() → save HTML files
 
 // Usage:
-// node react_snap_replacement.js --include "/index.html,/about.html" --source "./build" --headless
+// node react_snap_replacement.js --entry "/index.html,/about.html" --source "./build" --headless
 
+//
+// This script prerenders SPA routes by crawling the 'entry' pages for relative links.
+// Express serves the the SPA file for all unmatched routes.
+// Puppeteer loads these routes to generate static HTML files for each page.
+// 
+// Does not account for hydration drift.
+//
+
+// hosting prerendered spas on github is annoying. why?
+// 1. we want to compile our assets which sends things to /build
+
+ 
 const defaultOptions = {
 
   port: 45678,
   crawl: true,
   source: "/",
-  include: ["/index.html"], 
+  entry: ["/index.html"],
+  replaceEntryWPrerender: true,
+  clearEntries: false, // NEW: remove original entry files before starting (forces SPA fallback)
   destination: "./docs", 
+  spa: "404.html",
   userAgent: "Prerendererest",
   headless: false,
   puppeteerArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -45,7 +60,7 @@ const defaultOptions = {
 const defaults = userOptions => {
   const options = { ...defaultOptions, ...userOptions };
   options.destination = options.destination || options.source;
-  if (!options.include.length) throw new Error("Include option should be non-empty");
+  if (!options.entry.length) throw new Error("Entry option should be non-empty");
   return options;
 };
 
@@ -179,8 +194,8 @@ const crawl = async (opt) => {
     return pageUrl;
   };
 
-  if (options.include) {
-    options.include.map(x => addToQueue(`${basePath}${x}`));
+  if (options.entry) {
+    options.entry.map(x => addToQueue(`${basePath}${x}`));
   }
 
   while (queue.length > 0) {
@@ -248,24 +263,48 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
   const sourceDir = path.normalize(`${process.cwd()}/${options.source}`);
   const destinationDir = path.normalize(`${process.cwd()}/${options.destination}`);
 
+  // Clear entry files to force SPA fallback rendering
+  if (options.clearEntries) {
+    console.log("🧹 clearEntries enabled: removing entry files before starting server...");
+    const uniqEntries = new Set(options.entry.map(e => e.replace(/^\/+/, '')));
+    for (const entryFile of uniqEntries) {
+      // Avoid deleting the SPA file itself if user accidentally included it
+      if (entryFile === options.spa.replace(/^\/+/, '')) {
+        console.log(`ℹ️ Skipping SPA file (cannot clear): ${entryFile}`);
+        continue;
+      }
+      const fullPath = path.join(sourceDir, entryFile);
+      if (fs.existsSync(fullPath)) {
+        try {
+          fs.unlinkSync(fullPath);
+          console.log(`🧹 Removed entry file: ${entryFile}`);
+        } catch (e) {
+          console.log(`⚠️ Could not remove entry file ${entryFile}: ${e.message}`);
+        }
+      } else {
+        console.log(`ℹ️ Entry file not found (already absent): ${entryFile}`);
+      }
+    }
+  }
+
   const startServer = options => {
     const app = express()
       .use(options.publicPath || '/', serveStatic(sourceDir))
-      .use(fallback("200.html", { root: sourceDir }));
+      .use(fallback(options.spa, { root: sourceDir }));
     const server = require("http").createServer(app);
     server.listen(options.port);
     return server;
   };
 
-  if (!options.skipExistingCheck && fs.existsSync(path.join(sourceDir, "200.html"))) {
-    throw new Error("Cannot run prerendererest - this will break the build");
-  }
+  // if (!options.skipExistingCheck && fs.existsSync(path.join(sourceDir, "404.html"))) {
+  //   throw new Error("Cannot run prerendererest - this will break the build");
+  // }
 
-  fs.createReadStream(path.join(sourceDir, "index.html")).pipe(fs.createWriteStream(path.join(sourceDir, "200.html")));
-  if (destinationDir !== sourceDir) {
-    mkdirp.sync(destinationDir);
-    fs.createReadStream(path.join(sourceDir, "index.html")).pipe(fs.createWriteStream(path.join(destinationDir, "200.html")));
-  }
+  // fs.createReadStream(path.join(sourceDir, options.spa)).pipe(fs.createWriteStream(path.join(sourceDir, "404.html")));
+  // if (destinationDir !== sourceDir) {
+  //   mkdirp.sync(destinationDir);
+  //   fs.createReadStream(path.join(sourceDir, options.spa)).pipe(fs.createWriteStream(path.join(destinationDir, "404.html")));
+  // }
 
   const server = startServer(options);
   const basePath = `http://localhost:${options.port}`;
@@ -288,16 +327,36 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
       }
     },
     afterFetch: async ({ page, route }) => {
-      const content = await page.content();
-      const minifiedContent = minify(content, options.minifyHtml);
+      const content = await page.content(); 
+      const stripped = content.replace(
+        new RegExp(`https?:\\/\\/localhost:${options.port}`, 'g'),
+        ''
+      );
+      const minifiedStripped = minify(stripped, options.minifyHtml);
       const routePath = route.replace(options.publicPath || '/', "");
       const filePath = path.join(destinationDir, routePath);
+
  
       // Create directories if they do not exist
       if (!fs.existsSync(path.dirname(filePath))) {
           fs.mkdirSync(path.dirname(filePath), { recursive: true });
       }
-      fs.writeFileSync(filePath, minifiedContent);
+      fs.writeFileSync(filePath, minifiedStripped);
+
+      if (options.replaceEntryWPrerender) {
+        // Normalize route to compare with entries (strip leading slash)
+        const normalized = route.replace(/^\/+/, '');
+        const entrySet = new Set(options.entry.map(e => e.replace(/^\/+/, '')));
+        if (entrySet.has(normalized)) {
+          const sourceEntryPath = path.join(sourceDir, normalized);
+          try {
+            fs.writeFileSync(sourceEntryPath, minifiedStripped);
+            console.log(`🔁 Replaced original entry with prerendered HTML: ${normalized}`);
+          } catch (e) {
+            console.log(`⚠️ Could not replace entry ${normalized}: ${e.message}`);
+          }
+        }
+      }
     },
     onEnd: () => {
       if (!options.keepPagesOpen) {
@@ -321,7 +380,10 @@ Usage: prerendererest [options]
 Options:
   --source <path>              Source directory (default: ./docs)
   --destination <path>         Destination directory (default: same as source)
-  --include <pages>            Comma-separated list of pages to include (default: /index.html)
+  --entry <pages>              Comma-separated list of pages to use (default: /index.html)
+  --replaceEntryWPrerender     Overwrite entry HTML file(s) with prerendered output
+  --clearEntries               Remove entry files before starting (forces SPA fallback to render them)
+  --spa <file>                 SPA entry point file (default: index.html)
   --headless                   Run browser in headless mode
   --crawl                      Enable automatic crawling (default: true)
   --no-crawl                   Disable automatic crawling
@@ -330,7 +392,7 @@ Options:
   --userAgent <string>         Custom user agent (default: Prerendererest)
   --viewport <json>            Viewport size as JSON object (default: {"width":480,"height":850})
   --skipThirdPartyRequests     Block external requests during rendering
-  --skipExistingCheck          Skip the 200.html existence check
+  --skipExistingCheck          Skip the 404.html existence check
   --keepPagesOpen              Do not close pages or browser after crawl (debug)
   --minifyHtml <json>          HTML minification options as JSON
   --removeScriptTags           Remove script tags from HTML
@@ -343,21 +405,31 @@ Options:
 
 Examples:
   prerendererest --source ./build --headless
-  prerendererest --include "/index.html,/about.html" --source ./build --headless
+  prerendererest --entry "/index.html,/about.html" --source ./build --clearEntries --headless
   prerendererest --source ./build --destination ./dist --crawl --concurrency 4
 `);
     process.exit(0);
   }
   
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--include' && args[i + 1]) {
-      userOptions.include = args[i + 1].split(',');
+    if (args[i] === '--entry' && args[i + 1]) {
+      userOptions.entry = args[i + 1].split(',');
       i++;
-    } else if (args[i] === '--source' && args[i + 1]) {
+    } 
+    else if (args[i] === '--replaceEntryWPrerender') {
+      userOptions.replaceEntryWPrerender = true;
+    }
+    else if (args[i] === '--clearEntries') {
+      userOptions.clearEntries = true;
+    }
+    else if (args[i] === '--source' && args[i + 1]) {
       userOptions.source = args[i + 1];
       i++;
     } else if (args[i] === '--destination' && args[i + 1]) {
       userOptions.destination = args[i + 1];
+      i++;
+    } else if (args[i] === '--spa' && args[i + 1]) {
+      userOptions.spa = args[i + 1];
       i++;
     } else if (args[i] === '--headless') {
       userOptions.headless = true;
