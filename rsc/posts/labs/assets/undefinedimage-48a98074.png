@@ -1,0 +1,7 @@
+<details>
+  <summary> Running %%html  </summary>
+   This text and it's container was written in an html flag code cell.
+
+  It operates in page how it does in notebook... 
+</details>
+<script> console.log('console message from within an html flag code cell') </script>

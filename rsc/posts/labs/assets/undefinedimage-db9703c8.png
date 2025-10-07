@@ -1,0 +1,6 @@
+
+var result = window.localStorage.getItem("greeting");
+// Display in notebook
+// var output_area = this;
+// output_area.append_output({output_type: "display_data", data: {"text/plain": result}});
+document.querySelector("#output-area1").innerHTML = result

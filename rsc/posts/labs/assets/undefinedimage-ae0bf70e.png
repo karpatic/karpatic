@@ -1,0 +1,1 @@
+#hide_output #collapse_input_open: <- Adding this to the top of the cell keeps and prettifies the input cell while hiding the output.

@@ -1,0 +1,1 @@
+window.jsFlagSetValue = 'This text is stored in window.jsFlagSetValue using the `%%javascript` cell tag'

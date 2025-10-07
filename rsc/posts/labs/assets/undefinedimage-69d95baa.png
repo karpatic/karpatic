@@ -1,0 +1,4 @@
+        var currentScriptTag = window.currentScript;
+        console.log(currentScriptTag);
+        var parentOfScriptTag = currentScriptTag?.parentElement;
+        console.log(parentOfScriptTag);

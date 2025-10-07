@@ -1,0 +1,2 @@
+console.log('console message from within an %%javascript cell')
+console.log(window.IPython)

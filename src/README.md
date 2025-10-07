@@ -2,7 +2,9 @@
 
 ## About
 
-I keep my client-side code and web-assets here. There are three environments: [dev, build, prod].
+I keep my client-side code here. There are three environments: [dev, build, prod].
+
+Todo: update ipynb2web sitemap.txt to prefix docs/ & handle index better
 
 > keywords: Static-site-generation (SSG), Template-engine, Single-Page-Application (SPA), Client-Side Navigation, Rehydration, Prerender
 

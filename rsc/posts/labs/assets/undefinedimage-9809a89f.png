@@ -1,0 +1,9 @@
+/*
+var allOutputs = document.querySelectorAll('.output');
+var thisOutput = element[0]; // .parentElement
+var currentIndex = [...allOutputs].indexOf(thisOutput)
+let nextElement = allOutputs[currentIndex-1];
+console.log(allOutputs);
+console.log(nextElement);
+nextElement.innerHTML = nextElement.innerHTML+':WHATCHOUT:';
+*/

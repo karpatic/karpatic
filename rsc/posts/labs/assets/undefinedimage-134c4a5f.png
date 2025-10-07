@@ -1,0 +1,60 @@
+<canvas id="waveCanvas"></canvas>
+<script>
+    const canvas = document.getElementById('waveCanvas');
+    const ctx = canvas.getContext('2d');
+    let hueOffset = 0;
+
+    function setCanvasSize() {
+        const width = 800
+        canvas.width = width;
+        canvas.height = 100;
+    }
+    setCanvasSize();
+    window.addEventListener('resize', setCanvasSize);
+
+    function createCyclingGradient(ctx, width, offset) {
+        const gradient = ctx.createLinearGradient(0, 0, width, 0);
+        for (let i = 0; i <= 1; i += 0.16) {
+            const hue = (offset + i * 360) % 360;
+            gradient.addColorStop(i, `hsl(${hue}, 100%, 50%)`);
+        }
+        return gradient;
+    }
+
+function animate() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+const linesCount = 1;
+const lineSpacing = 50;
+
+for (let n = 0; n < linesCount; n++) {
+    // Slightly shift the hue for each line:
+    const gradient = createCyclingGradient(ctx, canvas.width, hueOffset + n * 10);
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+
+    for (let i = 0; i < canvas.width; i += 2) {
+        const x = i;
+        const timeOffset = Date.now() / 2000;
+        // Offset each line vertically:
+        const y = 50 + n * lineSpacing +
+            Math.cos(timeOffset - i / 5) * 
+            Math.cos(timeOffset - i / 20) * 35;
+
+        if (i === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    }
+    ctx.stroke();
+}
+
+hueOffset += 1;
+requestAnimationFrame(animate);
+}
+
+
+    animate();
+</script>
