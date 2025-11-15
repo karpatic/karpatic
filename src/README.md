@@ -105,7 +105,11 @@ Webpack compiles the client as so:
 
 - hide_sitemap: false
 - hide_toc: true
+- hide_breadcrumbs: true
 - hide_transition: true
+- prettify: true
+- tab: displayLabel
+- keywords: ['data'] 
 
 
 ## Build Steps

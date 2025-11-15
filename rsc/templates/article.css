@@ -152,6 +152,33 @@ h2 {
   flex-wrap: wrap;
 }
 
+
+
+#toc{
+  max-width: calc(var(--max-width) - 40px);
+  margin: auto;
+  margin-bottom: 32px; 
+  .toc-link { 
+    line-height: 1.6rem;
+    padding-left: 0px;
+    font-size: 1.1em;
+    display: block;
+  }
+  .layer-1 {
+    padding-left: 0px;
+    font-size: 1rem;
+  }
+  .layer-2 {
+    padding-left: 40px;
+    font-size: .9rem;
+  }
+  .layer-3 {
+    padding-left: 80px;
+    font-size: 0.9rem;
+  }
+}
+
+
 #footer {
   height: 200px;
   width: min(100vw, 800px);
@@ -242,6 +269,9 @@ details{
 #light::before {
   content: "🌜 Dark mode";
   display: block;
+}
+html {
+  transition: filter 0.3s ease-in-out;
 }
 html:has(#lightmode:checked) {
   filter: invert(100%);
@@ -444,3 +474,6 @@ body:has(#expandmode:checked) aside {
   transition: color 0.3s ease;
 }
 .card a:hover {  color: #0056b3;}
+
+
+ 

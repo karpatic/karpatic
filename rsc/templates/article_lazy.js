@@ -3,7 +3,7 @@
     document.body.insertAdjacentHTML(
       "beforeend",
       `<style>${await (
-        await fetch(w.location.origin + `/templates/article_lazy.css`)
+        await fetch(w.location.origin + `/rsc/templates/article_lazy.css`)
       ).text()}</style>`
     );
   w.loadStyleOnce = true;
@@ -31,17 +31,19 @@ function generatePath(bars) {
     "Z"
   ).replace("undefined", "");
 }
+
+// Sets clipPath to be the old path, then sets css vars to transition to newPath
 function updatePath() { 
   const newPath = "path('" + generatePath(6) + "')";
   const footer = document.getElementById("footer_bg").style;
   // set css var --path2 to --path1's computed value and update --path1 with new path(d)
   const pastPath = getComputedStyle(document.documentElement).getPropertyValue(
-    "--path1"
+    "--newpath"
   );
   footer.clipPath = pastPath;
   // Using css vars helps ensure auto-prefixing is done correctly
-  document.documentElement.style.setProperty("--path1", newPath);
-  document.documentElement.style.setProperty("--path2", pastPath || newPath);
+  document.documentElement.style.setProperty("--newpath", newPath);
+  document.documentElement.style.setProperty("--oldpath", pastPath || newPath);
   //Fix for Glitchy animation Otherwise flashes end of animation before starting again.
   footer.animation = "none";
   setTimeout(() => {

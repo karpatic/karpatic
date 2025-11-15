@@ -1,8 +1,8 @@
 @keyframes footer-bars {
-  0% {
-    clip-path: var(--path2);
+  from {
+    clip-path: var(--oldpath);
   }
-  100% {
-    clip-path: var(--path1);
+  to {
+    clip-path: var(--newpath);
   }
 }

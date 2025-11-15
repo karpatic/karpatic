@@ -1,20 +1,3 @@
-/*
-
-input#toggle_sitemap
-#sitemap {
-  label.nav-label[for="toggle_sitemap"] {} 
-  hr
-  input#toggle_toc.toc_toggle
-  label.toc-label[for="toggle_toc"] {}
-  label.toc-label-back[for="toggle_toc"] {}
-  div.toc-content{
-    a
-  }
-  div.sitemap-content {
-    
-} 
-
-*/
 /* The Container */
 body:has(#sitemap:focus-within) {
   /* Prevent drag-refresh */
@@ -45,7 +28,26 @@ body:has(#sitemap:focus-within) {
   h3{
     margin: .5rem 0px;
   }
-} 
+
+  > label {
+    line-height: 3em;
+    width: -webkit-fill-available;
+    display: flex;
+    cursor: grab;
+    color: rgb(var(--near-black));
+    justify-content: space-between;
+  }
+  > label:hover {
+    text-shadow: 1px 1px 45px rgb(var(--near-black));
+  }
+  
+  > label > span:nth-child(2) {
+    --rotate: 0deg;
+  }
+  > label > span:nth-child(3) {
+    --rotate: 45deg;
+  }
+}
 
 /* Effects for the Always-Present Label */
 #toggle_sitemap {
@@ -57,6 +59,14 @@ body:has(#sitemap:focus-within) {
 #toggle_sitemap:checked ~ #sitemap {
   animation: expand 1s forwards, glow 6s linear infinite;
 }
+
+#toggle_sitemap:not(:checked) ~ #sitemap > label > span {
+  animation: dismiss 1s forwards;
+}
+#toggle_sitemap:checked ~ #sitemap > label > span {
+  animation: reveal 3000ms forwards;
+}
+
 @keyframes glow {
   50% {
     box-shadow: 3px 2px 20px rgb(var(--near-white)),
@@ -79,33 +89,8 @@ body:has(#sitemap:focus-within) {
   from {
     max-height: 3em;
   }
-} 
+}   
  
-
-.nav-label {
-  line-height: 3em;
-  width: -webkit-fill-available;
-  display: flex;
-  cursor: grab;
-  color: rgb(var(--near-black));
-  justify-content: space-between;
-}
-.nav-label:hover {
-  text-shadow: 1px 1px 45px rgb(var(--near-black));
-}
-
-#toggle_sitemap:not(:checked) ~ .nav-label > span {
-  animation: dismiss 1s forwards;
-}
-#toggle_sitemap:checked ~ .nav-label > span {
-  animation: reveal 3000ms forwards;
-}
-.nav-label > span:nth-child(2) {
-  --rotate: 0deg;
-}
-.nav-label > span:nth-child(3) {
-  --rotate: 45deg;
-}
 @keyframes reveal {
   from {
     transform: rotate(var(--rotate));
@@ -131,15 +116,7 @@ body:has(#sitemap:focus-within) {
   text-align: center;
   color: rgb(var(--near-black));  
   cursor: pointer;
-} 
-#toggle_toc:not(:checked) ~ .toc-label,
-#toggle_toc:checked ~ .toc-label-back {
-  display: none;
-}
-
-#toggle_toc{
-  display: block;
-}
+}  
 
 
 #toc-content, #sitemap-content {
@@ -147,16 +124,7 @@ body:has(#sitemap:focus-within) {
   overflow-x: hidden;
   max-height: calc(75vh - 6em);
 }
-
-#toggle_toc:checked ~ #toc-content,
-#toggle_toc:not(:checked) ~ #sitemap-content { 
-  animation: hide 1s forwards;
-}
-
-#toggle_toc:not(:checked) ~ #toc-content,
-#toggle_toc:checked ~ #sitemap-content { 
-  animation: show 1s forwards;
-} 
+ 
 @keyframes hide {
   from {
     max-height: inherit;

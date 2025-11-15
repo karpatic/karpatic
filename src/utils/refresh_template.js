@@ -166,8 +166,8 @@ w.addEventListener(
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const populateTemplate = async (transitionable = false) => {
   const pageT = w.page_transition;
-  let skip = w.meta.hide_sitemap?.toLowerCase() == "true";
-  if (transitionable && pageT && skip) {
+  let skip = w.meta.hide_transition?.toLowerCase() == "true";
+  if (transitionable && pageT && !skip) {
     pageT.style.animation =
       "page_transition 0.375s alternate 2, gradient 0.375s alternate 2";
     pageT.addEventListener(
@@ -203,7 +203,10 @@ const populateTemplate = async (transitionable = false) => {
 
   console.log("Populate content, title, summary, breadcrumbs");
   let insert = ["content", "title", "summary"]  
-  const hide_breadcrumbs = w.meta.hide_sitemap?.toLowerCase() == "true";
+  const hide_breadcrumbs = w.meta.hide_breadcrumbs?.toLowerCase() == "true";
+  console.log('hide_breadcrumbs:', w.meta, hide_breadcrumbs);
+  let breadcrumbsEl = document.getElementById("breadcrumbs");
+  document.getElementById("breadcrumbs").style.display = hide_breadcrumbs ? "none" : "block";
   !hide_breadcrumbs && insert.push("breadcrumbs"); 
   insert.map((id) => {
     if (!meta[id]) return;
@@ -271,10 +274,14 @@ const createNav = async () => {
   console.group("createNav");  
 
   let toc = getToc(); // false or html string 
-  const hide_sitemap = w.meta.hide_sitemap?.toLowerCase() == "true"; 
+  const hide_sitemap = w.meta.hide_sitemap?.toLowerCase() == "true" || !w.sitemap_content; 
+  const hide_toc = w.meta.hide_toc?.toLowerCase() == "true";
   
   let tocNode = w["tocHere"] || w["toc"]; 
-  if (tocNode  && !hide_sitemap) tocNode.innerHTML = toc;
+  if (tocNode) {
+    tocNode.style.display = hide_toc ? "none" : "block";
+    if (!hide_sitemap && !hide_toc) tocNode.innerHTML = toc;
+  }
   
   // Skip sitemap creation 
   if (w.sitemap) w.sitemap.style.visibility = hide_sitemap ? "hidden" : "visible";
@@ -285,6 +292,7 @@ const createNav = async () => {
 
   console.log("CREATE_NAV: \n\n", { 
     sitemap_content: w.sitemap_content,
+    sitemap: w.sitemap,
   });
 
   // Insert Links Into Container
@@ -340,11 +348,12 @@ const getToc = () => {
   }
 
   let toc = [...document.querySelectorAll("h2, h3, h4")]
-    .map((header) => {
-      let x = header.innerText || header.textContent;
+    .map((headd) => {
+      let x = headd.innerText || headd.textContent;
       const z = formatLink(x);
-      const spaces = "".repeat(header.tagName.slice(1) - 1); // "&emsp;"
-      return `${spaces}<a href='#${z}' title="${x}">${displayLink(x)}</a>`;
+      const headerLevel = (headd.tagName.slice(1) - 1);
+      const layer = headerLevel > 1 ? ` layer-${headerLevel}` : "";
+      return `<a class='toc-link toc-link${layer}' href='#${z}' title="${x}">${displayLink(x)}</a>`;
     })
     .join("");
 

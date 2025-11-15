@@ -41,16 +41,16 @@ w.pingServer = async (event = false) => {
 
 // Called in head.js to trigger handleRoute when in dev.
 w.redirect = async (event = false) => {
-  console.group("INDEX:Event:POPSTATE");
+  const eventType = event?.type || 'initial';
+  console.group(`INDEX:Event:${eventType.toUpperCase()}`);
   event?.preventDefault?.();
   !w.navEvent &&
     ({ handleRoute: w.handleRoute, navEvent: w.navEvent } = await import(
       /* webpackChunkName: "route" */ "./utils/route.js"
     ));
-  // console.log('INDEX:',event)
 
-  // User Clicked a Relative Link vs // Browser Back/FWD
-  event.type == "click" ? navEvent(event.target.href) : handleRoute();
+  // User Clicked a Relative Link vs Browser Back/FWD vs Initial Load
+  event?.type === "click" ? navEvent(event.target.href) : handleRoute();
   console.groupEnd();
 };
 addEventListener("popstate", redirect);

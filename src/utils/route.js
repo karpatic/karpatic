@@ -19,17 +19,19 @@ window.w = window;
 export const navEvent = async (push) => {
   console.group("Route: navEvent");
 
-  // Add the new URL to the browser history
-  history.pushState({}, "", push);
   let href = push || location.href;
+  const isAnchorOnly = href.split("#")[0] === location.href.split("#")[0] && href.indexOf("#") !== -1;
+
+  // Only update history if navigating to a different p age
+  !isAnchorOnly && history.pushState({}, "", push);
 
   // Scroll to top or el with id of link.
   (href.indexOf("#") == -1
     ? () => window.scrollTo({ top: 0, behavior: "smooth" })
-    : () => w[href.split("#")[1]]?.scrollIntoView({ behavior: "smooth" }))();
+    : () => document.getElementById(href.split("#")[1])?.scrollIntoView({ behavior: "smooth" }))();
 
   // Reload page if relative link is not on same page.
-  if (href.split("#")[0] != w.href?.split("#")[0])
+  if (!isAnchorOnly && href.split("#")[0] != w.href?.split("#")[0])
     await handleRoute(), (w.href = href);
 
   console.groupEnd();

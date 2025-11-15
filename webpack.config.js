@@ -51,7 +51,7 @@ module.exports = (env, args) => {
     },
     output: {
       path: path.resolve("./build"),  // Writes file to this path. Not used in browser (or while in dev)
-      publicPath: "auto", // isDev ? "/" : "./", // Basepath from which all loaded assets are retrieved.
+      publicPath: isDev ? "/" : "auto", // isDev ? "/" : "./", // Basepath from which all loaded assets are retrieved.
       filename: (pathData) => {
         // [name] defers to id when it doesn't exist.
         // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', pathData)
