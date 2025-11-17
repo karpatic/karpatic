@@ -56,7 +56,7 @@ w.redirect = async (event = false) => {
     ));
 
   // User Clicked a Relative Link vs Browser Back/FWD vs Initial Load
-  eventType != "initial" ? navEvent(event.target.href) : handleRoute();
+  event?.type == "click" ? navEvent(event.target.href) : handleRoute();
   console.groupEnd();
 };
 addEventListener("popstate", redirect);
