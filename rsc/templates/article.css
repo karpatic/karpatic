@@ -248,7 +248,7 @@ details{
   #head_separator {
     display: none;
   }
-  .notebox:checked + aside {
+  .notebox:checked + .inline-note {
     flex-direction: column-reverse;
     align-items: flex-end;
   }
@@ -300,26 +300,86 @@ audio::-webkit-media-controls-panel {
   display: inline-block;
   margin-right: 5px;
 }
+.note {
+  position: relative;
+  display: inline-block;
+}
 .notelbl {
   color: rgb(var(--near-black));
 }
-aside {
-  border: solid rgb(var(--near-black));
+.inline-note {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  min-width: 250px;
+   max-width: 400px;
+  border: solid rgb(var(--near-black));    
+  padding: 15px;
+  z-index: 1000;
+  margin: 0;
+  visibility: hidden;
+  opacity: 0;
   border-width: 10px 2px 0px 2px;
   border-radius: 7% 7% 0% 0%;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   background: rgb(var(--canvas));
-  padding: 20px;
-  z-index: 1;
-  margin:auto;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+} 
+
+details.ipynb{
+  border: 2px solid rgb(var(--near-black));
+  padding:0px;
+  width: 100%;
+  max-width: 250px;
+  overflow: hidden;
+  transition: max-width 0.4s ease;
+  summary{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    background: rgb(var(--near-black));
+    color: rgb(var(--near-white));
+    padding: 10px 16px;
+    border-bottom: 2px solid rgb(var(--near-black));
+    font-weight: bold;
+    transition: padding 0.4s ease;
+  }
+ 
+  summary::after {
+    content: "Show";
+    margin-left: 1rem;
+    white-space: nowrap;
+  }
+  &[open] {
+    max-width: 100%;
+  }
+  &[open] summary{
+    padding: 12px 20px;
+  }
+  &[open] summary::after {
+    content: "Hide";
+  }
+} 
+
+details.ipynb-input{ 
+  summary::after {
+    content: "Show Code"; 
+  }
+  &[open] summary::after {
+    content: "Hide Code";
+  }
 }
-aside,
 .notebox {
   display: none;
 }
 
-p:has(.notebox:checked) + .inline-note {
-  display: block;
+.notebox:checked ~ .inline-note {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
  
@@ -356,8 +416,10 @@ p:has(.notebox:checked) + .inline-note {
 body:has(#expandmode:checked) #expand::before {
   content: "➖ Collapse notes";
 }
-body:has(#expandmode:checked) aside {
-  display: block;
+body:has(#expandmode:checked) .inline-note {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 #toast_container {

@@ -25,21 +25,21 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
       .replace(".html", "") || "index"; // removes leading and trailing slashes 
 
   // Defaults
-  console.log("HEAD:FETCHING: ./header.json for Page:", page);
+  // console.log("HEAD:FETCHING: ./header.json for Page:", page);
   let hr = await (await fetch((await import(`/rsc/header.json`)).default)).json();
  
   // Path to it's YAML or Manifest
   let url = `/${
     (hr.pwapages.split(",").some((x) => page == x) ? "" : "./rsc/posts/") + page
   }.json`; 
-  console.log('HEAD:', { url, page, pathname: location.pathname });
+  // console.log('HEAD:', { url, page, pathname: location.pathname });
 
 
   // TODO: Fallback if no ./post/ exists.
 
   // Merge to defaults
   try {
-    console.log("HEAD:FETCHING:", url);
+    // console.log("HEAD:FETCHING:", url);
     let rsp = await fetch(url);
     hr = { ...hr, ...(await (await fetch(url)).json()).meta };
   } catch (e) {
@@ -143,11 +143,12 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
   });
 
   // 1. Render the route using main.redirect()
-  console.log("HEAD:Dispatching index:redirect()");
+  // console.log("HEAD:Dispatching index:redirect()");
   window.redirect?.();
 
   // 2. Wait for the remainder of the page to load then do some clean up
   setTimeout(() => {
+    // console.clear();
     if (!document.body) return;
 
     // Remove the data-rh meta tag react-snap adds.

@@ -15,38 +15,57 @@ window.w = window;
 // - User Clicked a Relative Link: Scroll up and call handleRoute or don't and just scroll to the anchor on-page.
 // - Browser Back/FWD remembers prior scrollbar position and does not need this fn.
 //
+// Todo - if navEvent calls handleRoute it needs to be called back at the end for the hashbang to slide.
+// Todo - Sitemap open on start or not.
+// Todo - Scroll to top.
+// todo - notes
+// details - summary
 
 export const navEvent = async (push) => {
   console.group("Route: navEvent");
 
   let href = push || location.href;
-  const isAnchorOnly = href.split("#")[0] === location.href.split("#")[0] && href.indexOf("#") !== -1;
+  const [hrefBase, hrefFragment] = href.split("#");
+  const currentBase = location.href.split("#")[0];
+  const hasHash = href.indexOf("#") !== -1;
+  const isAnchorOnly = hrefBase === currentBase && hasHash;
+  const targetEl = hasHash ? document.getElementById(hrefFragment) : null;
+
+  const openParentDetails = (el) => {
+    let ancestor = el;
+    while (ancestor) {
+      if (ancestor.tagName?.toLowerCase() === "details") {
+        ancestor.open = true;
+      }
+      ancestor = ancestor.parentElement;
+    }
+  };
+
+  // Reload page if relative link is not on same page.
+  if (!isAnchorOnly && hrefBase != w.href?.split("#")[0])
+    await handleRoute(), (w.href = href);
 
   // Only update history if navigating to a different p age
   !isAnchorOnly && history.pushState({}, "", push);
 
   // Scroll to top or el with id of link.
-  (href.indexOf("#") == -1
-    ? () => window.scrollTo({ top: 0, behavior: "smooth" })
-    : () => document.getElementById(href.split("#")[1])?.scrollIntoView({ behavior: "smooth" }))();
-
-  // Reload page if relative link is not on same page.
-  if (!isAnchorOnly && href.split("#")[0] != w.href?.split("#")[0])
-    await handleRoute(), (w.href = href);
+  setTimeout(() => {
+    targetEl && openParentDetails(targetEl);
+    (!hasHash
+      ? () => window.scrollTo({ top: 0, behavior: "smooth" })
+      : () => targetEl?.scrollIntoView({ behavior: "smooth" }))();
+  }, 100);  
 
   console.groupEnd();
 };
 
 export const handleRoute = async () => {
-  console.group("Route: HandleRoute");
-  console.log("Route12:");
+  console.group("Route: HandleRoute"); 
 
   if (location.pathname.includes("undefined")) return;
-  console.log("Route:");
 
   // Call Service Worker Once
   w.meta || (!isLocal && registerServiceWorker());
-  console.log("Route:");
 
   // Import template Once
   w.toast ||
@@ -63,7 +82,7 @@ export const handleRoute = async () => {
           .replace(/^\//, "").replace("build/", "")
           .replace(/\/$/, "");
 
-  console.log("Route:", { route });
+  // console.log("Route:", { route });
 
   // Create or Get Routes Metadata/ YAML
   let url =
@@ -76,7 +95,7 @@ export const handleRoute = async () => {
   // console.log("Route:", { route, url: url });
 
   try {
-    console.log("Get:", url);
+    // console.log("Get:", url);
     content = await (!isLocal || preRendering
       ? await (async () => {
           return (await fetch(url)).json();

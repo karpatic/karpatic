@@ -248,7 +248,7 @@ details{
   #head_separator {
     display: none;
   }
-  .notebox:checked + aside {
+  .notebox:checked + .inline-note {
     flex-direction: column-reverse;
     align-items: flex-end;
   }
@@ -300,26 +300,86 @@ audio::-webkit-media-controls-panel {
   display: inline-block;
   margin-right: 5px;
 }
+.note {
+  position: relative;
+  display: inline-block;
+}
 .notelbl {
   color: rgb(var(--near-black));
 }
-aside {
-  border: solid rgb(var(--near-black));
+.inline-note {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  min-width: 250px;
+   max-width: 400px;
+  border: solid rgb(var(--near-black));    
+  padding: 15px;
+  z-index: 1000;
+  margin: 0;
+  visibility: hidden;
+  opacity: 0;
   border-width: 10px 2px 0px 2px;
   border-radius: 7% 7% 0% 0%;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   background: rgb(var(--canvas));
-  padding: 20px;
-  z-index: 1;
-  margin:auto;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+} 
+
+details.ipynb{
+  border: 2px solid rgb(var(--near-black));
+  padding:0px;
+  width: 100%;
+  max-width: 250px;
+  overflow: hidden;
+  transition: max-width 0.4s ease;
+  summary{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    background: rgb(var(--near-black));
+    color: rgb(var(--near-white));
+    padding: 10px 16px;
+    border-bottom: 2px solid rgb(var(--near-black));
+    font-weight: bold;
+    transition: padding 0.4s ease;
+  }
+ 
+  summary::after {
+    content: "Show";
+    margin-left: 1rem;
+    white-space: nowrap;
+  }
+  &[open] {
+    max-width: 100%;
+  }
+  &[open] summary{
+    padding: 12px 20px;
+  }
+  &[open] summary::after {
+    content: "Hide";
+  }
+} 
+
+details.ipynb-input{ 
+  summary::after {
+    content: "Show Code"; 
+  }
+  &[open] summary::after {
+    content: "Hide Code";
+  }
 }
-aside,
 .notebox {
   display: none;
 }
 
-p:has(.notebox:checked) + .inline-note {
-  display: block;
+.notebox:checked ~ .inline-note {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
  
@@ -356,8 +416,10 @@ p:has(.notebox:checked) + .inline-note {
 body:has(#expandmode:checked) #expand::before {
   content: "➖ Collapse notes";
 }
-body:has(#expandmode:checked) aside {
-  display: block;
+body:has(#expandmode:checked) .inline-note {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 #toast_container {
@@ -658,7 +720,7 @@ body:has(#sitemap:focus-within) {
     transform: translate(0, 0);
     -webkit-transform: translate(0, 0);
   }
-}</style><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/prettify.css"></head><body data-template="article"><input type="checkbox" id="toggle_sitemap" aria-label="sitemap"><div id="sitemap" style="visibility: visible;"><input type="checkbox" id="toggle_sitemap" class="nav-toggle"> <label tabindex="0" for="toggle_sitemap" class="nav-label"><span class="nav-arrow">⇨</span> Navigation <span class="nav-close">✕</span></label><hr><a id="link_Home" href="./../index.html" title="Home">Home</a><div id="sitemap-content"><h3 id="Labs" style="animation: 0.5s ease-in-out 0s 2 normal none running wiggle;"><a id="link_00_labs" href="./../labs.html" title="00_labs">Labs</a></h3><a class="anchor" href="#Labs" id="#Labs" aria-label="Link to Labs" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/labs/elly_satellltes.html'); w.toast?.();"></a> <a id="link_01_nb_2_html_tests" href="./01_nb_2_html_tests.html" title="01_nb_2_html_tests">Nb 2 Html Tests </a><a id="link_02_211_web_scraper" href="./02_211_web_scraper.html" title="02_211_web_scraper">211 Web Scraper </a><a id="link_05_wordclouds" href="./05_wordclouds.html" title="05_wordclouds">Wordclouds </a><a id="link_09_looking_at_data" href="./09_looking_at_data.html" title="09_looking_at_data">Looking At Data </a><a id="link_elly_satellltes" href="./elly_satellltes.html" title="elly_satellltes">Elly Satellltes </a><a id="link_naomi_geo" href="./naomi_geo.html" title="naomi_geo">Naomi Geo </a><a id="link_naomi_nlp" href="./naomi_nlp.html" title="naomi_nlp">Naomi Nlp </a><a id="link_Labs_Test" href="./Test.html" title="Labs_Test">Test</a></div></div><div id="page_transition" style="animation: auto ease 0s 1 normal none running none;"><p>Don't Look! I'm changing!</p></div><div id="toast_container"><p>URL Copied</p></div><div id="header"><div id="header_bg_wrapper"><div id="header_bg"></div></div><h1><a href="./../index.html" id="Charles_Karp...33614">Charles Karpati</a> <span id="head_separator">| </span><a href="#title" id="title">Sentinel Data</a></h1><p id="summary">Retrieving data from a sentinel server</p></div><div class="controls_container"><div id="breadcrumbs" style="display: block;"><a href="/index.html" id="Home654504">Home</a>/<a href="./../labs.html" id="Labs923552">Labs</a>/<a href="./elly_satellltes.html" id="Elly_satelll...181381">Elly_satellltes</a></div><div><label for="lightmode" id="light"><input type="checkbox" id="lightmode" aria-label="lightmode"></label> <label for="expandmode" id="expand" style="display: none;"><input type="checkbox" id="expandmode" aria-label="expandmode"></label><p id="audio" title="undefined" style="display: none;"><span><audio controls="" controlslist="nodownload noplaybackrate" preload="none" loop="" src="undefined"></audio></span>Audio Version</p></div></div><div id="toc" style="display: block;"></div><div id="content"><link rel="stylesheet" href="https://cdn.rawgit.com/google/code-prettify/master/styles/desert.css"></div><div id="footer"><p id="thanks">Thank's for visiting! - <a href="./../legal.html" id="Terms_of_use923861">Terms of use</a></p><div id="footer_bg_wrapper"><div id="footer_bg"></div></div></div><script src="/build/index.57.464051e333ff0ba246ba.js"></script><script>function loadLazy() {
+}</style><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/prettify.css"></head><body data-template="article"><input type="checkbox" id="toggle_sitemap" aria-label="sitemap"><div id="sitemap" style="visibility: visible;"><input type="checkbox" id="toggle_sitemap" class="nav-toggle"> <label tabindex="0" for="toggle_sitemap" class="nav-label"><span class="nav-arrow">⇨</span> Navigation <span class="nav-close">✕</span></label><hr><a id="link_Home" href="./../index.html" title="Home">Home</a><div id="sitemap-content"><h3 style="animation: 0.5s ease-in-out 0s 2 normal none running wiggle;"><a id="link_00_labs" href="./../labs.html" title="00_labs">Labs</a></h3><a id="link_01_nb_2_html_tests" href="./01_nb_2_html_tests.html" title="01_nb_2_html_tests">Nb 2 Html Tests </a><a id="link_02_211_web_scraper" href="./02_211_web_scraper.html" title="02_211_web_scraper">211 Web Scraper </a><a id="link_05_wordclouds" href="./05_wordclouds.html" title="05_wordclouds">Wordclouds </a><a id="link_09_looking_at_data" href="./09_looking_at_data.html" title="09_looking_at_data">Looking At Data </a><a id="link_elly_satellltes" href="./elly_satellltes.html" title="elly_satellltes">Elly Satellltes </a><a id="link_naomi_geo" href="./naomi_geo.html" title="naomi_geo">Naomi Geo </a><a id="link_naomi_nlp" href="./naomi_nlp.html" title="naomi_nlp">Naomi Nlp </a><a id="link_Labs_Test" href="./Test.html" title="Labs_Test">Test</a></div></div><div id="page_transition" style="animation: auto ease 0s 1 normal none running none;"><p>Don't Look! I'm changing!</p></div><div id="toast_container"><p>URL Copied</p></div><div id="header"><div id="header_bg_wrapper"><div id="header_bg"></div></div><h1><a href="./../index.html" id="Charles_Karp...330352">Charles Karpati</a> <span id="head_separator">| </span><a href="#title" id="title">Sentinel Data</a></h1><p id="summary">Retrieving data from a sentinel server</p></div><div class="controls_container"><div id="breadcrumbs" style="display: block;"><a href="/index.html" id="Home36507">Home</a>/<a href="./../labs.html" id="Labs808653">Labs</a>/<a href="./elly_satellltes.html" id="Elly_satelll...37372">Elly_satellltes</a></div><div><label for="lightmode" id="light"><input type="checkbox" id="lightmode" aria-label="lightmode"></label> <label for="expandmode" id="expand" style="display: none;"><input type="checkbox" id="expandmode" aria-label="expandmode"></label><p id="audio" title="undefined" style="display: none;"><span><audio controls="" controlslist="nodownload noplaybackrate" preload="none" loop="" src="undefined"></audio></span>Audio Version</p></div></div><div id="toc" style="display: block;"></div><div id="content"><link rel="stylesheet" href="https://cdn.rawgit.com/google/code-prettify/master/styles/desert.css"></div><div id="footer"><p id="thanks">Thank's for visiting! - <a href="./../legal.html" id="Terms_of_use10954">Terms of use</a></p><div id="footer_bg_wrapper"><div id="footer_bg"></div></div></div><script src="/build/index.57.1aa9fb5d70f9018c8ada.js"></script><script>function loadLazy() {
     w.loadOnce || (
       ( (document.head || d).appendChild(document.createElement("script")).src = origin + "/rsc/templates/article_lazy.js" )
       && (w.loadOnce=true)

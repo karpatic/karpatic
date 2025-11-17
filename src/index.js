@@ -40,6 +40,12 @@ w.pingServer = async (event = false) => {
 !isLocal && w.pingServer();
 
 // Called in head.js to trigger handleRoute when in dev.
+// No event means initial load.
+// event = Popstate means Back/FWD button.
+// event = Click means user clicked a relative link.
+
+// Sitemap -> Click evt -> href='./paths' 
+// TOC -> Popstate evt -> href='#paths'
 w.redirect = async (event = false) => {
   const eventType = event?.type || 'initial';
   console.group(`INDEX:Event:${eventType.toUpperCase()}`);
@@ -50,14 +56,14 @@ w.redirect = async (event = false) => {
     ));
 
   // User Clicked a Relative Link vs Browser Back/FWD vs Initial Load
-  event?.type === "click" ? navEvent(event.target.href) : handleRoute();
+  eventType != "initial" ? navEvent(event.target.href) : handleRoute();
   console.groupEnd();
 };
 addEventListener("popstate", redirect);
 
 // Removes then Reattaches redirects. Called on refresh template.
 w.setRedirectListeners = () => {
-  console.log("INDEX:setRedirectListeners");
+  // console.log("INDEX:setRedirectListeners");
   document
     .querySelectorAll('a[href^="./"]')
     .forEach((l) =>

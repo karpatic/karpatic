@@ -248,7 +248,7 @@ details{
   #head_separator {
     display: none;
   }
-  .notebox:checked + aside {
+  .notebox:checked + .inline-note {
     flex-direction: column-reverse;
     align-items: flex-end;
   }
@@ -300,26 +300,86 @@ audio::-webkit-media-controls-panel {
   display: inline-block;
   margin-right: 5px;
 }
+.note {
+  position: relative;
+  display: inline-block;
+}
 .notelbl {
   color: rgb(var(--near-black));
 }
-aside {
-  border: solid rgb(var(--near-black));
+.inline-note {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  min-width: 250px;
+   max-width: 400px;
+  border: solid rgb(var(--near-black));    
+  padding: 15px;
+  z-index: 1000;
+  margin: 0;
+  visibility: hidden;
+  opacity: 0;
   border-width: 10px 2px 0px 2px;
   border-radius: 7% 7% 0% 0%;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   background: rgb(var(--canvas));
-  padding: 20px;
-  z-index: 1;
-  margin:auto;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+} 
+
+details.ipynb{
+  border: 2px solid rgb(var(--near-black));
+  padding:0px;
+  width: 100%;
+  max-width: 250px;
+  overflow: hidden;
+  transition: max-width 0.4s ease;
+  summary{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    background: rgb(var(--near-black));
+    color: rgb(var(--near-white));
+    padding: 10px 16px;
+    border-bottom: 2px solid rgb(var(--near-black));
+    font-weight: bold;
+    transition: padding 0.4s ease;
+  }
+ 
+  summary::after {
+    content: "Show";
+    margin-left: 1rem;
+    white-space: nowrap;
+  }
+  &[open] {
+    max-width: 100%;
+  }
+  &[open] summary{
+    padding: 12px 20px;
+  }
+  &[open] summary::after {
+    content: "Hide";
+  }
+} 
+
+details.ipynb-input{ 
+  summary::after {
+    content: "Show Code"; 
+  }
+  &[open] summary::after {
+    content: "Hide Code";
+  }
 }
-aside,
 .notebox {
   display: none;
 }
 
-p:has(.notebox:checked) + .inline-note {
-  display: block;
+.notebox:checked ~ .inline-note {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
  
@@ -356,8 +416,10 @@ p:has(.notebox:checked) + .inline-note {
 body:has(#expandmode:checked) #expand::before {
   content: "➖ Collapse notes";
 }
-body:has(#expandmode:checked) aside {
-  display: block;
+body:has(#expandmode:checked) .inline-note {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 #toast_container {
@@ -473,48 +535,7 @@ body:has(#expandmode:checked) aside {
   text-decoration: none;
   transition: color 0.3s ease;
 }
-.card a:hover {  color: #0056b3;}</style></head><body data-template="article"><input type="checkbox" id="toggle_sitemap" aria-label="sitemap"><div id="sitemap" style="visibility: visible;"><input type="checkbox" id="toggle_sitemap" class="nav-toggle"> <label tabindex="0" for="toggle_sitemap" class="nav-label"><span class="nav-arrow">⇨</span> Navigation <span class="nav-close">✕</span></label><hr><a id="link_Home" href="./../index.html" title="Home">Home</a><div id="sitemap-content"><h3 id="Datascience" style=""><a id="link_00_datascience" href="./../datascience.html" title="00_datascience">Datascience</a></h3><a class="anchor" href="#Datascience" id="#Datascience" aria-label="Link to Datascience" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a> <a id="link_Correlation" href="./clustering_association.html" title="Correlation">Correlation </a><a id="link_Testing" href="./distributions_and_regression_tests.html" title="Testing">Testing </a><a id="link_Geo-TimeSeries" href="./geospatial_timeseries.html" title="Geo-TimeSeries">Geo-Timeseries </a><a id="link_Linear Regressions" href="./linear_regressions.html" title="Linear Regressions">Linear Regressions </a><a id="link_Machine Learning" href="./ml.html" title="Machine Learning">Machine Learning </a><a id="link_Data Science" href="./process.html" title="Data Science">Data Science </a><a id="link_Data Visualization" href="./visualization.html" title="Data Visualization">Data Visualization</a></div></div><div id="page_transition" style="animation: 0.375s ease 0s 2 alternate none running page_transition, 0.375s ease 0s 2 alternate none running gradient;"><p>Don't Look! I'm changing!</p></div><div id="toast_container"><p>URL Copied</p></div><div id="header"><div id="header_bg_wrapper"><div id="header_bg"></div></div><h1><a href="./../index.html" id="Charles_Karp...968694">Charles Karpati</a> <span id="head_separator">| </span><a href="#title" id="title">Machine Learning</a></h1><p id="summary">Assorted notes on the topic. Near entirly quotes from other sources.</p></div><div class="controls_container"><div id="breadcrumbs" style="display: block;"><a href="/index.html" id="Home600478">Home</a>/<a href="./../datascience.html" id="Datascience395329">Datascience</a>/<a href="./ml.html" id="Ml401605">Ml</a></div><div><label for="lightmode" id="light"><input type="checkbox" id="lightmode" aria-label="lightmode"></label> <label for="expandmode" id="expand" style="display: none;"><input type="checkbox" id="expandmode" aria-label="expandmode"></label><p id="audio" title="undefined" style="display: none;"><span><audio controls="" controlslist="nodownload noplaybackrate" preload="none" loop="" src="undefined"></audio></span>Audio Version</p></div></div><div id="toc" style="display: block;"><a class="toc-link toc-link" href="#Introduction" title="Introduction" id="Introduction249328">Introduction</a><a class="toc-link toc-link" href="#Problem_Clas..." title="Problem Classes" id="Problem_Clas...539589">Problem Classes</a><a class="toc-link toc-link layer-2" href="#Regressionty..." title="Regression-type problems." id="RegressionTy...752861">Regression-Type Problems.</a><a class="toc-link toc-link layer-2" href="#Classificati..." title="Classification-type problems." id="Classificati...210245">Classification-Type Problems.</a><a class="toc-link toc-link layer-2" href="#TreeBased_So..." title="Tree-Based Solutions" id="TreeBased_So...392262">Tree-Based Solutions</a><a class="toc-link toc-link" href="#Model_Types_..." title="Model Types By Statistical Role" id="Model_Types_...504598">Model Types By Statistical Role</a><a class="toc-link toc-link layer-2" href="#Generative" title="Generative" id="Generative58483">Generative</a><a class="toc-link toc-link layer-2" href="#Discriminati..." title="Discriminative" id="Discriminati...789133">Discriminative</a><a class="toc-link toc-link layer-2" href="#Descriptive" title="Descriptive" id="Descriptive555363">Descriptive</a><a class="toc-link toc-link" href="#Learning_Mod..." title="Learning Model Paradigms" id="Learning_Mod...300372">Learning Model Paradigms</a><a class="toc-link toc-link layer-2" href="#Supervised" title="Supervised:" id="Supervised83640">Supervised:</a><a class="toc-link toc-link layer-2" href="#Unsupervised" title="Unsupervised" id="Unsupervised474724">Unsupervised</a><a class="toc-link toc-link layer-2" href="#Semisupervis..." title="Semi-supervised" id="SemiSupervis...66762">Semi-Supervised</a><a class="toc-link toc-link layer-2" href="#Selfsupervis..." title="Self-supervised" id="SelfSupervis...26097">Self-Supervised</a><a class="toc-link toc-link layer-2" href="#Reinforcemen..." title="Reinforcement learning" id="Reinforcemen...848386">Reinforcement Learning</a></div><div id="content"><details open=""><summary style="animation: 0.5s ease-in-out 0s 2 normal none running wiggle;"><h2 id="Introduction">Introduction</h2><a class="anchor" href="#Introduction" id="#Introduction" aria-label="Link to Introduction" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a></summary><p>A learning model is a parameterized function whose parameters are learned from data. When data is processed through a learning model it's outputs are often approximate relationships or make predictions.</p></details><details><summary style=""><h2 id="Problem_Clas...">Problem Classes</h2><a class="anchor" href="#Problem_Clas..." id="#Problem_Clas..." aria-label="Link to Problem_Clas..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a></summary><p>There are numerous algorithms for predicting continuous variables or categorical variables from a set of continuous predictors and/or categorical factor effects.</p><h3 id="Regressionty..." style="">Regression-type problems.</h3><a class="anchor" href="#Regressionty..." id="#Regressionty..." aria-label="Link to Regressionty..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><p>Regression-type problems are generally those where we attempt to predict the values of a continuous variable from one or more continuous and/or <a href="http://www.statsoft.com/textbook/statistics-glossary/c.aspx?button=c#Categorical%20Predictor" target="_blank" rel="nosopener noreferrer nofollow" id="405678">categorical predictor variables</a>.</p><h3 id="Classificati..." style="">Classification-type problems.</h3><a class="anchor" href="#Classificati..." id="#Classificati..." aria-label="Link to Classificati..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><ul><li><a href="https://en.wikipedia.org/wiki/Data_classification_(business_intelligence)" target="_blank" rel="nosopener noreferrer nofollow" id="15156">Data_classification</a></li></ul><p>Classification-type problems are generally those where we attempt to predict values of a categorical <a href="http://www.statsoft.com/textbook/statistics-glossary/i.aspx?button=i#Independent%20vs.%20Dependent%20Variables" target="_blank" rel="nosopener noreferrer nofollow" id="447172">dependent</a> variable (class, group membership, etc.) from one or more continuous and/or <a href="http://www.statsoft.com/textbook/statistics-glossary/c.aspx?button=c#Categorical%20Predictor" target="_blank" rel="nosopener noreferrer nofollow" id="345266">categorical predictor variables</a>. There are a number of methods for analyzing classification-type problems and to compute predicted classifications, either from simple continuous predictors (e.g., binomial or multinomial logit regression in <a href="http://www.statsoft.com/textbook/statistics-glossary/g.aspx?button=g#generalized%20Linear%20Model" target="_blank" rel="nosopener noreferrer nofollow" id="178864"><em>GLZ</em></a>), from categorical predictors (e.g., <a href="http://www.statsoft.com/textbook/statistics-glossary/l.aspx?button=l#Log-Linear%20Analysis" target="_blank" rel="nosopener noreferrer nofollow" id="974856"><em>Log-Linear analysis</em></a> of multi-way frequency tables), or both (e.g., via ANCOVA-like designs in <em>GLZ</em> or <em>GDA</em>).</p><h3 id="TreeBased_So..." style="">Tree-Based Solutions</h3><a class="anchor" href="#TreeBased_So..." id="#TreeBased_So..." aria-label="Link to TreeBased_So..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><p>Tree methods are nonparametric and nonlinear + Simplicity of results. -Specify Criteria for Predictive Accuracy, Selecting Splits, When to Stop Splitting.</p><br></details><details><summary style=""><h2 id="Model_Types_...">Model Types By Statistical Role</h2><a class="anchor" href="#Model_Types_..." id="#Model_Types_..." aria-label="Link to Model_Types_..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a></summary><h3 id="Generative" style="">Generative</h3><a class="anchor" href="#Generative" id="#Generative" aria-label="Link to Generative" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><ul><li>Gaussian Mixture Models</li><li>Hidden Markov Models</li><li>Naive Bayes</li><li>GANS (when parameterized accordingly)</li></ul><h3 id="Discriminati..." style="">Discriminative</h3><a class="anchor" href="#Discriminati..." id="#Discriminati..." aria-label="Link to Discriminati..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><ul><li>NN</li><li>SVM</li><li>Decision Trees</li><li>Logistic Regression</li></ul><h3 id="Descriptive" style="">Descriptive</h3><a class="anchor" href="#Descriptive" id="#Descriptive" aria-label="Link to Descriptive" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><ul><li>Clustering (k-means, DBSCAN)</li><li>Association rule mining</li><li>PCA or factor analysis</li></ul></details><details><summary style=""><h2 id="Learning_Mod...">Learning Model Paradigms</h2><a class="anchor" href="#Learning_Mod..." id="#Learning_Mod..." aria-label="Link to Learning_Mod..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a></summary><h3 id="Supervised" style="">Supervised:</h3><a class="anchor" href="#Supervised" id="#Supervised" aria-label="Link to Supervised" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><p>labeled inputs; regression and classification.</p><h3 id="Unsupervised" style="">Unsupervised</h3><a class="anchor" href="#Unsupervised" id="#Unsupervised" aria-label="Link to Unsupervised" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><p>latent structure; clustering, density estimation, manifold learning.</p><h3 id="Semisupervis..." style="">Semi-supervised</h3><a class="anchor" href="#Semisupervis..." id="#Semisupervis..." aria-label="Link to Semisupervis..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><p>joint usage of labeled + unlabeled samples.</p><h3 id="Selfsupervis..." style="">Self-supervised</h3><a class="anchor" href="#Selfsupervis..." id="#Selfsupervis..." aria-label="Link to Selfsupervis..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><p>surrogate labels from transformations; pretraining regimes.</p><h3 id="Reinforcemen..." style="">Reinforcement learning</h3><a class="anchor" href="#Reinforcemen..." id="#Reinforcemen..." aria-label="Link to Reinforcemen..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html'); w.toast?.();"></a><p>sequential decision processes maximizing cumulative reward.</p></details></div><div id="footer"><p id="thanks">Thank's for visiting! - <a href="./../legal.html" id="Terms_of_use428763">Terms of use</a></p><div id="footer_bg_wrapper"><div id="footer_bg"></div></div></div><script src="/build/index.57.464051e333ff0ba246ba.js"></script><script>function loadLazy() {
-    w.loadOnce || (
-      ( (document.head || d).appendChild(document.createElement("script")).src = origin + "/rsc/templates/article_lazy.js" )
-      && (w.loadOnce=true)
-    );
-  }
-
-  [
-    [["scroll", "mousedown", "touchstart"], w, loadLazy, { once: true }],
-  ].forEach((evt) =>
-    evt[0].forEach((type) =>
-      evt[1].addEventListener(type, evt[2], evt[3] || { passive: false })
-    )
-  );
-
-  // Intersection Observer for TOC line-through and Scroll-shaking
-  w.activeHeader = null;
-  w.observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => { 
-      let e = entry.target;
-      let txt = "0.5s ease-in-out 0s 2 normal none running wiggle";
-      let pos = e.getBoundingClientRect().top;
-      let el =
-        (e.parentNode?.nodeName == "SUMMARY" && e.parentNode.style) || e.style;
-      el.animation = txt;
-      if (!entry.isIntersecting) return (el.animation = "");
-      if (pos < 300 || pos > 300) { 
-        w.activeHeader && (
-          (w.activeHeader.style.textDecoration = "none"),
-          (w.activeHeader.style.animation = '')
-        ); // unset previous active TOC header
-        let tocLink = document.querySelector(`#toc-content a[href="#${e.id}"]`);
-        tocLink &&
-          ((tocLink.style.animation = txt),
-          (tocLink.style.textDecoration = "line-through"));
-        w.activeHeader = tocLink;
-      }
-    });
-  });
-  (w.loadObserver = (t) => {
-    document.querySelectorAll("h2,h3,h4").forEach((el) => observer.observe(el));
-  })();</script><style>/* The Container */
+.card a:hover {  color: #0056b3;}</style><style>/* The Container */
 body:has(#sitemap:focus-within) {
   /* Prevent drag-refresh */
   overscroll-behavior-y: contain;
@@ -699,4 +720,45 @@ body:has(#sitemap:focus-within) {
     transform: translate(0, 0);
     -webkit-transform: translate(0, 0);
   }
-}</style></body></html>
+}</style></head><body data-template="article"><input type="checkbox" id="toggle_sitemap" aria-label="sitemap"><div id="sitemap" style="visibility: visible;"><input type="checkbox" id="toggle_sitemap" class="nav-toggle"> <label tabindex="0" for="toggle_sitemap" class="nav-label"><span class="nav-arrow">⇨</span> Navigation <span class="nav-close">✕</span></label><hr><a id="link_Home" href="./../index.html" title="Home">Home</a><div id="sitemap-content"><h3 style="animation: 0.5s ease-in-out 0s 2 normal none running wiggle;"><a id="link_00_datascience" href="./../datascience.html" title="00_datascience">Datascience</a></h3><a id="link_Correlation" href="./clustering_association.html" title="Correlation">Correlation </a><a id="link_Testing" href="./distributions_and_regression_tests.html" title="Testing">Testing </a><a id="link_Geo-TimeSeries" href="./geospatial_timeseries.html" title="Geo-TimeSeries">Geo-Timeseries </a><a id="link_Linear Regressions" href="./linear_regressions.html" title="Linear Regressions">Linear Regressions </a><a id="link_Machine Learning" href="./ml.html" title="Machine Learning">Machine Learning </a><a id="link_Data Science" href="./process.html" title="Data Science">Data Science </a><a id="link_Data Visualization" href="./visualization.html" title="Data Visualization">Data Visualization</a></div></div><div id="page_transition" style="animation: 0.375s ease 0s 2 alternate none running page_transition, 0.375s ease 0s 2 alternate none running gradient;"><p>Don't Look! I'm changing!</p></div><div id="toast_container"><p>URL Copied</p></div><div id="header"><div id="header_bg_wrapper"><div id="header_bg"></div></div><h1><a href="./../index.html" id="Charles_Karp...736802">Charles Karpati</a> <span id="head_separator">| </span><a href="#title" id="title">Machine Learning</a></h1><p id="summary">Assorted notes on the topic. Near entirly quotes from other sources.</p></div><div class="controls_container"><div id="breadcrumbs" style="display: block;"><a href="/index.html" id="Home284147">Home</a>/<a href="./../datascience.html" id="Datascience330511">Datascience</a>/<a href="./ml.html" id="Ml716027">Ml</a></div><div><label for="lightmode" id="light"><input type="checkbox" id="lightmode" aria-label="lightmode"></label> <label for="expandmode" id="expand" style="display: none;"><input type="checkbox" id="expandmode" aria-label="expandmode"></label><p id="audio" title="undefined" style="display: none;"><span><audio controls="" controlslist="nodownload noplaybackrate" preload="none" loop="" src="undefined"></audio></span>Audio Version</p></div></div><div id="toc" style="display: block;"><a class="toc-link toc-link" href="/datascience/ml.html#Introduction" onclick="event.preventDefault(); redirect(event);" title="Introduction" id="Introduction624713">Introduction</a><a class="toc-link toc-link" href="/datascience/ml.html#Problem_Clas..." onclick="event.preventDefault(); redirect(event);" title="Problem Classes" id="Problem_Clas...897964">Problem Classes</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Regressionty..." onclick="event.preventDefault(); redirect(event);" title="Regression-type problems." id="RegressionTy...305861">Regression-Type Problems.</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Classificati..." onclick="event.preventDefault(); redirect(event);" title="Classification-type problems." id="Classificati...397246">Classification-Type Problems.</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#TreeBased_So..." onclick="event.preventDefault(); redirect(event);" title="Tree-Based Solutions" id="TreeBased_So...124190">Tree-Based Solutions</a><a class="toc-link toc-link" href="/datascience/ml.html#Model_Types_..." onclick="event.preventDefault(); redirect(event);" title="Model Types By Statistical Role" id="Model_Types_...329386">Model Types By Statistical Role</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Generative" onclick="event.preventDefault(); redirect(event);" title="Generative" id="Generative932829">Generative</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Discriminati..." onclick="event.preventDefault(); redirect(event);" title="Discriminative" id="Discriminati...616526">Discriminative</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Descriptive" onclick="event.preventDefault(); redirect(event);" title="Descriptive" id="Descriptive601962">Descriptive</a><a class="toc-link toc-link" href="/datascience/ml.html#Learning_Mod..." onclick="event.preventDefault(); redirect(event);" title="Learning Model Paradigms" id="Learning_Mod...842665">Learning Model Paradigms</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Supervised" onclick="event.preventDefault(); redirect(event);" title="Supervised:" id="Supervised322077">Supervised:</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Unsupervised" onclick="event.preventDefault(); redirect(event);" title="Unsupervised" id="Unsupervised693082">Unsupervised</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Semisupervis..." onclick="event.preventDefault(); redirect(event);" title="Semi-supervised" id="SemiSupervis...242211">Semi-Supervised</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Selfsupervis..." onclick="event.preventDefault(); redirect(event);" title="Self-supervised" id="SelfSupervis...483023">Self-Supervised</a><a class="toc-link toc-link layer-2" href="/datascience/ml.html#Reinforcemen..." onclick="event.preventDefault(); redirect(event);" title="Reinforcement learning" id="Reinforcemen...465124">Reinforcement Learning</a></div><div id="content"><details open=""><summary style="animation: 0.5s ease-in-out 0s 2 normal none running wiggle;"><h2 id="Introduction">Introduction</h2><a class="anchor" href="#Introduction" id="#Introduction" aria-label="Link to Introduction" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Introduction'); w.toast?.();"></a></summary><p>A learning model is a parameterized function whose parameters are learned from data. When data is processed through a learning model it's outputs are often approximate relationships or make predictions.</p></details><details><summary style=""><h2 id="Problem_Clas...">Problem Classes</h2><a class="anchor" href="#Problem_Clas..." id="#Problem_Clas..." aria-label="Link to Problem_Clas..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Problem_Clas...'); w.toast?.();"></a></summary><p>There are numerous algorithms for predicting continuous variables or categorical variables from a set of continuous predictors and/or categorical factor effects.</p><h3 id="Regressionty..." style="">Regression-type problems.</h3><a class="anchor" href="#Regressionty..." id="#Regressionty..." aria-label="Link to Regressionty..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Regressionty...'); w.toast?.();"></a><p>Regression-type problems are generally those where we attempt to predict the values of a continuous variable from one or more continuous and/or <a href="http://www.statsoft.com/textbook/statistics-glossary/c.aspx?button=c#Categorical%20Predictor" target="_blank" rel="nosopener noreferrer nofollow" id="16947">categorical predictor variables</a>.</p><h3 id="Classificati..." style="">Classification-type problems.</h3><a class="anchor" href="#Classificati..." id="#Classificati..." aria-label="Link to Classificati..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Classificati...'); w.toast?.();"></a><ul><li><a href="https://en.wikipedia.org/wiki/Data_classification_(business_intelligence)" target="_blank" rel="nosopener noreferrer nofollow" id="192040">Data_classification</a></li></ul><p>Classification-type problems are generally those where we attempt to predict values of a categorical <a href="http://www.statsoft.com/textbook/statistics-glossary/i.aspx?button=i#Independent%20vs.%20Dependent%20Variables" target="_blank" rel="nosopener noreferrer nofollow" id="452138">dependent</a> variable (class, group membership, etc.) from one or more continuous and/or <a href="http://www.statsoft.com/textbook/statistics-glossary/c.aspx?button=c#Categorical%20Predictor" target="_blank" rel="nosopener noreferrer nofollow" id="500611">categorical predictor variables</a>. There are a number of methods for analyzing classification-type problems and to compute predicted classifications, either from simple continuous predictors (e.g., binomial or multinomial logit regression in <a href="http://www.statsoft.com/textbook/statistics-glossary/g.aspx?button=g#generalized%20Linear%20Model" target="_blank" rel="nosopener noreferrer nofollow" id="809143"><em>GLZ</em></a>), from categorical predictors (e.g., <a href="http://www.statsoft.com/textbook/statistics-glossary/l.aspx?button=l#Log-Linear%20Analysis" target="_blank" rel="nosopener noreferrer nofollow" id="459273"><em>Log-Linear analysis</em></a> of multi-way frequency tables), or both (e.g., via ANCOVA-like designs in <em>GLZ</em> or <em>GDA</em>).</p><h3 id="TreeBased_So..." style="">Tree-Based Solutions</h3><a class="anchor" href="#TreeBased_So..." id="#TreeBased_So..." aria-label="Link to TreeBased_So..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#TreeBased_So...'); w.toast?.();"></a><p>Tree methods are nonparametric and nonlinear + Simplicity of results. -Specify Criteria for Predictive Accuracy, Selecting Splits, When to Stop Splitting.</p><br></details><details><summary style=""><h2 id="Model_Types_...">Model Types By Statistical Role</h2><a class="anchor" href="#Model_Types_..." id="#Model_Types_..." aria-label="Link to Model_Types_..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Model_Types_...'); w.toast?.();"></a></summary><h3 id="Generative" style="">Generative</h3><a class="anchor" href="#Generative" id="#Generative" aria-label="Link to Generative" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Generative'); w.toast?.();"></a><ul><li>Gaussian Mixture Models</li><li>Hidden Markov Models</li><li>Naive Bayes</li><li>GANS (when parameterized accordingly)</li></ul><h3 id="Discriminati..." style="">Discriminative</h3><a class="anchor" href="#Discriminati..." id="#Discriminati..." aria-label="Link to Discriminati..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Discriminati...'); w.toast?.();"></a><ul><li>NN</li><li>SVM</li><li>Decision Trees</li><li>Logistic Regression</li></ul><h3 id="Descriptive" style="">Descriptive</h3><a class="anchor" href="#Descriptive" id="#Descriptive" aria-label="Link to Descriptive" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Descriptive'); w.toast?.();"></a><ul><li>Clustering (k-means, DBSCAN)</li><li>Association rule mining</li><li>PCA or factor analysis</li></ul></details><details><summary style=""><h2 id="Learning_Mod...">Learning Model Paradigms</h2><a class="anchor" href="#Learning_Mod..." id="#Learning_Mod..." aria-label="Link to Learning_Mod..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Learning_Mod...'); w.toast?.();"></a></summary><h3 id="Supervised" style="">Supervised:</h3><a class="anchor" href="#Supervised" id="#Supervised" aria-label="Link to Supervised" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Supervised'); w.toast?.();"></a><p>labeled inputs; regression and classification.</p><h3 id="Unsupervised" style="">Unsupervised</h3><a class="anchor" href="#Unsupervised" id="#Unsupervised" aria-label="Link to Unsupervised" onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Unsupervised'); w.toast?.();"></a><p>latent structure; clustering, density estimation, manifold learning.</p><h3 id="Semisupervis..." style="">Semi-supervised</h3><a class="anchor" href="#Semisupervis..." id="#Semisupervis..." aria-label="Link to Semisupervis..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Semisupervis...'); w.toast?.();"></a><p>joint usage of labeled + unlabeled samples.</p><h3 id="Selfsupervis..." style="">Self-supervised</h3><a class="anchor" href="#Selfsupervis..." id="#Selfsupervis..." aria-label="Link to Selfsupervis..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Selfsupervis...'); w.toast?.();"></a><p>surrogate labels from transformations; pretraining regimes.</p><h3 id="Reinforcemen..." style="">Reinforcement learning</h3><a class="anchor" href="#Reinforcemen..." id="#Reinforcemen..." aria-label="Link to Reinforcemen..." onclick="event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com/datascience/ml.html#Reinforcemen...'); w.toast?.();"></a><p>sequential decision processes maximizing cumulative reward.</p></details></div><div id="footer"><p id="thanks">Thank's for visiting! - <a href="./../legal.html" id="Terms_of_use25659">Terms of use</a></p><div id="footer_bg_wrapper"><div id="footer_bg"></div></div></div><script src="/build/index.57.1aa9fb5d70f9018c8ada.js"></script><script>function loadLazy() {
+    w.loadOnce || (
+      ( (document.head || d).appendChild(document.createElement("script")).src = origin + "/rsc/templates/article_lazy.js" )
+      && (w.loadOnce=true)
+    );
+  }
+
+  [
+    [["scroll", "mousedown", "touchstart"], w, loadLazy, { once: true }],
+  ].forEach((evt) =>
+    evt[0].forEach((type) =>
+      evt[1].addEventListener(type, evt[2], evt[3] || { passive: false })
+    )
+  );
+
+  // Intersection Observer for TOC line-through and Scroll-shaking
+  w.activeHeader = null;
+  w.observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => { 
+      let e = entry.target;
+      let txt = "0.5s ease-in-out 0s 2 normal none running wiggle";
+      let pos = e.getBoundingClientRect().top;
+      let el =
+        (e.parentNode?.nodeName == "SUMMARY" && e.parentNode.style) || e.style;
+      el.animation = txt;
+      if (!entry.isIntersecting) return (el.animation = "");
+      if (pos < 300 || pos > 300) { 
+        w.activeHeader && (
+          (w.activeHeader.style.textDecoration = "none"),
+          (w.activeHeader.style.animation = '')
+        ); // unset previous active TOC header
+        let tocLink = document.querySelector(`#toc-content a[href="#${e.id}"]`);
+        tocLink &&
+          ((tocLink.style.animation = txt),
+          (tocLink.style.textDecoration = "line-through"));
+        w.activeHeader = tocLink;
+      }
+    });
+  });
+  (w.loadObserver = (t) => {
+    document.querySelectorAll("h2,h3,h4").forEach((el) => observer.observe(el));
+  })();</script></body></html>
