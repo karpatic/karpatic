@@ -35,7 +35,7 @@ KARPATIC
  
 ## DEV: Pre-Compile
 
-- Each .ipynb in the /ipynb directory becomes a template-ready [/posts/{dir}{file}.json] file.
+- Each .ipynb in the /ipynb directory becomes a template-ready [/rsc/posts/{dir}{file}.json] file.
 
 ## DEV: Webpack
 

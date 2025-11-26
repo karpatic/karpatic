@@ -11,11 +11,11 @@ import "./index.css";
 
 // Page Load Logic and Routing
 window.w = window;
-w.oldRoute = location.pathname;
-w.isLocal ||= !!!w.content;
-w.preRendering = /ReactSnap/.test(navigator.userAgent);
+w.oldRoute = location.pathname; // 
+w.isLocal ||= !!!w.content; // Used to not register worker, send pings, load json/ipynb
+w.preRendering = /ReactSnap/.test(navigator.userAgent); // Used to skip console logs cluttering prerenders terminal output.
 
-// Message for the sleuths
+// Message for the sleuths.
 w.preRendering ||
   (console.log(
     "%c Like what you see?",
@@ -54,6 +54,9 @@ w.redirect = async (event = false) => {
     ({ handleRoute: w.handleRoute, navEvent: w.navEvent } = await import(
       /* webpackChunkName: "route" */ "./utils/route.js"
     ));
+
+  // Update oldRoute to current pathname before routing
+  w.oldRoute = location.pathname;
 
   // User Clicked a Relative Link vs Browser Back/FWD vs Initial Load
   event?.type == "click" ? navEvent(event.target.href) : handleRoute();

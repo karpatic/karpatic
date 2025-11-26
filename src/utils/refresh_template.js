@@ -115,7 +115,12 @@ w.addEventListener(
 
     // Delay poptemplte iff refresh not for an anchor link so the page animation can run to it's midpoint.
     console.groupEnd();
-    createPage(!w.preRendering && location.href.indexOf("#") == -1);
+
+    let transitionable = !w.preRendering && location.href.indexOf("#") == -1 && w.page_transition;
+    let skip = w.meta.hide_transition?.toLowerCase() == "true";
+    let isInitialLoad = !w.oldRoute || w.oldRoute == location.pathname;  
+
+    createPage(transitionable && !skip && !isInitialLoad);
   },
   { passive: true }
 );
@@ -188,8 +193,7 @@ const createPage = async (transitionable = false) => {
   document.title = w.meta?.title;
 
   // Page Transition
-  let skip = w.meta.hide_transition?.toLowerCase() == "true";
-  if (transitionable && w.page_transition && !skip) {
+  if (transitionable ) {
     console.groupEnd();
     await animatePageTransition();
     return;
