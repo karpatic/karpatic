@@ -10,8 +10,9 @@ import "./index.css";
 //
 
 // Page Load Logic and Routing
-window.w = window;
-w.oldRoute = location.pathname; // 
+window.w = window; 
+w.oldRoute = location.pathname; //
+w.newRoute = location.pathname; //
 w.isLocal ||= !!!w.content; // Used to not register worker, send pings, load json/ipynb
 w.preRendering = /ReactSnap/.test(navigator.userAgent); // Used to skip console logs cluttering prerenders terminal output.
 
@@ -56,8 +57,14 @@ w.redirect = async (event = false) => {
     ));
 
   // Update oldRoute to current pathname before routing
-  w.oldRoute = location.pathname;
-
+  w.oldRoute = w.newRoute; 
+  if (eventType === 'click'){ 
+    w.newRoute = event?.target?.pathname || location.pathname;
+  }
+  if (eventType === 'popstate'){ 
+    w.newRoute = location.pathname;
+  }
+  console.log({ oldRoute: w.oldRoute, newRoute: w.newRoute });
   // User Clicked a Relative Link vs Browser Back/FWD vs Initial Load
   event?.type == "click" ? navEvent(event.target.href) : handleRoute();
   console.groupEnd();
@@ -66,13 +73,12 @@ addEventListener("popstate", redirect);
 
 // Removes then Reattaches redirects. Called on refresh template.
 w.setRedirectListeners = () => {
-  // console.log("INDEX:setRedirectListeners");
+  console.log("INDEX:setRedirectListeners");
   document
     .querySelectorAll('a[href^="./"]')
-    .forEach((l) =>
-      [l.removeEventListener, l.addEventListener].forEach((f) =>
-        f.call(l, "click", redirect)
-      )
-    );
+    .forEach((l) => {
+      l.removeEventListener("click", redirect);
+      l.addEventListener("click", redirect);
+    });
 };
 setRedirectListeners();

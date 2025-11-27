@@ -21,6 +21,8 @@ window.w = window;
 // todo - notes
 // details - summary
 
+
+// fires when user clicks a relative link.
 export const navEvent = async (push) => {
   console.group("Route: navEvent");
 
@@ -60,9 +62,12 @@ export const navEvent = async (push) => {
 };
 
 export const handleRoute = async () => {
-  console.group("Route: HandleRoute"); 
+  console.group("Route: HandleRoute");  
 
-  if (location.pathname.includes("undefined")) return;
+  if (w.newRoute.includes("undefined")){
+    console.log("Invalid pathname detected:", w.newRoute);
+    return;
+  }
 
   // Call Service Worker Once
   w.meta || (!isLocal && registerServiceWorker());
@@ -73,16 +78,16 @@ export const handleRoute = async () => {
 
   // Get Route. Set to index if root. Removes ./, ../ and any leading or trailing slashes caused by breadcrumbs.
   let route =
-    location.pathname == "/"
+    w.newRoute == "/"
       ? "index"
-      : location.pathname
+      : w.newRoute
           .replaceAll("./", "")
           .replaceAll("../", "")
           .replace(".html", "")
           .replace(/^\//, "").replace("build/", "")
           .replace(/\/$/, "");
 
-  // console.log("Route:", { route });
+  console.log("Route:", { route });
 
   // Create or Get Routes Metadata/ YAML
   let url =
@@ -127,7 +132,7 @@ export const handleRoute = async () => {
       console.log('Unable to get content');
       // No Json or Ipynb found. Reload the page.
       console.log("GET_CONTENT:ERROR", {
-        givenPath: location.pathname,
+        givenPath: w.newRoute,
         route: route,
       });
       if (location.hash != "#reload") {

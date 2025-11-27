@@ -118,7 +118,9 @@ w.addEventListener(
 
     let transitionable = !w.preRendering && location.href.indexOf("#") == -1 && w.page_transition;
     let skip = w.meta.hide_transition?.toLowerCase() == "true";
-    let isInitialLoad = !w.oldRoute || w.oldRoute == location.pathname;  
+    let isInitialLoad = w.oldRoute == w.newRoute;
+    console.log({ old: w.oldRoute, new: w.newRoute });
+    console.log("Template Load Transitionable:", { transitionable, skip, isInitialLoad });
 
     createPage(transitionable && !skip && !isInitialLoad);
   },
@@ -195,6 +197,7 @@ const createPage = async (transitionable = false) => {
   // Page Transition
   if (transitionable ) {
     console.groupEnd();
+    console.log('~~~~~~~~~~ Page Transition ~~~~~~~~~~');
     await animatePageTransition();
     return;
   }
@@ -260,6 +263,7 @@ const createPage = async (transitionable = false) => {
   });
 
   // Capture all relative links and attach ensure redirect event listeners are attached.
+  let isInitialLoad = w.oldRoute == w.newRoute;
   w.setRedirectListeners?.();
   console.groupEnd();
   return true;
@@ -395,7 +399,7 @@ const createSitemap = (toc = false) => {
     `}
     <div id='sitemap-content'>  
     ${(w.sitemap_content || []).map((x, i) => {
-      console.log("SITEMAP_ENTRY:", x);
+      // console.log("SITEMAP_ENTRY:", x);
       // First entry is an H3
       let tab = x.tab || x.filename; 
       let content = `
