@@ -108,11 +108,11 @@ const createPage = async (transitionable = false) => {
     w.breadcrumbs.style.display = hide_breadcrumbs ? "none" : "block";
     !hide_breadcrumbs && (meta.breadcrumbs = w.breadcrumbs.innerHTML = await createBreadcrumbs()); 
   }
-
+  
   // Create TOC and then maybe insert into Sitemap
   const hide_sitemap = w.meta.hide_sitemap?.toLowerCase() == "true" || !w.sitemap_content; 
   const hide_toc = w.meta.hide_toc?.toLowerCase() == "true";
-
+  
   // TOC
   let toc = !hide_toc && createToc(); 
   let tocNode = w["tocHere"] || w["toc"]; 
@@ -123,13 +123,13 @@ const createPage = async (transitionable = false) => {
   
   // Sitemap 
   if (w.sitemap) {
-    await prepareSitemap();  
+    hide_sitemap || await prepareSitemap();  
     w.sitemap.style.visibility = hide_sitemap ? "hidden" : "visible";
     w.sitemap.innerHTML = hide_sitemap ? "" : createSitemap(!tocNode && toc);
     document.getElementById("toggle_sitemap").checked = true;
   } 
 
-  // Expand All Button
+  // Expand All Button 
   w.expand &&
     (w.expand.style.display =
       document.getElementsByTagName("aside").length > 0 ? "block" : "none");
@@ -219,6 +219,7 @@ const prepareSitemap = async () => {
       }); 
   
   w.sitemap_content =  [...localContent, ...filteredRemote]; 
+  return w.sitemap_content;
 };
  
 
@@ -335,7 +336,7 @@ const createToc = () => {
 
 // Generates sitemap using w.sitemap_content and may also include the TOC if the HTML given
 const createSitemap = (toc = false) => {
-  console.group("createSitemap");
+  console.group("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!createSitemap");
   const sitemap = `
     <input type="checkbox" id="toggle_sitemap" class="nav-toggle" />
     <label tabindex="0" for="toggle_sitemap" class="nav-label">

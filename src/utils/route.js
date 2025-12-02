@@ -16,7 +16,6 @@ window.w = window;
 // imports refresh_template.js, 
 // dispatches load_template event
 
-
 export const navEvent = async (push) => {
   console.group("Route: navEvent");
 
@@ -97,7 +96,7 @@ export const handleRoute = async () => {
             );
             return x;
           })()
-        ).nb2json(url, true));
+        ).nb2json(url, false));
   } catch (err) {
     try{ 
       console.log('Get Failed. Trying to get content from CMS.');
