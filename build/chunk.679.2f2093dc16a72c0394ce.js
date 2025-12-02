@@ -1,0 +1,1 @@
+"use strict";(self["webpackChunkkarpatic"]=self["webpackChunkkarpatic"]||[]).push([[679],{4679:function(e,a,p){e.exports=p.p+"header.json"}}]);

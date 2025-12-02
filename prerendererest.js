@@ -34,15 +34,15 @@ const defaultOptions = {
   source: "/",
   entry: ["/index.html"],
   replaceEntryWPrerender: true,
-  clearEntries: false, // NEW: remove original entry files before starting (forces SPA fallback)
+  clearEntries: false, // RM entry file forcing use of spa fallback on it. Not really needed as wp rebuilds the page.
   destination: "./docs", 
-  spa: "404.html",
-  userAgent: "Prerendererest",
+  spa: "404.html", // fallback page used if file not found.
+  userAgent: "Prerendererest", // source can use this to detect prerenderer env.
   headless: false,
   puppeteerArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
   puppeteer: { cache: false },
   minifyHtml: {
-    collapseWhitespace: true,
+    collapseWhitespace: true, 
     removeComments: true
   },
   viewport: { width: 480, height: 850 },
@@ -53,7 +53,7 @@ const defaultOptions = {
   preloadImages: false,
   asyncScriptTags: false,
   removeScriptTags: false,
-  skipExistingCheck: true,
+  skipExistingCheck: true, // false to prevent double rendering.
   keepPagesOpen: true,
 };
 

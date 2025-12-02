@@ -85,9 +85,7 @@ export const handleRoute = async () => {
           .replaceAll("../", "")
           .replace(".html", "")
           .replace(/^\//, "").replace("build/", "")
-          .replace(/\/$/, "");
-
-  console.log("Route:", { route });
+          .replace(/\/$/, ""); 
 
   // Create or Get Routes Metadata/ YAML
   let url =

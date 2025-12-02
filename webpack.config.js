@@ -11,7 +11,7 @@ const HTMLInlineCSSWebpackPlugin =
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
-const rmlogs = true; 
+const rmlogs = false; 
 // auto-generate a PWA manifest + assets using webpack.config + a header.json file that you can copy to src/ for future deploys.
 // add '_projectname' to each generated asset and header.js will inject the manifest tag contingently.
 const hr = require("./rsc/header.json");

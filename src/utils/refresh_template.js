@@ -1,3 +1,5 @@
+import { create } from "handlebars";
+
 window.w = window;
 
 // Description. Loads from route.js if window.toast dne.
@@ -90,7 +92,7 @@ w.addEventListener(
         // Add Basic Stylesheet ;
         // console.log("Insert css");
         document.body.insertAdjacentHTML(
-          "beforeend",
+          "beforeend",***********************************************************************
           `<style>${await (await fetch(`${url}.css`)).text()}</style>`
         );
 
@@ -118,11 +120,11 @@ w.addEventListener(
 
     let transitionable = !w.preRendering && location.href.indexOf("#") == -1 && w.page_transition;
     let skip = w.meta.hide_transition?.toLowerCase() == "true";
-    let isInitialLoad = w.oldRoute == w.newRoute;
-    console.log({ old: w.oldRoute, new: w.newRoute });
-    console.log("Template Load Transitionable:", { transitionable, skip, isInitialLoad });
-
-    createPage(transitionable && !skip && !isInitialLoad);
+    console.log({ transitionable: !!transitionable, skip });
+    // createPage(transitionable && !skip);
+    // createPage( !!transitionable );
+    console.log('Calling createPage from load_template');
+    createPage( true );
   },
   { passive: true }
 );
@@ -195,9 +197,9 @@ const createPage = async (transitionable = false) => {
   document.title = w.meta?.title;
 
   // Page Transition
-  if (transitionable ) {
-    console.groupEnd();
-    console.log('~~~~~~~~~~ Page Transition ~~~~~~~~~~');
+  if ( transitionable && !w.preRendering) {
+    console.log('Transitionable Page - Skipping populateTemplate until animation midpoint.');
+    console.groupEnd(); 
     await animatePageTransition();
     return;
   }
@@ -263,8 +265,15 @@ const createPage = async (transitionable = false) => {
   });
 
   // Capture all relative links and attach ensure redirect event listeners are attached.
+  // todo - a whole bag of confusing in this one. either sitemap or rel links work but not both.
+  let isLocalDev = !w.preRendering && w.isLocal; 
   let isInitialLoad = w.oldRoute == w.newRoute;
-  w.setRedirectListeners?.();
+  if( isLocalDev ){  
+      w.setRedirectListeners();
+  }
+  else{ 
+    w.setRedirectListeners();
+  } 
   console.groupEnd();
   return true;
 };
@@ -272,6 +281,7 @@ const createPage = async (transitionable = false) => {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 const animatePageTransition = async () => {
+  console.log("animatePageTransition");
   const pageT = w.page_transition;
   pageT.style.animation =
     "page_transition 0.375s alternate 2, gradient 0.375s alternate 2";

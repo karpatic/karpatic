@@ -14,7 +14,7 @@ window.w = window;
 w.oldRoute = location.pathname; //
 w.newRoute = location.pathname; //
 w.isLocal ||= !!!w.content; // Used to not register worker, send pings, load json/ipynb
-w.preRendering = /ReactSnap/.test(navigator.userAgent); // Used to skip console logs cluttering prerenders terminal output.
+w.preRendering = /Prerendererest/.test(navigator.userAgent); // Used to skip console logs cluttering prerenders terminal output.
 
 // Message for the sleuths.
 w.preRendering ||
@@ -64,7 +64,7 @@ w.redirect = async (event = false) => {
   if (eventType === 'popstate'){ 
     w.newRoute = location.pathname;
   }
-  console.log({ oldRoute: w.oldRoute, newRoute: w.newRoute });
+  console.log({ same: w.oldRoute == w.newRoute, oldRoute: w.oldRoute, newRoute: w.newRoute });
   // User Clicked a Relative Link vs Browser Back/FWD vs Initial Load
   event?.type == "click" ? navEvent(event.target.href) : handleRoute();
   console.groupEnd();
@@ -73,7 +73,7 @@ addEventListener("popstate", redirect);
 
 // Removes then Reattaches redirects. Called on refresh template.
 w.setRedirectListeners = () => {
-  console.log("INDEX:setRedirectListeners");
+  console.log("INDEX:setRedirectListeners"); 
   document
     .querySelectorAll('a[href^="./"]')
     .forEach((l) => {
