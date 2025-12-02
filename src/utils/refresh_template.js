@@ -78,7 +78,7 @@ const loadTemplate = async () => {
 
 w.addEventListener( "load_template", loadTemplate, { passive: true } );
 
-// AnimatePageTransition, populate template, createBreadcrumbs, createToc, PrepareSitemap, createSitemap 
+// AnimatePageTransition, populate template, createBreadcrumbs, createToc, PrepareSitemap, createSitemp 
 const createPage = async (transitionable = false) => { 
   console.group("refresh_template:populateTemplate"); 
 
@@ -100,8 +100,8 @@ const createPage = async (transitionable = false) => {
     el.innerHTML = "";
     el.appendChild(document.createRange().createContextualFragment(meta[id]));
   });  
-
-
+  
+  
   // Breadcrumbs
   if( w.breadcrumbs ){
     const hide_breadcrumbs = w.meta.hide_breadcrumbs?.toLowerCase() == "true"; 
@@ -123,17 +123,15 @@ const createPage = async (transitionable = false) => {
   
   // Sitemap 
   if (w.sitemap) {
-    hide_sitemap || await prepareSitemap();  
+    await prepareSitemap(); 
     w.sitemap.style.visibility = hide_sitemap ? "hidden" : "visible";
     w.sitemap.innerHTML = hide_sitemap ? "" : createSitemap(!tocNode && toc);
     document.getElementById("toggle_sitemap").checked = true;
   } 
-
+  
   // Expand All Button 
-  w.expand &&
-    (w.expand.style.display =
-      document.getElementsByTagName("aside").length > 0 ? "block" : "none");
-
+  w.expand && (w.expand.style.display = document.getElementsByTagName("aside").length > 0 ? "block" : "none");
+  
   // Play Audio Button
   if (w.audio) {
     w.audio.style.display = w.meta.audio ? "flex" : "none";
@@ -336,7 +334,7 @@ const createToc = () => {
 
 // Generates sitemap using w.sitemap_content and may also include the TOC if the HTML given
 const createSitemap = (toc = false) => {
-  console.group("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!createSitemap");
+  console.group("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!createSitemp");
   const sitemap = `
     <input type="checkbox" id="toggle_sitemap" class="nav-toggle" />
     <label tabindex="0" for="toggle_sitemap" class="nav-label">
@@ -393,3 +391,7 @@ w.toast = () => {
 
 // todo: open the toast notification for more than copied links.
 // import { create } from "handlebars";
+// todo hide_sitemap should not need to use w.sitemap_content in logic because that is obtained in prepareSitemap.
+// maybe if not hide_sitemap then prepareSitemap and set w.sitemap_content there to then be checked for continuing.
+
+// the path handlers need updating to use ./docs/ for prod and ./ paths in dev. 
