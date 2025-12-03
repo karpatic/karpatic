@@ -14,7 +14,8 @@ window.w = window;
 // Registers service worker, 
 // updates window.meta from path using nb2json (local) / JSON fetch (prod) / CMS fallback, 
 // imports refresh_template.js, 
-// dispatches load_template event
+// dispatches refresh event
+
 
 export const navEvent = async (push) => {
   console.group("Route: navEvent");
@@ -130,10 +131,10 @@ export const handleRoute = async () => {
   w.meta = content.meta;
   meta.content = content.content;
 
-  // Dispatch load_template event (listeners in refresh_template.js populate w.newTemplate & update TOC)
-  console.log("Dispatching load_template");
+  // Dispatch refresh event (listeners in refresh_template.js populate w.newTemplate & update TOC)
+  console.log("Dispatching refresh");
   console.groupEnd();
-  w.dispatchEvent(new CustomEvent("load_template"));
+  w.dispatchEvent(new CustomEvent("refresh"));
 };
 
 const registerServiceWorker = async () => {

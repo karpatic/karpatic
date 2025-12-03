@@ -59,7 +59,7 @@ route.handleRoute:
 - Registers service worker, 
 - updates window.meta from path using nb2json (local) / JSON fetch (prod) / CMS fallback, 
 - imports refresh_template.js, 
-- dispatches load_template event
+- dispatches refresh event
 
 refresh_template REQUIREMENTS: 
 - w.meta{title, summary, filename, content, template} -> #title, #summary, #content 
@@ -107,7 +107,7 @@ Webpack compiles the client as so:
 
 - Router.js
 - - Updates updates window.meta
-- - Dispatches 'refreshTemplate' which triggers [load_template] 
+- - Dispatches 'refreshTemplate' which triggers [refresh] 
 
 - Refresh_template.js
 - - injects template content and conditionally refreshes sitemap/TOC
@@ -115,9 +115,9 @@ Webpack compiles the client as so:
 ## Usage Instructions 
 
 - Router.js 
-- - Dispatches 'refreshTemplate' which triggers [load_template] 
+- - Dispatches 'refreshTemplate' which triggers [refresh] 
 
-- w.addEventListener( "load_template", () => {} )
+- w.addEventListener( "refresh", () => {} )
 - - document.title
 - - w[meta][template] ||= "article"
 - - getAttribute("data-template")
