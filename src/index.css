@@ -125,6 +125,9 @@ p {
 li p{
   margin-block: 0em; 
 }
+li a {
+  margin-left: 4px;
+}
 pre {
   max-width: calc(var(--max-width) - 70px);
   background: rgb(var(--background));

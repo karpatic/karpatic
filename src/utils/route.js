@@ -26,6 +26,7 @@ export const navEvent = async (push) => {
   const hasHash = href.indexOf("#") !== -1;
   const isAnchorOnly = hrefBase === currentBase && hasHash;
   const targetEl = hasHash ? document.getElementById(hrefFragment) : null;
+  const currentHash = (location.hash || "").replace("#", "");
 
   const openParentDetails = (el) => {
     let ancestor = el;
@@ -37,10 +38,31 @@ export const navEvent = async (push) => {
     }
   };
 
-  // Reload page and update history if not anchor-only navigation
-  if (!isAnchorOnly && hrefBase != w.href?.split("#")[0])
-    await handleRoute(), (w.href = href);
-  !isAnchorOnly && history.pushState({}, "", push);
+  // Decide if base route changes (non-anchor) and avoid duplicate pushes
+  const baseChanged = !isAnchorOnly && hrefBase !== currentBase;
+
+  // Only route when base actually changes
+  if (baseChanged && hrefBase !== w.href?.split("#")[0]) {
+    await handleRoute();
+    w.href = href;
+  }
+
+  // Update browser history carefully to avoid duplicates
+  if (baseChanged) {
+    // Skip pushing if last pushed base equals the incoming base
+    if (w.lastPushedBase !== hrefBase) {
+      history.pushState({}, "", push);
+      w.lastPushedBase = hrefBase;
+    }
+  } else if (isAnchorOnly) {
+    // For anchor-only navigation, replace instead of push to avoid history spam
+    if (hrefFragment && currentHash !== hrefFragment) {
+      history.replaceState({}, "", href);
+      location.hash = hrefFragment;
+      w.href = href; // keep internal href tracker in sync for subsequent checks
+    }
+    // If hash is identical, do not push/replace
+  }
 
   // Open parent details elements and scroll to target or top
   setTimeout(() => {
@@ -102,7 +124,6 @@ export const handleRoute = async () => {
     try{ 
       console.log('Get Failed. Trying to get content from CMS.');
       let txt = route.split('/').pop(); // Title from last route segment
-      // TODO: read in yaml from markdown.
       // Transform route to CMS path format (e.g., 'blog/post' -> 'Blog_Post')
       let path = route.split('/').map(segment => segment.charAt(0).toUpperCase() + segment.slice(1)).join('_');
       let tryThisUrl = 'https://getfrom.net/cms/notes/' + path; 

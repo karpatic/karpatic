@@ -37,4 +37,4 @@ webdev:
 	node ./../ipynb2web/src/cli.js webdev ./rsc/posts/ ./ipynb/ '' './rsc/posts/assets'
 
 sitemap:
-	node ./../ipynb2web/src/cli.js sitemap '' './rsc/posts/' './ipynb' 'docs/' 
+	node ./../ipynb2web/src/cli.js sitemap '' './rsc/posts/sitemap.txt' './ipynb' 'docs/' 

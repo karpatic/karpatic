@@ -48,37 +48,39 @@ const refresh = async () => {
   await updateBreadcrumbs();
   await updateUtilityButtons();
 
-  // Prepare TOC
+  // Prepare TOC. Uses #tocHere 1st, #toc 2nd. 
   const hide_toc = w.meta.hide_toc?.toLowerCase() == "true";
-  let tocNode = w["tocHere"] || w["toc"];
-  if(tocNode) {
-    if(!hide_toc){
-      tocNode.style.display = "block";
-      tocNode.innerHTML = await buildToc();
-    }
-    else{
-      tocNode.style.display ="none";
-    }
-  }
+  let toc = !hide_toc && await buildToc();  
+  let tocNode = w["tocHere"] || w["toc"]; 
+  if(tocNode) tocNode.style.display = toc ? "block" : "none";
+  if(tocNode) tocNode.innerHTML = toc || "";
 
   // Prepare Sitemap
   const hide_sitemap = !w.sitemap || w.meta.hide_sitemap?.toLowerCase() == "true"; 
   w.sitemap.style.visibility = hide_sitemap ? "hidden" : "visible";
   w.sitemap.innerHTML = hide_sitemap ? "" : await createSitemap();
 
-  // Inseert TOC -> Inserts into Sitemap if # 
-  if (tocNode && !hide_toc) {
-      
-    tocNode.style.display = hide_toc ? "none" : "block";
-    if (!hide_sitemap && !hide_toc) tocNode.innerHTML = toc;
-  }
-
+  // Insert TOC -> Inserts into Sitemap if 
+  if (!hide_sitemap && !tocNode && toc) w['nav-toc'].innerHTML = `
+    <input type="checkbox" id="toggle_toc" class="toc-toggle" />
+    <label class="toc-label" for="toggle_toc">
+      Table of Contents → 
+    </label>
+    <label class="toc-label-back" for="toggle_toc">
+      ← Back to Navigation
+    </label>
+    <div id='toc-content'> 
+      <h3>Table of Contents</h3>
+      ${toc} 
+    </div>
+  `;
+  
   // inject into sitemap if !tocNode but also !hide_toc.
  
   // Things w Side Effects done very last. 
   await forceReloadScripts(); 
   w.setRedirectListeners?.();
-  loadObserver?.(); 
+  w.loadObserver?.(); 
   console.groupEnd(); 
 };
 
@@ -105,13 +107,15 @@ const fetchAndInjectTemplate = async () => {
 // Forceload scripts. Moves main.js to footer.
 const forceReloadScripts = async () => { 
   Array.from(document.getElementsByTagName("script")).forEach(
-    (script) => {
+    (script) => { 
       const newScript = document.createElement("script");
       ["src", "type", "async", "textContent"].forEach(
         (attr) => script[attr] && (newScript[attr] = script[attr])
-      );
-      document.body.appendChild(newScript);
-      script.parentNode.removeChild(script);
+      ); 
+      script.parentNode.removeChild(script); 
+      try{
+      document.body.appendChild(newScript); 
+      }catch(e){console.log("FORCERELOADSCRIPTS ERROR:", e)}
     }
   ); 
 };
@@ -129,6 +133,25 @@ const populateTemplateElements = async () => {
   });
 };
 
+// Runs page transition animation and resolves at midpoint (≈450ms)
+// Animation runs twice (alternate 2) at 375ms each = 750ms total
+const animatePageTransition = async () => {
+  const transitionable = !w.preRendering && location.href.indexOf("#") == -1 && w.page_transition;
+  const skipTransition = w.meta.hide_transition?.toLowerCase() == "true";
+  if(!transitionable | skipTransition ) return;
+  console.log("animatePageTransition");
+  const pageT = w.page_transition;
+  pageT.style.animation =
+    "page_transition 0.375s alternate 2, gradient 0.375s alternate 2";
+  pageT.addEventListener(
+    "animationend",
+    async () => (pageT.style.animation = "none"),
+    { once: true }
+  );
+  // Wait until the midpoint before returning
+  await new Promise((resolve) => setTimeout(resolve, 450));
+};
+
 const updateBreadcrumbs = async () => {
   if (!w.breadcrumbs) return;
   const hide = w.meta.hide_breadcrumbs?.toLowerCase() == "true";
@@ -136,24 +159,32 @@ const updateBreadcrumbs = async () => {
   if (!hide) meta.breadcrumbs = w.breadcrumbs.innerHTML = await createBreadcrumbs();
 };
 
-const buildToc = async () => {
-  console.group("buildToc");
+// Generates breadcrumb navigation from current URL path
+// Example: /notes/mypage.html -> /Home, /Notes, /Notes/Mypage
+const createBreadcrumbs = async () => { 
+  const parts = location.pathname.split("/").filter(Boolean).map(p => p.replace(".html", ""));
+  const depth = parts.length; // e.g., ["blog","aboutmysite"] => depth 2
+  const sm = parts[0] || "index";
 
-  await getTocContent();
+  const homeHref = depth > 1 ? "./../index.html" : "./index.html";
 
-  // Build TOC HTML
-  const toc = headings
-    .map(({ id, text, level }) => {
-      const depth = level - 1;
-      const layer = depth > 1 ? ` layer-${depth}` : "";
-      return `<a class='toc-link toc-link${layer}' href='${location.pathname.split("#")[0]}#${id}' 
-    onclick="event.preventDefault(); redirect(event);" title="${text}">${displayLink(text)}</a>`;
+  const trail = parts
+    .map((x, i) => {
+      if (!x || x === "index") return "";
+      // Section level (first segment): ../<section>.html when deeper than section
+      if (i === 0) {
+        const href = depth > 1 ? `./../${sm}.html` : `./${sm}.html`;
+        return `<a href="${href}">${capitalize(x)}</a>`;
+      }
+      // Current page or deeper segment: ./<name>.html
+      return `<a href="./${x}.html">${capitalize(x)}</a>`;
     })
-    .join("");
+    .filter(Boolean)
+    .join("/");
 
-  console.groupEnd();
-  return toc;
+  return [`<a href="${homeHref}">Home</a>`, trail].filter(Boolean).join("/");
 };
+
 
 // Finds all h2, h3, h4 headers and adds anchor links for deep linking
 // Anchor links copy the full URL to clipboard when clicked and show a toast notification
@@ -198,8 +229,39 @@ const getTocContent = async () => {
 
   return headers
 }; 
- 
 
+const buildToc = async () => {
+  console.group("buildToc");
+
+  const headings = await getTocContent();
+
+  // Build TOC HTML
+  const toc = headings
+    .map(({ id, text, level }) => {
+      const depth = level - 1;
+      const layer = depth > 1 ? ` layer-${depth}` : "";
+      return `<a class='toc-link toc-link${layer}' href='${location.pathname.split("#")[0]}#${id}' 
+    onclick="event.preventDefault(); redirect(event);" title="${text}">${displayLink(text)}</a>`;
+    })
+    .join("");
+
+  console.groupEnd();
+  return toc;
+};
+
+// Shows 'Link Copied' notification via CSS animation
+w.toast = () => {
+  let e = document.getElementById("toast_container");
+  e.style.animation = "toast 3s";
+  e.addEventListener(
+    "animationend",
+    () => {
+      e.style.animation = "none";
+    },
+    { once: true }
+  );
+};
+ 
 const updateUtilityButtons = async () => {
   if (w.expand) {
     w.expand.style.display = document.getElementsByTagName("aside").length > 0 ? "block" : "none";
@@ -210,10 +272,8 @@ const updateUtilityButtons = async () => {
     const nested = w.audio.querySelector("audio");
     if (nested) nested.src = w.meta.audio;
   }
-}; 
+};  
  
-
-
 
 // Load sitemap css, and merges local JSON sitemap with remote CMS data
 const getSitemapInfo = async () => {
@@ -270,49 +330,9 @@ const getSitemapInfo = async () => {
 };
  
 
-// Runs page transition animation and resolves at midpoint (≈450ms)
-// Animation runs twice (alternate 2) at 375ms each = 750ms total
-const animatePageTransition = async () => {
-  const transitionable = !w.preRendering && location.href.indexOf("#") == -1 && w.page_transition;
-  const skipTransition = w.meta.hide_transition?.toLowerCase() == "true";
-  if(!transitionable | skipTransition ) return;
-  console.log("animatePageTransition");
-  const pageT = w.page_transition;
-  pageT.style.animation =
-    "page_transition 0.375s alternate 2, gradient 0.375s alternate 2";
-  pageT.addEventListener(
-    "animationend",
-    async () => (pageT.style.animation = "none"),
-    { once: true }
-  );
-  // Wait until the midpoint before returning
-  await new Promise((resolve) => setTimeout(resolve, 450));
-};
-
-// Generates breadcrumb navigation from current URL path
-// Example: /notes/mypage.html -> Home / Notes / Mypage
-const createBreadcrumbs = async () => { 
-  return [
-    `<a href="/index.html">Home</a>`,
-    location.pathname
-      .split("/")
-      .slice(1)
-      .map((x, i) => {
-        x = x.replace(".html", "");
-        return x == "index"
-          ? ""
-          : `<a href=${create_url(x, w.sm_name)}.html>${capitalize(
-              x.replace(".html", "")
-            )}</a>`;
-      })
-      .join("/"),
-  ].join("/");
-}; 
- 
-
 // Generates sitemap using w.sitemap_content and may also include the TOC if the HTML given
 const createSitemap = async () => {
-  console.group("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!createSitemp");
+  console.group("createSitemap");
   await getSitemapInfo()
   const sitemap = `
     <input type="checkbox" id="toggle_sitemap" class="nav-toggle" />
@@ -322,19 +342,7 @@ const createSitemap = async () => {
     </label>
     <hr/>
     <a id="link_Home" href="./../index.html" title="Home">Home</a>
-    ${(!toc) ? "" : `
-    <input type="checkbox" id="toggle_toc" class="toc-toggle" />
-    <label class="toc-label" for="toggle_toc">
-      Table of Contents → 
-    </label>
-    <label class="toc-label-back" for="toggle_toc">
-      ← Back to Navigation
-    </label>
-    <div id='toc-content'> 
-      <h3>Table of Contents</h3>
-      ${toc} 
-    </div>
-    `}
+    <div id="nav-toc"></div>
     <div id='sitemap-content'>  
     ${(w.sitemap_content || []).map((x, i) => {
       // First entry (i===0) is wrapped in h3 tag for section heading
@@ -346,27 +354,12 @@ const createSitemap = async () => {
             ${shorten(displayLink(tab), 20)}
         </a>`; 
         return i === 0 ? `<h3>${content}</h3>` : content;
-  }).join("")}
-  
+  }).join("")} 
     </div>`;
-  console.groupEnd();
+  console.groupEnd(); 
   return sitemap;
 };
- 
-
-// Shows 'Link Copied' notification via CSS animation
-w.toast = () => {
-  let e = document.getElementById("toast_container");
-  e.style.animation = "toast 3s";
-  e.addEventListener(
-    "animationend",
-    () => {
-      e.style.animation = "none";
-    },
-    { once: true }
-  );
-};
-
+// TODO: read in yaml from markdown.
 
 // todo: make toast notification for more than just copied links.
 // import { create } from "handlebars";
