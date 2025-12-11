@@ -10,7 +10,7 @@ window.w = window;
 // Gets the sitemap name from the first path segment:
 // index.html -> "index" || /notes/ -> "notes" ||  /notes/uniquepage.html -> "notes" || /notes/2021/01/01/index.html -> "notes"
 
-const getsmname = () => location.pathname.split("/")[1].replace(".html", "") || "index";
+const getsmname = () => location.pathname.replace('/docs/','/').split("/")[1].replace(".html", "") || "index";
 const shorten = (str, len = 12) => str?.trim().slice(0, len) + (str?.length > len + 1 ? "..." : "");
 const capitalize = (str) => str?.replace(/\b\w/g, (c) => c.toUpperCase());
 const formatLink = (str) => shorten(capitalize(str?.replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "")));
@@ -49,6 +49,7 @@ const refresh = async () => {
   await updateUtilityButtons();
 
   // Prepare TOC. Uses #tocHere 1st, #toc 2nd. 
+  // w.sitemap.innerHTML = ""; // Clear sitemap to prepare for rebuild
   const hide_toc = w.meta.hide_toc?.toLowerCase() == "true";
   let toc = !hide_toc && await buildToc();  
   let tocNode = w["tocHere"] || w["toc"]; 
@@ -59,6 +60,11 @@ const refresh = async () => {
   const hide_sitemap = !w.sitemap || w.meta.hide_sitemap?.toLowerCase() == "true"; 
   w.sitemap.style.visibility = hide_sitemap ? "hidden" : "visible";
   w.sitemap.innerHTML = hide_sitemap ? "" : await createSitemap();
+  // Simple initial state: default closed; open if collapse_sitemap === false
+  if (!hide_sitemap) {
+    const toggle = document.getElementById("toggle_sitemap");
+    if (toggle) toggle.checked = w.meta?.collapse_sitemap == 'false';
+  }
 
   // Insert TOC -> Inserts into Sitemap if 
   if (!hide_sitemap && !tocNode && toc) w['nav-toc'].innerHTML = `
@@ -76,11 +82,14 @@ const refresh = async () => {
   `;
   
   // inject into sitemap if !tocNode but also !hide_toc.
- 
   // Things w Side Effects done very last. 
-  await forceReloadScripts(); 
-  w.setRedirectListeners?.();
+  await forceReloadScripts();  
   w.loadObserver?.(); 
+  // Kinda botched. Timeout is length of sitemap transition + small buffer so it doesnt trigger.
+  setTimeout(() => { 
+    document.body.style.setProperty('--loaded', 'true'); 
+    document.body.dataset.loaded = "true";
+  }, 900);
   console.groupEnd(); 
 };
 
@@ -166,14 +175,14 @@ const createBreadcrumbs = async () => {
   const depth = parts.length; // e.g., ["blog","aboutmysite"] => depth 2
   const sm = parts[0] || "index";
 
-  const homeHref = depth > 1 ? "./../index.html" : "./index.html";
+  const homeHref = depth > 1 ? "./../../index.html" : "./index.html";
 
   const trail = parts
     .map((x, i) => {
       if (!x || x === "index") return "";
       // Section level (first segment): ../<section>.html when deeper than section
       if (i === 0) {
-        const href = depth > 1 ? `./../${sm}.html` : `./${sm}.html`;
+        const href = depth > 1 ? `./../../${sm}.html` : `./${sm}.html`;
         return `<a href="${href}">${capitalize(x)}</a>`;
       }
       // Current page or deeper segment: ./<name>.html
@@ -191,6 +200,8 @@ const createBreadcrumbs = async () => {
 // Returns array of heading data: [{id, text, level}, ...]
 const getTocContent = async () => {
   let headers = [...document.querySelectorAll("h2, h3, h4")];
+  console.log("getTocContent: Found headers:", headers);
+  headers = headers.filter((h) => !h.closest("#sitemap") && !h.closest(".sitemap"));
   headers = headers
     .map((header) => {
       const text = (header.innerText || header.textContent || "").trim();
@@ -277,6 +288,7 @@ const updateUtilityButtons = async () => {
 
 // Load sitemap css, and merges local JSON sitemap with remote CMS data
 const getSitemapInfo = async () => {
+  console.log('getSitemapInfo');
   let sm = getsmname(); 
   const cont = w.sitemap && w.meta.hide_sitemap?.toLowerCase() != "true";
   if (cont) { 
@@ -292,10 +304,13 @@ const getSitemapInfo = async () => {
   else{ return }
   w.sm_name = sm; 
   
+  console.log('fetching sitemap content for:', sm);
+
   // Fetches sitemap content from local JSON and remote CMS, then merges them 
   const url = `/rsc/posts/${sm}_map.json`; 
   let localContent = await (await fetch(url)).json();
-  
+  console.log("Local Sitemap Content:", localContent);
+
   let remoteContent = [];
   try {
     const controller = new AbortController();
@@ -341,7 +356,7 @@ const createSitemap = async () => {
       <span class="nav-close">&#x2715;</span>
     </label>
     <hr/>
-    <a id="link_Home" href="./../index.html" title="Home">Home</a>
+    <a id="link_Home" href="./../../index.html" title="Home">Home</a>
     <div id="nav-toc"></div>
     <div id='sitemap-content'>  
     ${(w.sitemap_content || []).map((x, i) => {
@@ -359,19 +374,43 @@ const createSitemap = async () => {
   console.groupEnd(); 
   return sitemap;
 };
-// TODO: read in yaml from markdown.
-
-// todo: make toast notification for more than just copied links.
-// import { create } from "handlebars";
-// the path handlers need updating to use ./docs/ for prod and ./ paths in dev. 
-
-// todo hide_sitemap should not need to use w.sitemap_content in logic because that is obtained in prepareSitemap.
-// maybe if not hide_sitemap then prepareSitemap and set w.sitemap_content there to then be checked for continuing.
-
-// document.getElementById("toggle_sitemap").checked = true; -> move to route fn
 
 
-// CSS duplication: in prepareSitemap, loading CSS is gated on w.sitemap_content. Track separately.
-// Breadcrumbs: use new URL() + stable rules for /index.html and trailing slashes; avoid string splits where possible.
-// Unique IDs: don’t randomize every <a>; restrict to headings or known TOC targets. Random IDs break deep links across renders. For headings, formatLink(text) is enough if you dedupe within the page.
-// Default empty sitemap fallback
+// Delegated navigation setup to avoid duplicate per-link listeners across reloads
+const setDelegatedNavigation = () => {
+  // Remove previous delegated click handler if present
+  if (w._redirectHandler) {
+    document.removeEventListener("click", w._redirectHandler, true);
+  }
+
+  w._redirectHandler = (e) => {
+    const a = e.target?.closest && e.target.closest('a[href^="./"]');
+    if (!a) return;
+    e.preventDefault();
+    // Call redirect with a synthetic click event targeting the anchor
+    w.redirect?.({ type: "click", target: a });
+  };
+  document.addEventListener("click", w._redirectHandler, true);
+
+  // Ensure only one popstate handler exists
+  if (w._popstateHandler) {
+    window.removeEventListener("popstate", w._popstateHandler);
+  }
+  w._popstateHandler = (evt) => w.redirect?.({ type: "popstate" });
+  window.addEventListener("popstate", w._popstateHandler);
+};
+
+
+
+// todo - style - of hyperlinks spacing
+// todo - style - nested summary left border// todo - now - the path handlers need updating to use ./docs/ for prod and ./ paths in dev.
+// todo - style - nested tables
+
+// todo - fix - Unique IDs: don’t randomize every <a>; Random IDs break deep links across renders. Dedupe within the page.
+// todo - fix - update ipynb2web sitemap.txt to prefix docs/ & handle index better
+// TODO - feature - read in yaml from markdown. 
+// Todo - feature - make toast for more than just copied links
+// Todo - feature - import { create } from "handlebars";
+
+// Todo - investigate - navEvent hashbang slide after handleRoute transitions the page.
+// todo - fix - ipynb2web - clear footnotes count on transitions

@@ -47,6 +47,7 @@ body:has(#sitemap:focus-within) {
   > label > span:nth-child(3) {
     --rotate: 45deg;
   }
+  
 }
 
 /* Effects for the Always-Present Label */
@@ -55,17 +56,11 @@ body:has(#sitemap:focus-within) {
 }
 #toggle_sitemap:not(:checked) ~ #sitemap {
   animation: collapse 1s forwards, glow 6s linear infinite;
-}
+} 
 #toggle_sitemap:checked ~ #sitemap {
   animation: expand 1s forwards, glow 6s linear infinite;
 }
 
-#toggle_sitemap:not(:checked) ~ #sitemap > label > span {
-  animation: dismiss 1s forwards;
-}
-#toggle_sitemap:checked ~ #sitemap > label > span {
-  animation: reveal 3000ms forwards;
-}
 
 @keyframes glow {
   50% {
@@ -74,14 +69,25 @@ body:has(#sitemap:focus-within) {
       inset 0px 0 10px rgb(var(--background));
   }
 }
+
+/* Dynamic behavior: before the page is loaded, keep sitemap at 3em.
+   Once loaded (body[data-loaded="true"]), allow full expand/collapse. */
+body[data-loaded="true"] {
+  --sitemap-max-height: 75svh;
+}
+body:not([data-loaded="true"]) {
+  --sitemap-max-height: 3em;
+}
+
 @keyframes collapse {
   from {
-    max-height: 75svh;
+    max-height: var(--sitemap-max-height);
   }
   to {
     max-height: 3em;
   }
 }
+
 @keyframes expand {
   to {
     max-height: 75svh;
@@ -90,7 +96,16 @@ body:has(#sitemap:focus-within) {
     max-height: 3em;
   }
 }   
- 
+
+/* Toggle Rotate Icons */
+
+#toggle_sitemap:not(:checked) ~ #sitemap > label > span {
+  animation: dismiss 1s forwards;
+}
+#toggle_sitemap:checked ~ #sitemap > label > span {
+  animation: reveal 1200ms forwards;
+}
+
 @keyframes reveal {
   from {
     transform: rotate(var(--rotate));
@@ -99,6 +114,7 @@ body:has(#sitemap:focus-within) {
     transform: rotate(90deg);
   }
 }
+
 @keyframes dismiss {
   from {
     transform: rotate(90deg);
@@ -134,6 +150,7 @@ body:has(#sitemap:focus-within) {
     max-height: 0em;
   }
 }
+
 @keyframes show {
   to {
     max-height: inherit;

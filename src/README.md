@@ -199,11 +199,6 @@ The following are being used internally.
 - `Robots.txt` -> specify sitemaps and nofollow noindex section/links. More [info](https://search.google.com/search-console/welcome), [here](https://support.google.com/webmasters/answer/7451001). 
 
 
-
-
-
-
-
 # IPYNB MD Notes
 
 Each notebook should start with a yaml cell. Processing instructions can be modified on a per-cell basis.
@@ -234,39 +229,23 @@ Possible Key's: Sample Values
 - `%%capture`
 - `hide `
 
-```
-((note:footnote content))
-(((warning::Some warning message)))
-(((tip::Some tip message)))
-(((info::Some info message)))
-```
 
 ## Text Decorators
 
-- `(((note:: footnote content)))`
-- `(([blockquote content]))`
-
+```
+^[footnote content]
+^[Some warning message{.info}
+^[Some tip message]{.tip}
+^[Some info message]{.warning}
+```
 
 ## Misc
 
 %%capture will not show input source
-- Prefix a ipynb file with `_` to have it be excluded from the sitemap and processing.
-
-
-
-
-
-Todo: update ipynb2web sitemap.txt to prefix docs/ & handle index better
-
+- Prefix a ipynb file with `_` to have it be excluded from the sitemap and processing.  
 
 
 
 ### Prettier
 
 - I use Prettier in Visual Studio Code. More [information](https://dev.to/gulshansaini/how-to-disable-prettier-in-vscode-for-a-specific-project-2a48).
-
-// Todo - if navEvent calls handleRoute it needs to be called back at the end for the hashbang to slide.
-// Todo - Sitemap open on start or not.
-// Todo - Scroll to top.
-// todo - notes
-// details - summary

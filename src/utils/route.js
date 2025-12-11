@@ -93,6 +93,7 @@ export const handleRoute = async () => {
     w.newRoute == "/"
       ? "index"
       : w.newRoute
+          .replaceAll("/docs/", "/")
           .replaceAll("./", "")
           .replaceAll("../", "")
           .replace(".html", "")

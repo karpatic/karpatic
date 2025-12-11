@@ -26,15 +26,14 @@ const minify = require("html-minifier").minify;
 // hosting prerendered spas on github is annoying. why?
 // 1. we want to compile our assets which sends things to /build
 
- 
 const defaultOptions = {
-
   port: 45678,
   crawl: true,
   source: "/",
   entry: ["/index.html"],
   replaceEntryWPrerender: true,
   clearEntries: false, // RM entry file forcing use of spa fallback on it. Not really needed as wp rebuilds the page.
+  clearDestination: true, // RM existing files in destination dir.
   destination: "./docs", 
   spa: "404.html", // fallback page used if file not found.
   userAgent: "Prerendererest", // source can use this to detect prerenderer env.
@@ -48,6 +47,7 @@ const defaultOptions = {
   viewport: { width: 480, height: 850 },
   skipThirdPartyRequests: false,
   concurrency: 1,
+  limit: null, // max number of pages to crawl; null = unlimited
   inlineCss: false,
   removeStyleTags: false,
   preloadImages: false,
@@ -55,6 +55,8 @@ const defaultOptions = {
   removeScriptTags: false,
   skipExistingCheck: true, // false to prevent double rendering.
   keepPagesOpen: true,
+  // Array of [from, to] path prefixes to rewrite when queuing links 
+  rewriteRules: [["/docs/", "/"]],
 };
 
 const defaults = userOptions => {
@@ -101,11 +103,18 @@ const crawl = async (opt) => {
   const uniqueUrls = new Set();
   const sourcemapStore = {};
 
-  // Add a URL to the queue if it's not already there and it's not a third-party URL
   const addToQueue = newUrl => {
     if(!newUrl) return;
     if(newUrl.includes('mailto:')) return;
     if(newUrl.includes('javascript:')) return;
+    // Apply rewrite rules before enqueueing
+    if(options.rewriteRules){
+      for(const [from, to] of options.rewriteRules){
+        newUrl = newUrl.replace(from, to);
+      }
+    }
+    // Respect global crawl limit
+    if (options.limit !== null && uniqueUrls.size >= options.limit) return;
     const { hostname, search, hash } = new URL(newUrl);
     newUrl = newUrl.replace(`${search || ""}${hash || ""}`, "");
     if (hostname === "localhost" && !uniqueUrls.has(newUrl) && !streamClosed) {
@@ -169,8 +178,8 @@ const crawl = async (opt) => {
         if (options.waitFor) await page.waitFor(options.waitFor);
         if (options.crawl) {
           console.log(`🕸 Crawling Rendered Page: ${route}`);
-          const links = await getLinks({ page }); 
-          links.forEach(addToQueue);
+            const links = await getLinks({ page });
+            links.forEach(addToQueue);
         }
         if (afterFetch) await afterFetch({ page, route, browser, addToQueue });
         if (!options.keepPagesOpen) {
@@ -262,6 +271,21 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
   const options = defaults(userOptions);
   const sourceDir = path.normalize(`${process.cwd()}/${options.source}`);
   const destinationDir = path.normalize(`${process.cwd()}/${options.destination}`);
+
+  // Optionally clear destination directory before prerendering
+  if (options.clearDestination) {
+    try {
+      if (fs.existsSync(destinationDir)) {
+        console.log(`🧹 Clearing destination directory: ${destinationDir}`);
+        // Remove directory contents
+        fs.rmSync(destinationDir, { recursive: true, force: true });
+      }
+      // Recreate destination directory
+      fs.mkdirSync(destinationDir, { recursive: true });
+    } catch (e) {
+      console.log(`⚠️ Could not clear destination ${destinationDir}: ${e.message}`);
+    }
+  }
 
   // Clear entry files to force SPA fallback rendering
   if (options.clearEntries) {
@@ -389,6 +413,7 @@ Options:
   --no-crawl                   Disable automatic crawling
   --port <number>              Port for local server (default: 45678)
   --concurrency <number>       Number of concurrent processes (default: 1)
+  --limit <number>             Max number of pages to crawl (default: unlimited)
   --userAgent <string>         Custom user agent (default: Prerendererest)
   --viewport <json>            Viewport size as JSON object (default: {"width":480,"height":850})
   --skipThirdPartyRequests     Block external requests during rendering
@@ -401,6 +426,7 @@ Options:
   --inlineCss                  Inline CSS styles
   --preloadImages              Add preload hints for images
   --puppeteerArgs <args>       Comma-separated Puppeteer arguments
+  --rewriteRules <json>        JSON array of [from,to] path prefixes to rewrite
   -h, --help                   Show this help message
 
 Examples:
@@ -446,6 +472,13 @@ Examples:
     } else if (args[i] === '--puppeteerArgs' && args[i + 1]) {
       userOptions.puppeteerArgs = args[i + 1].split(',');
       i++;
+    } else if (args[i] === '--rewriteRules' && args[i + 1]) {
+      try {
+        userOptions.rewriteRules = JSON.parse(args[i + 1]);
+      } catch {
+        console.log('⚠️  Invalid --rewriteRules JSON; ignoring. Expected format: [["/docs/","/"], ["./docs/","./"]]');
+      }
+      i++;
     } else if (args[i] === '--puppeteer.cache' && args[i + 1]) {
       userOptions.puppeteer = userOptions.puppeteer || {};
       userOptions.puppeteer.cache = args[i + 1] === 'true';
@@ -468,6 +501,10 @@ Examples:
       userOptions.skipThirdPartyRequests = true;
     } else if (args[i] === '--concurrency' && args[i + 1]) {
       userOptions.concurrency = parseInt(args[i + 1], 10);
+      i++;
+    } else if (args[i] === '--limit' && args[i + 1]) {
+      userOptions.limit = parseInt(args[i + 1], 10);
+      if (Number.isNaN(userOptions.limit)) delete userOptions.limit;
       i++;
     } else if (args[i] === '--inlineCss') {
       userOptions.inlineCss = true;
@@ -494,6 +531,21 @@ Examples:
 
 exports.run = run;
 exports.defaultOptions = defaultOptions;
+
+// Remove all files in a target directory. Safe utility if needed elsewhere.
+const clearDestination = (dirPath, { fs } = { fs: nativeFs }) => {
+  try {
+    if (fs.existsSync(dirPath)) {
+      fs.rmSync(dirPath, { recursive: true, force: true });
+    }
+    fs.mkdirSync(dirPath, { recursive: true });
+    return true;
+  } catch (e) {
+    console.log(`⚠️ clearDestination error for ${dirPath}: ${e.message}`);
+    return false;
+  }
+};
+exports.clearDestination = clearDestination;
 
 // Helper functions for crawling
 const skipThirdPartyRequests = async opt => {

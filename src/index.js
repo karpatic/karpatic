@@ -17,8 +17,8 @@ w.isLocal ||= !!!w.content; // Used to not register worker, send pings, load jso
 w.preRendering = /Prerendererest/.test(navigator.userAgent); // Used to skip console logs cluttering prerenders terminal output.
 
 // Message for the sleuths.
-w.preRendering ||
-  (console.log(
+w.refresh || w.preRendering ||
+  ( (w.refresh=false), console.log(
     "%c Like what you see?",
     "font-weight: bold; font-size: 50px;color: red; text-shadow: 3px 3px 0 red , 6px 6px 0 green , 9px 9px 0 blue"
   ),
@@ -72,13 +72,33 @@ w.redirect = async (event = false) => {
 addEventListener("popstate", redirect);
 
 // Removes then Reattaches redirects. Called on refresh template.
-w.setRedirectListeners = () => {
-  console.log("INDEX:setRedirectListeners"); 
-  document
-    .querySelectorAll('a[href^="./"]')
-    .forEach((l) => {
-      l.removeEventListener("click", redirect);
-      l.addEventListener("click", redirect);
-    });
+// w.setRedirectListeners = () => {
+//   console.log("INDEX:setRedirectListeners"); 
+//   document
+//     .querySelectorAll('a[href^="./"]')
+//     .forEach((l) => {
+//       l.removeEventListener("click", w.redirect);
+//       l.addEventListener("click", w.redirect);
+//     });
+// };
+// setRedirectListeners();
+
+
+
+// Minimal, idempotent delegated navigation setup (needed at startup)
+  // Click delegation for relative links
+  const clickHandler = (e) => {
+  const a = e.target?.closest && e.target.closest('a[href^="./"]');
+  if (!a) return;
+  e.preventDefault();
+  redirect({ type: "click", target: a });
 };
-setRedirectListeners();
+if (w._redirectHandler) document.removeEventListener("click", w._redirectHandler, true);
+w._redirectHandler = clickHandler;
+document.addEventListener("click", w._redirectHandler, true);
+
+// Single popstate handler
+const popHandler = () => redirect({ type: "popstate" });
+if (w._popstateHandler) window.removeEventListener("popstate", w._popstateHandler);
+w._popstateHandler = popHandler;
+window.addEventListener("popstate", w._popstateHandler);

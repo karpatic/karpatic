@@ -20,6 +20,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
   // Route to prerendrered
   const page =
     location.pathname
+      .replace("/docs/", "/")
       .replace("/", "")
       .replace(/\/$/, "")
       .replace(".html", "") || "index"; // removes leading and trailing slashes 

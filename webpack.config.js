@@ -281,6 +281,19 @@ module.exports = (env, args) => {
         // repo root for index.html, CNAME, robots.txt, etc.
         { directory: path.resolve(__dirname, "."), publicPath: "/", watch: false, serveIndex: true },
       ],
+      // Rewrite /docs/... requests to behave as if /docs wasn't present
+      setupMiddlewares: (middlewares, devServer) => {
+        if (!devServer) {
+          return middlewares;
+        }
+        devServer.app.use((req, res, next) => {
+          if (req.url && req.url.startsWith('/docs/')) {
+            req.url = req.url.replace(/^\/docs\//, '/');
+          }
+          next();
+        });
+        return middlewares;
+      },
       // watchFiles: ['src/**/*'],
       historyApiFallback: { disableDotRule: true },
       proxy: { "/esp_lights/": "http://localhost:8081/karpatic/esp_lights" },
