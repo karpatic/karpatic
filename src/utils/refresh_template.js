@@ -171,7 +171,7 @@ const updateBreadcrumbs = async () => {
 // Generates breadcrumb navigation from current URL path
 // Example: /notes/mypage.html -> /Home, /Notes, /Notes/Mypage
 const createBreadcrumbs = async () => { 
-  const parts = location.pathname.split("/").filter(Boolean).map(p => p.replace(".html", ""));
+  const parts = location.pathname.replace('/docs/', '/').split("/").filter(Boolean).map(p => p.replace(".html", ""));
   const depth = parts.length; // e.g., ["blog","aboutmysite"] => depth 2
   const sm = parts[0] || "index";
 
@@ -182,7 +182,7 @@ const createBreadcrumbs = async () => {
       if (!x || x === "index") return "";
       // Section level (first segment): ../<section>.html when deeper than section
       if (i === 0) {
-        const href = depth > 1 ? `./../../${sm}.html` : `./${sm}.html`;
+        const href = depth > 1 ? `./../../docs/${sm}.html` : `./${sm}.html`;
         return `<a href="${href}">${capitalize(x)}</a>`;
       }
       // Current page or deeper segment: ./<name>.html
