@@ -402,15 +402,26 @@ const setDelegatedNavigation = () => {
 
 
 
-// todo - style - of hyperlinks spacing
-// todo - style - nested summary left border// todo - now - the path handlers need updating to use ./docs/ for prod and ./ paths in dev.
+// todo - style - of hyperlinks spacing 
 // todo - style - nested tables
 
 // todo - fix - Unique IDs: don’t randomize every <a>; Random IDs break deep links across renders. Dedupe within the page.
 // todo - fix - update ipynb2web sitemap.txt to prefix docs/ & handle index better
-// TODO - feature - read in yaml from markdown. 
+// Todo - investigate - navEvent hashbang slide after handleRoute transitions the page.
+// Todo - fix - toc and sitemap template given in md. 
+// TODO - feature - read in yaml from markdown.
 // Todo - feature - make toast for more than just copied links
 // Todo - feature - import { create } from "handlebars";
+// Todo - fix - ipynb2web - clear footnotes count on transitions - Move to template
 
-// Todo - investigate - navEvent hashbang slide after handleRoute transitions the page.
-// todo - fix - ipynb2web - clear footnotes count on transitions
+
+/*
+- description: this isnt working
+- image: images/company_logo.png
+- keywords: thisworks
+- badges: true
+- comments: true
+- categories: [test]
+- metadata_key1: metadata_value1
+- metadata_key2: metadata_value2
+*/
