@@ -54,9 +54,29 @@ const defaultOptions = {
   asyncScriptTags: false,
   removeScriptTags: false,
   skipExistingCheck: true, // false to prevent double rendering.
-  keepPagesOpen: true,
+  keepPagesOpen: false,
   // Array of [from, to] path prefixes to rewrite when queuing links 
   rewriteRules: [["/docs/", "/"]],
+};
+
+const resolvePuppeteerExecutablePath = (options = {}) => {
+  if (options.puppeteerExecutablePath) return options.puppeteerExecutablePath;
+
+  const envPath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_BIN;
+  if (envPath && nativeFs.existsSync(envPath)) return envPath;
+
+  const candidates = [
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium-browser",
+    "/usr/bin/chromium",
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  ];
+
+  for (const candidate of candidates) {
+    if (nativeFs.existsSync(candidate)) return candidate;
+  }
+
+  return undefined;
 };
 
 const defaults = userOptions => {
@@ -127,10 +147,13 @@ const crawl = async (opt) => {
     }
   };
 
+  const resolvedExecutablePath = resolvePuppeteerExecutablePath(options);
+  resolvedExecutablePath && console.log(`ℹ️  Using browser executable: ${resolvedExecutablePath}`);
+
   const browser = await puppeteer.launch({
     headless: options.headless,
     args: options.puppeteerArgs,
-    executablePath: options.puppeteerExecutablePath,
+    executablePath: resolvedExecutablePath,
     ignoreHTTPSErrors: options.puppeteerIgnoreHTTPSErrors,
     handleSIGINT: false
   });
@@ -426,6 +449,7 @@ Options:
   --inlineCss                  Inline CSS styles
   --preloadImages              Add preload hints for images
   --puppeteerArgs <args>       Comma-separated Puppeteer arguments
+  --puppeteerExecutablePath    Explicit browser executable path for Puppeteer
   --rewriteRules <json>        JSON array of [from,to] path prefixes to rewrite
   -h, --help                   Show this help message
 
@@ -471,6 +495,9 @@ Examples:
       i++;
     } else if (args[i] === '--puppeteerArgs' && args[i + 1]) {
       userOptions.puppeteerArgs = args[i + 1].split(',');
+      i++;
+    } else if (args[i] === '--puppeteerExecutablePath' && args[i + 1]) {
+      userOptions.puppeteerExecutablePath = args[i + 1];
       i++;
     } else if (args[i] === '--rewriteRules' && args[i + 1]) {
       try {

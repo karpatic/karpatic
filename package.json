@@ -5,9 +5,9 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --mode development --devtool eval-source-map --progress",
-    "build": "make pages; webpack --mode production --profile --progress && node prerendererest.js", 
+    "build": "make pages; webpack --mode production --profile --progress && node prerendererest.js --headless", 
     "buildwp": "webpack --mode production --profile --progress",
-    "buildpre": "node prerendererest.js",
+    "buildpre": "node prerendererest.js --headless",
     "audio": "node ./../ipynb2web/ipynb2web.cli.cjs audio",  
     "write": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'make pages'"
   },

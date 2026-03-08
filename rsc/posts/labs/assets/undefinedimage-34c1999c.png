@@ -1,1 +1,0 @@
-window.localStorage.setItem("greeting", 'This text was inserted using Javascript.');

@@ -1,1 +1,0 @@
-document.querySelector("#output-area").innerHTML= "This text was inserted at run time. It retrieved the following text as a value from the window after setting it in another cell: '"+window.jsFlagSetValue + "'.";

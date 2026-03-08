@@ -1,9 +1,0 @@
-<div id="observablehq-viz2"></div>
-<script type="module">
-import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
-import define from "https://api.observablehq.com/@karpatic/colab-to-website@latest.js?v=4";
-new Runtime().module(define, name => {
-  if (name === "vswp") return new Inspector(document.querySelector("#observablehq-viz2"));
-  if (name === "colabShortcode`") return new Inspector(document.querySelector("#observablehq-viz2"));
-});
-</script>
