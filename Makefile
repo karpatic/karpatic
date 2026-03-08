@@ -37,4 +37,6 @@ webdev:
 	node ./../ipynb2web/src/cli.js webdev ./rsc/posts/ ./ipynb/ '' './rsc/posts/assets'
 
 sitemap:
-	node ./../ipynb2web/src/cli.js sitemap '' './rsc/posts/sitemap.txt' './ipynb' 'docs/' 
+	# Generate SEO sitemap from generated *_map.json files in rsc/posts
+	node ./../ipynb2web/src/cli.js sitemap './rsc/posts' './sitemap.txt' '' 'charleskarpati.com'
+	cp ./sitemap.txt ./rsc/posts/sitemap.txt
