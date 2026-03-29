@@ -11,7 +11,7 @@ const HTMLInlineCSSWebpackPlugin =
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
-const rmlogs = false; 
+const rmlogs = true; 
 // auto-generate a PWA manifest + assets using webpack.config + a header.json file that you can copy to src/ for future deploys.
 // add '_projectname' to each generated asset and header.js will inject the manifest tag contingently.
 const hr = require("./rsc/header.json");
@@ -40,7 +40,7 @@ module.exports = (env, args) => {
   <!DOCTYPE html>
   <html lang="en" dir="ltr">
     <head id="head"></head>
-    <body></body>
+    <body><main id="content"></main></body>
   </html>`;
   return {
     cache: false,
@@ -70,7 +70,12 @@ module.exports = (env, args) => {
           // config default parser
           terserOptions: {
             parse: { html5_comments: false },
-            compress: rmlogs ? { pure_funcs: ['console.log'], toplevel: true } : false,
+            compress: rmlogs
+              ? {
+                  drop_console: true,
+                  toplevel: true,
+                }
+              : false,
             sourceMap: { url: "inline" },
             keep_classnames: true,
             keep_fnames: true,
