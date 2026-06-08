@@ -80,6 +80,16 @@ refresh_template REQUIREMENTS:
 
 - `make pages;` - included in the build command, each .ipynb in the /ipynb directory specified in the makefile command becomes a template-ready [/rsc/posts/{dir}{file}.json] file.
 
+## Public Webdev Notes and ipynb2web
+
+- The public `Webdev_*` notes live in `/home/carlos/Documents/GitHub/www/notes/notes/`.
+- The CMS-facing copies live in `/home/carlos/Documents/GitHub/www/cms/notes/` and are the copies this site currently reads for online note text.
+- The local converter source is `/home/carlos/Documents/GitHub/packages/ipynb2web`; docs live at `https://ipynb2web.com/`.
+- Browser API docs: `https://ipynb2web.com/jsdocs/module-Ipynb2web_browser.html`.
+- The browser build exposes only async `ipynb2web.nb2json(pathOrUrl)`. Script-tag usage attaches `window.ipynb2web`; ESM usage imports the default browser module.
+- Bundless.dev (`/home/carlos/Documents/GitHub/packages/bundless`, `https://Bundless.dev`) is available when notebook/page work needs browser-side React/JSX/TSX without a build step.
+- `/home/carlos/Documents/GitHub/packages/vanillapivottable` is available for browser pivot-table/data visualization pages.
+
 ## DEV: Webpack
 
 `npm run start/ build` will start the dev/build  server.
@@ -127,7 +137,11 @@ Webpack compiles the client as so:
 - - - w[sm_name] 
 - - - w[sitemap_content] 
 - - - Inject CSS + text from filtered /cms/notes.json
+- - - Public notes dependency: sitemap data comes from the publicly readable `/cms/notes.json` corpus
 - - populateTemplate()
+
+- Route fallback for note-like pages uses `https://getfrom.net/cms/notes/<Title_Cased_Path>`.
+- Public-note reading is intentionally unauthenticated; admin password belongs to my www/notes edit flows, not these reads.
 
 - populateTemplate()
 - - w[page_transition]`

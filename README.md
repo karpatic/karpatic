@@ -318,6 +318,10 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
 
 ---
 
+## Public notes integration
+
+This site currently blends in Carlos's **public** notes corpus.
+
 ## 📫 Let's Connect! 
 
 <table align="center">

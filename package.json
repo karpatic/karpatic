@@ -8,8 +8,8 @@
     "build": "make pages; webpack --mode production --profile --progress && node prerendererest.js --headless", 
     "buildwp": "webpack --mode production --profile --progress",
     "buildpre": "node prerendererest.js --headless",
-    "audio": "node ./../ipynb2web/ipynb2web.cli.cjs audio",  
-    "write": "nodemon --watch 'src/ipynb' --ext 'ipynb' --exec 'make pages'"
+    "audio": "node ../../packages/ipynb2web/bin/ipynb2web.cli.cjs audio",  
+    "write": "nodemon --watch 'ipynb/' --ext 'ipynb' --exec 'make pages'"
   },
   "browserslist": [
     "defaults"

@@ -108,6 +108,7 @@ export const handleRoute = async () => {
   let content = {};
 
   
+  // Fetch content: Try JSON first, then ipynb conversion, then CMS fallback, with error handling and reload on total failure
   try {
     content = await (!isLocal || preRendering
       ? await (async () => {
@@ -116,7 +117,7 @@ export const handleRoute = async () => {
       : (
           await (async () => {
             let x = await import(
-              /* webpackChunkName: "convert" */ "../../../ipynb2web/src/convert.mjs"
+              /* webpackChunkName: "convert" */ "../../../../packages/ipynb2web/src/convert.mjs"
             );
             return x;
           })()

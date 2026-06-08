@@ -319,8 +319,8 @@ const getSitemapInfo = async () => {
       await fetch(`https://carlos-a-diez.com/cms/notes.json`, {
         signal: controller.signal,
       })
-    ).json();
-    clearTimeout(timeoutId);
+    ).json()
+    clearTimeout(timeoutId); 
   } catch {
     remoteContent = [];
   }
@@ -336,9 +336,9 @@ const getSitemapInfo = async () => {
           ? false
           : {
               filename: x.filename || "Unknown",
-              summary: x.summary || "Unknown",
+              summary: x.summary || "Unknown"
             };
-      }); 
+      }).map(x => ({...x, cms: true})); // Mark CMS entries for potential special handling in UI
   
   w.sitemap_content =  [...localContent, ...filteredRemote]; 
   return w.sitemap_content;
