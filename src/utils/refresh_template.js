@@ -309,14 +309,14 @@ const getSitemapInfo = async () => {
   // Fetches sitemap content from local JSON and remote CMS, then merges them 
   const url = `/rsc/posts/${sm}_map.json`; 
   let localContent = await (await fetch(url)).json();
-  console.log("Local Sitemap Content:", localContent);
+  // console.log("Local Sitemap Content:", localContent);
 
   let remoteContent = [];
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 300);
     remoteContent = await (
-      await fetch(`https://carlos-a-diez.com/cms/notes.json`, {
+      await fetch(`https://carlos-a-diez.com/notes/notes.json`, {
         signal: controller.signal,
       })
     ).json()
@@ -328,10 +328,10 @@ const getSitemapInfo = async () => {
   // Filters remote CMS data for entries matching current sitemap section (e.g., "notes_*") and merges them in.
   const filteredRemote = !remoteContent
     ? []
-    : Object.values(remoteContent).filter((x) => {
+    : Object.values(remoteContent).filter((x) => { 
         let flag = x.filename
           .toLowerCase()
-          .startsWith(sm.toLowerCase() + '_');
+          .startsWith(sm.toLowerCase() + '_'); 
         return !flag
           ? false
           : {
@@ -364,7 +364,7 @@ const createSitemap = async () => {
       let tab = x.tab || x.filename; 
       let content = `
         <a id="${x.filename == w.meta.filename ? "currentPage" : "link_" + tab}"  
-            href="${create_url(x.filename, w.sm_name)}.html" 
+            href="${create_url(x.filename, w.sm_name)}" 
             title="${tab}">
             ${shorten(displayLink(tab), 20)}
         </a>`; 

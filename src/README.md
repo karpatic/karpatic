@@ -136,8 +136,8 @@ Webpack compiles the client as so:
 - - w[sitemap] && !w[meta][hide_sitemap]
 - - - w[sm_name] 
 - - - w[sitemap_content] 
-- - - Inject CSS + text from filtered /cms/notes.json
-- - - Public notes dependency: sitemap data comes from the publicly readable `/cms/notes.json` corpus
+- - - Inject CSS + text from filtered /notes/notes.json
+- - - Public notes dependency: sitemap data comes from the publicly readable `/notes/notes.json` corpus
 - - populateTemplate()
 
 - Route fallback for note-like pages uses `https://getfrom.net/cms/notes/<Title_Cased_Path>`.
