@@ -17,6 +17,13 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 //
 
 (async () => {
+  const toCmsFilename = (route) =>
+    route
+      .split("/")
+      .filter(Boolean)
+      .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+      .join("_");
+
   // Route to prerendrered
   const page =
     location.pathname
@@ -31,25 +38,44 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
  
   // Path to it's YAML or Manifest
   let url = `/${
-    (hr.pwapages.split(",").some((x) => page == x) ? "" : "./rsc/posts/") + page
+    (hr.pwapages.split(",").some((x) => page == x) ? "" : "rsc/posts/") + page
   }.json`; 
   // console.log('HEAD:', { url, page, pathname: location.pathname });
 
+  // Check if page in CMS notes list, otherwise use local post JSON. 
+  const filename = toCmsFilename(page);
+  const notes= await(await fetch("https://carlos-a-diez.com/notes/notes.json")).json();
+  const cms = Object.values(notes).find(
+    (x) => (x?.filename || "").toLowerCase() === filename.toLowerCase()
+  );
 
-  // TODO: Fallback if no ./post/ exists.
+   
+  hr = cms && {
+    ...hr,
+    filename: cms.filename,
+    summary: cms.summary || hr.summary,
+    description: cms.summary || hr.description,
+  }; 
+  if (!cms) {
+    const postJson = await(await fetch(url)).json(); 
 
-  // Merge to defaults
-  try {
-    // console.log("HEAD:FETCHING:", url);
-    let rsp = await fetch(url);
-    hr = { ...hr, ...(await (await fetch(url)).json()).meta };
-  } catch (e) {
-    console.log(
-      "<~~~~~ HEADER CONFIG DATA ERROR ~~~~~>",
-      e,
-      location.pathname,
-      url
-    );
+    if (postJson?.meta) {
+      hr = { ...hr, ...postJson.meta };
+    } else {
+      hr = {
+        ...hr,
+        filename,
+        summary: hr.summary || `Notes page for ${page}`,
+        description: hr.description || hr.summary || `Notes page for ${page}`,
+      };
+      console.log(
+        "<~~~~~ HEADER CONFIG DATA ERROR ~~~~~>",
+        "Not in CMS list and no local post JSON",
+        location.pathname,
+        url,
+        filename
+      );
+    }
   }
 
   // Dom generates Helmet which injects the meta tags into the head

@@ -64,7 +64,7 @@ w.redirect = async (event = false) => {
   if (eventType === 'popstate'){ 
     w.newRoute = location.pathname;
   }
-  console.log({ same: w.oldRoute == w.newRoute, oldRoute: w.oldRoute, newRoute: w.newRoute });
+  // console.log({ same: w.oldRoute == w.newRoute, oldRoute: w.oldRoute, newRoute: w.newRoute });
   // User Clicked a Relative Link vs Browser Back/FWD vs Initial Load
   event?.type == "click" ? navEvent(event.target.href) : handleRoute();
   console.groupEnd();

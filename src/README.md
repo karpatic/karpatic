@@ -83,7 +83,7 @@ refresh_template REQUIREMENTS:
 ## Public Webdev Notes and ipynb2web
 
 - The public `Webdev_*` notes live in `/home/carlos/Documents/GitHub/www/notes/notes/`.
-- The CMS-facing copies live in `/home/carlos/Documents/GitHub/www/cms/notes/` and are the copies this site currently reads for online note text.
+- The CMS-facing copies live in `/home/carlos/Documents/GitHub/www/notes/` and are the copies this site currently reads for online note text.
 - The local converter source is `/home/carlos/Documents/GitHub/packages/ipynb2web`; docs live at `https://ipynb2web.com/`.
 - Browser API docs: `https://ipynb2web.com/jsdocs/module-Ipynb2web_browser.html`.
 - The browser build exposes only async `ipynb2web.nb2json(pathOrUrl)`. Script-tag usage attaches `window.ipynb2web`; ESM usage imports the default browser module.
@@ -140,7 +140,8 @@ Webpack compiles the client as so:
 - - - Public notes dependency: sitemap data comes from the publicly readable `/notes/notes.json` corpus
 - - populateTemplate()
 
-- Route fallback for note-like pages uses `https://getfrom.net/cms/notes/<Title_Cased_Path>`.
+- The notes.json filename attr is filtered for `<subject>_` and its rm from the title for showing in the url.
+- Route fallback for note-like pages uses `https://getfrom.net/c/notes/<subject>/<Title_Cased_Path>`.
 - Public-note reading is intentionally unauthenticated; admin password belongs to my www/notes edit flows, not these reads.
 
 - populateTemplate()

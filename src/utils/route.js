@@ -20,57 +20,55 @@ window.w = window;
 export const navEvent = async (push) => {
   console.group("Route: navEvent");
 
-  let href = push || location.href;
-  const [hrefBase, hrefFragment] = href.split("#");
-  const currentBase = location.href.split("#")[0];
-  const hasHash = href.indexOf("#") !== -1;
-  const isAnchorOnly = hrefBase === currentBase && hasHash;
-  const targetEl = hasHash ? document.getElementById(hrefFragment) : null;
-  const currentHash = (location.hash || "").replace("#", "");
+  const toUrl = (value) => new URL(value || location.href, location.origin);
+  const docsSegmentPattern = /\/docs(?=\/|$)/g;
+  const targetUrl = toUrl(push);
+  const currentUrl = toUrl(location.href);
+  const normalizePath = (url) => url.pathname.replace(docsSegmentPattern, "");
 
-  const openParentDetails = (el) => {
-    let ancestor = el;
-    while (ancestor) {
-      if (ancestor.tagName?.toLowerCase() === "details") {
-        ancestor.open = true;
-      }
-      ancestor = ancestor.parentElement;
-    }
-  };
+  targetUrl.pathname = normalizePath(targetUrl);
+  currentUrl.pathname = normalizePath(currentUrl);
 
-  // Decide if base route changes (non-anchor) and avoid duplicate pushes
-  const baseChanged = !isAnchorOnly && hrefBase !== currentBase;
+  let href = targetUrl.href;
+  let hrefBase = href.split("#")[0];
+  let currentBase = currentUrl.href.split("#")[0];
+  let hrefFragment = href.split("#")[1];
+  let hasHash = href.includes("#");
+  let isAnchorOnly = hasHash && hrefBase === currentBase;
+  let targetEl = hasHash && document.getElementById(hrefFragment);
+  let currentHash = (location.hash || "").replace("#", "");
+  let baseChanged = !isAnchorOnly && hrefBase !== currentBase;
 
-  // Only route when base actually changes
+  push = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
+
   if (baseChanged && hrefBase !== w.href?.split("#")[0]) {
     await handleRoute();
     w.href = href;
   }
 
-  // Update browser history carefully to avoid duplicates
   if (baseChanged) {
-    // Skip pushing if last pushed base equals the incoming base
     if (w.lastPushedBase !== hrefBase) {
       history.pushState({}, "", push);
       w.lastPushedBase = hrefBase;
     }
-  } else if (isAnchorOnly) {
-    // For anchor-only navigation, replace instead of push to avoid history spam
-    if (hrefFragment && currentHash !== hrefFragment) {
-      history.replaceState({}, "", href);
-      location.hash = hrefFragment;
-      w.href = href; // keep internal href tracker in sync for subsequent checks
-    }
-    // If hash is identical, do not push/replace
+  } else if (isAnchorOnly && hrefFragment && currentHash !== hrefFragment) {
+    history.replaceState({}, "", href);
+    location.hash = hrefFragment;
+    w.href = href;
   }
 
-  // Open parent details elements and scroll to target or top
   setTimeout(() => {
-    targetEl && openParentDetails(targetEl);
-    (!hasHash
-      ? () => window.scrollTo({ top: 0, behavior: "smooth" })
-      : () => targetEl?.scrollIntoView({ behavior: "smooth" }))();
-  }, 100);  
+    for (let ancestor = targetEl; ancestor; ancestor = ancestor.parentElement) {
+      if (ancestor.tagName?.toLowerCase() === "details") {
+        ancestor.open = true;
+      }
+    }
+    if (hasHash) {
+      targetEl?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, 100);
 
   console.groupEnd();
 };
@@ -106,9 +104,9 @@ export const handleRoute = async () => {
       ? `/rsc/posts/${route}.json`
       : `/ipynb/${route}.ipynb`;
   let content = {};
-
   
-  // Fetch content: Try JSON first, then ipynb conversion, then CMS fallback, with error handling and reload on total failure
+  // Fetch content: Try JSON first, then ipynb conversion,
+  // then CMS fallback, with error handling and reload on total failure
   try {
     content = await (!isLocal || preRendering
       ? await (async () => {
@@ -128,7 +126,7 @@ export const handleRoute = async () => {
       let txt = route.split('/').pop(); // Title from last route segment
       // Transform route to CMS path format (e.g., 'blog/post' -> 'Blog_Post')
       let path = route.split('/').map(segment => segment.charAt(0).toUpperCase() + segment.slice(1)).join('_');
-      let tryThisUrl = 'https://getfrom.net/cms/notes/' + path; 
+      let tryThisUrl = 'https://getfrom.net/notes/' + path; 
       let text = await (await fetch(tryThisUrl)).text();  
       let marked = await import('/rsc/cdn/marked.js'); // Import marked and convert markdown to HTML
       content = {meta: {title: txt, markdown: 'true'}, content: marked.marked(text)};
@@ -172,7 +170,9 @@ const registerServiceWorker = async () => {
     registration.onupdatefound = () => {
       const installingWorker = registration.installing;
       installingWorker.onstatechange = () => {
-        if (installingWorker.state != "installed") return;
+        if (installingWorker.state != "installed") {
+          return;
+        }
         if (navigator.serviceWorker.controller) {
           console.log(
             "New content is available; Purge occurred. fresh content added to the cache. Refresh."
