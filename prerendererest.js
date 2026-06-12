@@ -30,12 +30,13 @@ const defaultOptions = {
   port: 45678,
   crawl: true,
   source: "/",
-  entry: ["/index.html"],
+  entry: ["/docs/index.html"],
   replaceEntryWPrerender: true,
   clearEntries: false, // RM entry file forcing use of spa fallback on it. Not really needed as wp rebuilds the page.
   clearDestination: true, // RM existing files in destination dir.
   destination: "./docs", 
   spa: "404.html", // fallback page used if file not found.
+  publicPath: "/docs/",
   userAgent: "Prerendererest", // source can use this to detect prerenderer env.
   headless: false,
   puppeteerArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -55,8 +56,7 @@ const defaultOptions = {
   removeScriptTags: false,
   skipExistingCheck: true, // false to prevent double rendering.
   keepPagesOpen: false,
-  // Array of [from, to] path prefixes to rewrite when queuing links 
-  rewriteRules: [["/docs/", "/"]],
+  rewriteRules: null,
 };
 
 const resolvePuppeteerExecutablePath = (options = {}) => {
@@ -84,6 +84,73 @@ const defaults = userOptions => {
   options.destination = options.destination || options.source;
   if (!options.entry.length) throw new Error("Entry option should be non-empty");
   return options;
+};
+
+const toRouteKey = route => {
+  const normalizedRoute = (route || "").split("?")[0].split("#")[0];
+  return (
+    normalizedRoute === "/"
+      ? "index"
+      : normalizedRoute
+          .replaceAll("/docs/", "/")
+          .replaceAll("./", "")
+          .replaceAll("../", "")
+          .replace(/\.html$/i, "")
+          .replace(/^\//, "")
+          .replace("build/", "")
+          .replace(/\/$/, "")
+  );
+};
+
+const hasLocalContent = ({ route, sourceDir }) => {
+  const routeKey = toRouteKey(route);
+  if (!routeKey) return true;
+
+  const candidates = [
+    path.join(sourceDir, route.replace(/^\//, "")),
+    path.join(sourceDir, `${routeKey}.html`),
+    path.join(sourceDir, `${routeKey}.json`),
+    path.join(sourceDir, "rsc", "posts", `${routeKey}.json`),
+  ];
+
+  return candidates.some(candidate => nativeFs.existsSync(candidate));
+};
+
+const routeHasChildren = ({ route, sourceDir }) => {
+  const routeKey = toRouteKey(route);
+  if (!routeKey) return false;
+
+  const childDir = path.join(sourceDir, "rsc", "posts", routeKey);
+  try {
+    return nativeFs.statSync(childDir).isDirectory();
+  } catch {
+    return false;
+  }
+};
+
+const resolveOutputPath = ({ route, destinationDir, publicPath, sourceDir }) => {
+  let routePath = route
+    .replace(publicPath || "/", "")
+    .replace(/^\/+/, "");
+
+  if (!routePath) {
+    return path.join(destinationDir, "index.html");
+  }
+
+  const { ext } = path.parse(routePath);
+  if (!ext && routeHasChildren({ route, sourceDir })) {
+    routePath = `${routePath}.html`;
+  }
+
+  return path.join(destinationDir, routePath);
+};
+
+const shouldServeSpaRoute = ({ pathname, publicPath }) => {
+  if (!publicPath || publicPath === "/") return false;
+  if (!pathname.startsWith(publicPath)) return false;
+
+  const { ext } = path.parse(pathname);
+  return ext === "" || ext === ".html";
 };
 
 const crawl = async (opt) => {
@@ -122,22 +189,45 @@ const crawl = async (opt) => {
   let processed = 0;
   const uniqueUrls = new Set();
   const sourcemapStore = {};
+  const baseOrigin = new URL(basePath).origin;
 
   const addToQueue = newUrl => {
     if(!newUrl) return;
     if(newUrl.includes('mailto:')) return;
     if(newUrl.includes('javascript:')) return;
-    // Apply rewrite rules before enqueueing
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(newUrl, basePath);
+    } catch {
+      return;
+    }
+
+    if (!/^https?:$/.test(parsedUrl.protocol)) return;
+
     if(options.rewriteRules){
       for(const [from, to] of options.rewriteRules){
-        newUrl = newUrl.replace(from, to);
+        if (parsedUrl.pathname.startsWith(from)) {
+          parsedUrl.pathname = parsedUrl.pathname.replace(from, to);
+        }
       }
     }
+
+    parsedUrl.search = "";
+    parsedUrl.hash = "";
+
+    if (parsedUrl.origin !== baseOrigin) return;
+
+    const route = parsedUrl.pathname;
+    if (!hasLocalContent({ route, sourceDir })) {
+      console.log(`↪️ Skipping remote-backed route ${route}`);
+      return;
+    }
+
+    newUrl = parsedUrl.toString();
+
     // Respect global crawl limit
     if (options.limit !== null && uniqueUrls.size >= options.limit) return;
-    const { hostname, search, hash } = new URL(newUrl);
-    newUrl = newUrl.replace(`${search || ""}${hash || ""}`, "");
-    if (hostname === "localhost" && !uniqueUrls.has(newUrl) && !streamClosed) {
+    if (!uniqueUrls.has(newUrl) && !streamClosed) {
       uniqueUrls.add(newUrl);
       enqued++;
       queue.push(newUrl);
@@ -335,8 +425,17 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
   }
 
   const startServer = options => {
+    const publicPath = options.publicPath || '/';
+    const spaPath = path.join(sourceDir, options.spa.replace(/^\/+/, ''));
     const app = express()
-      .use(options.publicPath || '/', serveStatic(sourceDir))
+      .use((req, res, next) => {
+        if (shouldServeSpaRoute({ pathname: req.path, publicPath })) {
+          res.sendFile(spaPath);
+          return;
+        }
+        next();
+      })
+      .use(publicPath, serveStatic(sourceDir))
       .use(fallback(options.spa, { root: sourceDir }));
     const server = require("http").createServer(app);
     server.listen(options.port);
@@ -380,8 +479,12 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
         ''
       );
       const minifiedStripped = minify(stripped, options.minifyHtml);
-      const routePath = route.replace(options.publicPath || '/', "");
-      const filePath = path.join(destinationDir, routePath);
+      const filePath = resolveOutputPath({
+        route,
+        destinationDir,
+        publicPath: options.publicPath,
+        sourceDir,
+      });
 
  
       // Create directories if they do not exist

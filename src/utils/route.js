@@ -22,16 +22,21 @@ export const navEvent = async (push) => {
 
   const toUrl = (value) => new URL(value || location.href, location.origin);
   const docsSegmentPattern = /\/docs(?=\/|$)/g;
+  const normalizePath = (pathname = "/") => pathname.replace(docsSegmentPattern, "") || "/";
+  const toRouteUrl = (value) => {
+    const url = toUrl(value);
+    url.pathname = normalizePath(url.pathname);
+    return url;
+  };
+
   const targetUrl = toUrl(push);
   const currentUrl = toUrl(location.href);
-  const normalizePath = (url) => url.pathname.replace(docsSegmentPattern, "");
-
-  targetUrl.pathname = normalizePath(targetUrl);
-  currentUrl.pathname = normalizePath(currentUrl);
+  const targetRouteUrl = toRouteUrl(targetUrl.href);
+  const currentRouteUrl = toRouteUrl(currentUrl.href);
 
   let href = targetUrl.href;
-  let hrefBase = href.split("#")[0];
-  let currentBase = currentUrl.href.split("#")[0];
+  let hrefBase = targetRouteUrl.href.split("#")[0];
+  let currentBase = currentRouteUrl.href.split("#")[0];
   let hrefFragment = href.split("#")[1];
   let hasHash = href.includes("#");
   let isAnchorOnly = hasHash && hrefBase === currentBase;
@@ -41,8 +46,9 @@ export const navEvent = async (push) => {
 
   push = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
 
-  if (baseChanged && hrefBase !== w.href?.split("#")[0]) {
+  if (baseChanged && hrefBase !== w.lastHandledRouteBase) {
     await handleRoute();
+    w.lastHandledRouteBase = hrefBase;
     w.href = href;
   }
 

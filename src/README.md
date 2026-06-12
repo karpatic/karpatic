@@ -53,7 +53,7 @@ route.navEvent:
 - Handles clicks on relative links, 
 - calls handleRoute for different pages or scrolls to anchor on same page, 
 - opens parent <details> elements, 
-- updates history
+- preserves `/docs/` in the visible/history URL when present, while normalizing it away for route comparison
 
 route.handleRoute: 
 - Registers service worker, 
@@ -93,6 +93,10 @@ refresh_template REQUIREMENTS:
 ## DEV: Webpack
 
 `npm run start/ build` will start the dev/build  server.
+
+- Local webpack dev serves the app from `/`, not from `/docs/`.
+- The dev server rewrites incoming `/docs/...` requests back to root so prod-shaped URLs can still be tested locally.
+- Because of that rewrite, `/docs/` is a local alias for route testing, not the actual local mount point.
 
 Webpack compiles the client as so:
 
@@ -141,8 +145,9 @@ Webpack compiles the client as so:
 - - populateTemplate()
 
 - The notes.json filename attr is filtered for `<subject>_` and its rm from the title for showing in the url.
-- Route fallback for note-like pages uses `https://getfrom.net/c/notes/<subject>/<Title_Cased_Path>`.
+- Route fallback for note-like pages uses `https://getfrom.net/notes/<route-with-slashes-replaced-by-underscores>`.
 - Public-note reading is intentionally unauthenticated; admin password belongs to my www/notes edit flows, not these reads.
+- Top-level authored links should stay sibling-relative (for example `./webdev.html`, not `./docs/webdev.html`) so the same content works both at local-dev root and under deployed `/docs/` URLs.
 
 - populateTemplate()
 - - w[page_transition]`
@@ -206,6 +211,12 @@ Pre-render the pages locally during the build step and rehydration and navigatio
 3. If there is more than one page in the queue it also adds `/404.html` to the queue
 4. renders the page with the help of puppeteer using options.spa to load the route.
 5. waits till there are no active network requests for more than 0.5 second
+
+Current docs-path hosting notes:
+- Built/prerendered client-visible routes should stay under `/docs/...`.
+- Router/content resolution strips `/docs/` only when translating the browser pathname into `rsc/posts/...` or CMS note paths.
+- Prerender defaults crawl from `/docs/index.html` and treat `/docs/*.html` or extensionless `/docs/*` requests as SPA routes, then write the captured output back into `docs/` without creating `docs/docs/`.
+- Local webpack dev still mounts at `/`; `/docs/...` only works there because `devServer.setupMiddlewares` rewrites it to the root route before static serving/history fallback.
 
 ## Misc
 

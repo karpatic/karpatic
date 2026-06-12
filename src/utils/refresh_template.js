@@ -10,7 +10,10 @@ window.w = window;
 // Gets the sitemap name from the first path segment:
 // index.html -> "index" || /notes/ -> "notes" ||  /notes/uniquepage.html -> "notes" || /notes/2021/01/01/index.html -> "notes"
 
-const getsmname = () => location.pathname.replace('/docs/','/').split("/")[1].replace(".html", "") || "index";
+const getRoutePath = () => location.pathname.replace('/docs/', '/');
+const getRouteParts = () => getRoutePath().split("/").filter(Boolean).map((part) => part.replace(/\.html$/, ""));
+const getDocsRelativeRoot = () => `./${"../".repeat(Math.max(getRouteParts().length - 1, 0))}`;
+const getsmname = () => getRouteParts()[0] || "index";
 const shorten = (str, len = 12) => str?.trim().slice(0, len) + (str?.length > len + 1 ? "..." : "");
 const capitalize = (str) => str?.replace(/\b\w/g, (c) => c.toUpperCase());
 const formatLink = (str) => shorten(capitalize(str?.replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "")));
@@ -22,12 +25,15 @@ const create_url = (link, sitemap) => {
   link = link.replace(new RegExp(`^${sitemap}_`, 'i'), ''); 
   
   // Determine if we're navigating from/to a subdirectory
-  let fromSubpath = location.pathname.split("/").length >= 3;
+  let fromSubpath = getRouteParts().length > 1;
   let toSubpath = link != sitemap;
+
+  if (!toSubpath) {
+    return fromSubpath ? `./../${sitemap}.html` : `./${sitemap}.html`;
+  }
   
   // Build relative path: "../" to go up, "sitemap/" to go down, or "./" to stay at same level
   let t = `./${
-    (fromSubpath && !toSubpath && "../") ||
     (!fromSubpath && toSubpath && !!sitemap && sitemap + "/") ||
     ""
   }${link}`;
@@ -171,22 +177,17 @@ const updateBreadcrumbs = async () => {
 // Generates breadcrumb navigation from current URL path
 // Example: /notes/mypage.html -> /Home, /Notes, /Notes/Mypage
 const createBreadcrumbs = async () => { 
-  const parts = location.pathname.replace('/docs/', '/').split("/").filter(Boolean).map(p => p.replace(".html", ""));
+  const parts = getRouteParts();
   const depth = parts.length; // e.g., ["blog","aboutmysite"] => depth 2
-  const sm = parts[0] || "index";
+  const docsRoot = getDocsRelativeRoot();
 
-  const homeHref = depth > 1 ? "./../../index.html" : "./index.html";
+  const homeHref = `${docsRoot}index.html`;
 
   const trail = parts
     .map((x, i) => {
       if (!x || x === "index") return "";
-      // Section level (first segment): ../<section>.html when deeper than section
-      if (i === 0) {
-        const href = depth > 1 ? `./../../docs/${sm}.html` : `./${sm}.html`;
-        return `<a href="${href}">${capitalize(x)}</a>`;
-      }
-      // Current page or deeper segment: ./<name>.html
-      return `<a href="./${x}.html">${capitalize(x)}</a>`;
+      const href = `${docsRoot}${parts.slice(0, i + 1).join("/")}.html`;
+      return `<a href="${href}">${capitalize(x)}</a>`;
     })
     .filter(Boolean)
     .join("/");
@@ -349,6 +350,7 @@ const getSitemapInfo = async () => {
 const createSitemap = async () => {
   console.group("createSitemap");
   await getSitemapInfo()
+  const homeHref = `${getDocsRelativeRoot()}index.html`;
   const sitemap = `
     <input type="checkbox" id="toggle_sitemap" class="nav-toggle" />
     <label tabindex="0" for="toggle_sitemap" class="nav-label">
@@ -356,7 +358,7 @@ const createSitemap = async () => {
       <span class="nav-close">&#x2715;</span>
     </label>
     <hr/>
-    <a id="link_Home" href="./../../index.html" title="Home">Home</a>
+    <a id="link_Home" href="${homeHref}" title="Home">Home</a>
     <div id="nav-toc"></div>
     <div id='sitemap-content'>  
     ${(w.sitemap_content || []).map((x, i) => {
