@@ -88,7 +88,7 @@ export const handleRoute = async () => {
   }
 
   // One-time initialization: service worker and template import
-  w.meta || (!isLocal && registerServiceWorker());
+  w.meta || (!isLocal && !preRendering && registerServiceWorker());
   w.toast ||
     (await import(/* webpackChunkName: "template" */ "./refresh_template.js"));
 

@@ -1,0 +1,579 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head id="head"><meta charset="UTF-8"><title>Looking at Data</title><link rel="license" href="https://opensource.org/licenses/MIT"><link rel="canonical" href="https://Looking at Data.com/labs/09_looking_at_data"><meta http-equiv="Content-Security-Policy" content="img-src * data:; connect-src *;"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1"><meta name="author" content=""><meta name="description" content=""><meta name="theme-color" content=""><meta name="robots" content="index, follow"><meta property="og:url" content="http://www.Looking at Data.com/labs/09_looking_at_data"><meta property="og:title" content="Looking at Data"><meta property="og:description" content="Multiple ways to look at data "><meta property="og:type" content=""><meta property="og:site_name" content=""><meta property="og:locale" content="en_US"><meta property="op:markup_version" content="v1.0"><meta property="fb:article_style" content="default"><meta property="og:image" content=""><meta name="twitter:card" content="Multiple ways to look at data "><meta name="twitter:site" content=""><meta name="twitter:creator" content=""><style>:root{--canvas:227,227,232;--background:209,209,250;--foreground:240,240,255;--near-black:0,72,72;--near-white:226,226,238;--max-width:min(800px,100vw)}*{box-sizing:border-box;font-family:Georgia,TimesNewRoman,Times,Times New Roman,serif;position:relative;-webkit-user-select:text;-moz-user-select:text;user-select:text}html{font-size:1.125em;line-height:1.625em}body{background:linear-gradient(180deg,#e3e3e8,#e3e3e8);background:linear-gradient(180deg,rgba(var(--canvas)),rgba(var(--canvas)));margin:0;overflow-x:hidden}::-moz-selection{background:#d1d1fa;background:rgb(var(--background))}::selection{background:#d1d1fa;background:rgb(var(--background))}h1,h2{text-shadow:none;transition:all .3s ease-in-out}h2:hover{text-shadow:1px 1px 45px #004848;text-shadow:1px 1px 45px rgb(var(--near-black));transition:all .4s ease-in-out}h1,h2,h3,h4{align-items:center;color:#004848;color:rgb(var(--near-black));font-weight:600;justify-content:space-between}h3,h4{font-size:1.25em}a{color:#004848;color:rgb(var(--near-black))}.anchor{left:0;text-decoration:none}.anchor,input{position:absolute}input{clip:rect(0 0 0 0);overflow:hidden;white-space:nowrap;width:1px}li>input{clip:auto;max-height:23px;overflow:visible;position:inherit;white-space:normal;width:auto}a:before{background-color:#d1d1fa;background-color:rgb(var(--background));content:"";height:0;left:0;position:absolute;transition:all .3s ease-in-out;width:100%;z-index:-1}a:hover:before{bottom:0;height:8px;height:100%}span{font-family:inherit}p{display:block;word-break:break-word}li p,p{margin-bottom:0;margin-top:0}li a{margin-left:4px}pre{background:#d1d1fa;background:rgb(var(--background));line-height:1.2em;max-width:calc(min(800px,100vw) - 70px);max-width:calc(var(--max-width) - 70px);overflow:auto;padding:12px}blockquote{background-color:#d1d1fa;background-color:rgb(var(--background));border-left:8px solid #f0f0ff;border-left:8px solid rgb(var(--foreground));font-style:italic;margin:32px 24px;padding:12px 5px 1px;position:relative}blockquote:before{color:#f0f0ff;color:rgb(var(--foreground));content:"“";font-size:4em;left:10px;padding-top:6px;position:absolute;top:-12px}ul{padding:0}ul ul{padding-left:10px}ul>li{display:flex;list-style-type:none}ul>li:before{content:"-";margin-right:10px}.details details:nth-child(odd),details details:nth-child(2n),details:nth-child(odd){background:rgba(209,209,250,.4);background:rgba(var(--background),.4)}.details details:nth-child(2n),details details:nth-child(odd){background:rgba(227,227,232,.4);background:rgba(var(--canvas),.4)}details>summary{list-style:none;position:relative}summary:hover .anchor:after{content:"🔗";height:.8em}details>summary:before{content:"⇨";display:inline-block;margin-right:8px;transition:transform .3s ease}details[open]>summary:before{transform:rotate(90deg)}details>summary>*{display:inline}summary{cursor:pointer;font-size:1.25em;padding:1rem 0;text-align:center}hr{border-top:1px solid rgba(0,72,72,.1);border-top:1px solid rgba(var(--near-black),.1);margin:1px 1px 10px}img{background:repeating-linear-gradient(45deg,#d1d1fa,#d1d1fa 10px,#f0f0ff 0,#f0f0ff 20px);background:repeating-linear-gradient(45deg,rgb(var(--background)),rgb(var(--background)) 10px,rgb(var(--foreground)) 10px,rgb(var(--foreground)) 20px);border:2px dashed #004848;border:2px dashed rgb(var(--near-black));display:inline-block;-o-object-fit:contain;object-fit:contain}</style><style>:root {
+  --radial1: radial-gradient(
+      at 52% 13%,
+      hsla(215, 77%, 79%, 1) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 40% 33%, hsla(173, 63%, 76%, 1) 0px, transparent 50%),
+    radial-gradient(at 15% 92%, hsla(166, 97%, 69%, 1) 0px, transparent 50%),
+    radial-gradient(at 97% 78%, hsla(229, 94%, 76%, 1) 0px, transparent 50%),
+    radial-gradient(at 19% 52%, hsla(27, 99%, 69%, 1) 0px, transparent 50%),
+    radial-gradient(at 68% 16%, hsla(339, 76%, 78%, 1) 0px, transparent 50%),
+    radial-gradient(at 25% 1%, hsla(202, 73%, 63%, 1) 0px, transparent 50%);
+  /* transparent text w animated lin gradient bg */
+
+
+  /* shadows should double blur than their y's */
+  /* Borders should contrast both interior and int/exterior of container */
+  --filterdropshadowover: drop-shadow(4px 4px 10px rgb(var(--foreground)));
+  --filterdropshadowunder: drop-shadow(4px -4px 1px rgb(var(--background)));
+
+  /* Footer Bars, Overwritten with js */
+  --path1: path("M 0 0 L 0 2 L 0 0");
+  --path2: 0;
+
+  /*Foot and Header Gradients And Shadows */
+  --bgheader: linear-gradient(
+    70deg,
+    rgba(var(--background), 0.5),
+    rgba(var(--foreground), 0.5),
+    rgba(var(--background), 0.5)
+  );
+  --bgfooter: linear-gradient(
+    70deg,
+    rgba(var(--background), 0.6),
+    rgba(var(--foreground), 0.6),
+    rgba(var(--background), 0.6)
+  );
+}
+h1 > a::selection {
+  color: rgb(var(--near-black));
+}
+h1 > a {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--near-black)),
+    rgba(var(--near-black), 0.4),
+    rgb(var(--near-black)),
+    rgba(var(--near-black), 0.4)
+  );
+  background-size: 300% 100%;
+  background-clip: text;
+  color: transparent;
+  animation: gradient 5s ease infinite;
+}
+@keyframes gradient {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+h2 {
+  filter: url(#header);
+}
+ 
+
+#header {
+  /* center and size to header_nav*/
+  width: fit-content;
+  margin: 60px auto 30px auto;
+  padding: 12px;
+  text-align: center;
+  z-index: 9;
+}
+#header_bg_wrapper {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  filter: var(--filterdropshadowover);
+}
+#header_bg {
+  border-radius: 50px;
+  width: 100%;
+  height: 100%;
+  background: var(--bgheader);
+  clip-path: polygon(
+    33% 38%,
+    0 43%,
+    0 0,
+    100% 0,
+    100% 43%,
+    66% 38%,
+    66% 46%,
+    100% 60%,
+    100% 100%,
+    0 100%,
+    0 60%,
+    33% 46%
+  );
+  animation: spin-header 1s linear alternate infinite;
+  transition-duration: 2s;
+}
+#header:hover #header_bg {
+  clip-path: polygon(
+    0% 15%,
+    15% 15%,
+    15% 0%,
+    85% 0%,
+    85% 15%,
+    100% 15%,
+    100% 85%,
+    85% 85%,
+    85% 100%,
+    15% 100%,
+    15% 85%,
+    0% 85%
+  );
+}
+@keyframes spin-header {
+  from {
+    transform: rotate(-4deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+@keyframes wiggle {
+  /*used by intersection observer in main.js*/
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(5px, 0);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.controls_container {
+  display: flex;
+  width: min(100vw, 800px);
+  margin: 0px auto 30px auto;
+  padding: 0px 25px;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+
+
+#toc{
+  max-width: calc(var(--max-width) - 40px);
+  margin: auto;
+  margin-bottom: 32px; 
+  .toc-link { 
+    line-height: 1.6rem;
+    padding-left: 0px;
+    font-size: 1.1em;
+    display: block;
+  }
+  .layer-1 {
+    padding-left: 0px;
+    font-size: 1rem;
+  }
+  .layer-2 {
+    padding-left: 40px;
+    font-size: .9rem;
+  }
+  .layer-3 {
+    padding-left: 80px;
+    font-size: 0.9rem;
+  }
+}
+
+
+#footer {
+  height: 200px;
+  width: min(100vw, 800px);
+  margin: 30px auto 0px auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+#thanks {
+  color: rgb(var(--near-black));
+  font-size: 1.25em;
+  padding: 10px;
+  text-align: center;
+}
+#thanks a {
+  font-size: 0.75em;
+}
+#footer_bg_wrapper {
+  position: absolute;
+  top: 0px;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  filter: var(--filterdropshadowunder);
+}
+#footer_bg {
+  /* This is the animation */
+  width: 100%;
+  height: 100%;
+  background: var(--bgfooter);
+}
+
+#content {
+  max-width: var(--max-width);
+  margin: auto;
+}
+
+#content img {
+  max-width: -webkit-fill-available;
+}
+
+details > details > summary { 
+  text-align: left;
+} 
+/* #content > div > *,
+#content > *, */
+details{
+  padding: 12px 1rem;
+
+  details{
+    /* border-left: 1px solid rgb(var(--near-black)); */
+    padding: 12px 0px 12px 16px;
+    margin: 0px;
+  }
+
+}  
+#content > div{ padding: 0px; }
+ 
+@media only screen and (max-width: 800px) {
+  details > details,
+  #content > * {
+    padding: 0rem 1rem; 
+  }
+  #content {
+    border-width: 28px 0px 28px 8px;
+  }
+  #head_separator {
+    display: none;
+  }
+  .notebox:checked + .inline-note {
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+  #breadcrumbs {
+    padding-bottom: 10px;
+  }
+}
+
+.twitter-tweet {
+  margin: auto;
+}
+
+#light,
+#expand,
+.notelbl {
+  cursor: pointer;
+}
+#light::before {
+  content: "🌜 Dark mode";
+  display: block;
+}
+html {
+  transition: filter 0.3s ease-in-out;
+}
+html:has(#lightmode:checked) {
+  filter: invert(100%);
+}
+html:has(#lightmode:checked) #light::before {
+  content: "🌞 Light mode";
+}
+
+#audio {
+  display: flex;
+  align-items: center;
+  margin: 0 0 0 -7px;
+}
+audio {
+  height: 40px;
+  margin-left: -6px;
+}
+audio::-webkit-media-controls-panel {
+  background: rgba(var(--background), 0.5);
+}
+#audio > span {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  display: inline-block;
+  margin-right: 5px;
+}
+.note {
+  position: relative;
+  display: inline-block;
+}
+.notelbl {
+  color: rgb(var(--near-black));
+}
+.inline-note {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  min-width: 250px;
+   max-width: 400px;
+  border: solid rgb(var(--near-black));    
+  padding: 15px;
+  z-index: 1000;
+  margin: 0;
+  visibility: hidden;
+  opacity: 0;
+  border-width: 10px 2px 0px 2px;
+  border-radius: 7% 7% 0% 0%;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background: rgb(var(--canvas));
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+} 
+
+details.ipynb{
+  border: 2px solid rgb(var(--near-black));
+  padding:0px;
+  width: 100%;
+  max-width: 250px;
+  overflow: hidden;
+  transition: max-width 0.4s ease;
+  summary{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    background: rgb(var(--near-black));
+    color: rgb(var(--near-white));
+    padding: 10px 16px;
+    border-bottom: 2px solid rgb(var(--near-black));
+    font-weight: bold;
+    transition: padding 0.4s ease;
+  }
+ 
+  summary::after {
+    content: "Show";
+    margin-left: 1rem;
+    white-space: nowrap;
+  }
+  &[open] {
+    max-width: 100%;
+  }
+  &[open] summary{
+    padding: 12px 20px;
+  }
+  &[open] summary::after {
+    content: "Hide";
+  }
+} 
+
+details.ipynb-input{ 
+  summary::after {
+    content: "Show Code"; 
+  }
+  &[open] summary::after {
+    content: "Hide Code";
+  }
+}
+.notebox {
+  display: none;
+}
+
+.notebox:checked ~ .inline-note {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+ 
+.tip::before, .info::before, .warning::before, .caution::before, .important::before {
+  font-size:1.5em;  display:inline-block; margin:10px 10px 10px 0px;
+}  
+.tip, .info, .important, .warning, .caution {
+  padding:  10px 20px;
+  margin: 10px 0px;
+  border-radius: 5px;
+  /* display:inline-flex;  */
+  align-items:center;
+  color:rgb(var(--near-white));
+  * { display: inline; }
+  a{ color:rgb(var(--near-white)) }
+}
+.tip::before { content: "💡"; }
+.info::before { content: "ℹ️"; }
+.important::before { content: "❗"; }
+.warning::before { content: "⚡"; }
+.caution::before { content: "⚠️"; }
+.tip{background:rgba(var(--near-black),1);}
+.info{background:rgba(8, 122, 187,1)} 
+.important{background:rgba(0, 139, 139, 1);}
+.warning{background:rgba(139, 0, 0, 1);}
+.caution{background:rgba(255, 165, 0, 1);   color: rgb(var(--near-black)); }
+ 
+
+ 
+ 
+#expand::before {
+  content: "➕ Expand notes";
+}
+body:has(#expandmode:checked) #expand::before {
+  content: "➖ Collapse notes";
+}
+body:has(#expandmode:checked) .inline-note {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+#toast_container {
+  display: flex;
+  bottom: 15%;
+  position: fixed;
+  transform: scale(0);
+  width: 100vw;
+  z-index: 1;
+  justify-content: center;
+}
+#toast_container > p {
+  padding: 10px;
+  border-radius: 50px;
+  width: fit-content;
+  background: rgb(var(--near-black));
+  color: rgb(var(--foreground));
+}
+
+@keyframes toast {
+  0% {
+    transform: scale(0);
+  }
+  20% {
+    transform: scale(1);
+  }
+  80% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+#page_transition {
+  position: fixed;
+  z-index: 100;
+  opacity: 0;
+  font-size: 1.25em;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50px;
+  background: var(--radial1);
+  background-size: 100% 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(var(--near-black));
+}
+
+@keyframes page_transition {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.card {
+  flex: 1 1 250px; /* Default minimum width of 250px */
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+@media (max-width: 1200px) { .card {    flex: 1 1 300px;   }}
+@media (max-width: 800px) {  .card {    flex: 1 1 320px;  }}
+@media (max-width: 450px) {  .card {    width: 100%;   }}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+.card a {
+  display: block; 
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.card a:hover {  color: #0056b3;}</style></head><body data-template="article"><input type="checkbox" id="toggle_sitemap" aria-label="sitemap"><div id="sitemap" style="visibility: hidden;"></div><div id="page_transition"><p>Don't Look! I'm changing!</p></div><div id="toast_container"><p>URL Copied</p></div><div id="header"><div id="header_bg_wrapper"><div id="header_bg"></div></div><h1><a href="./../../index.html" id="Charles_Karp...355805">Charles Karpati</a> <span id="head_separator">| </span><a href="#title" id="title">Looking at Data</a></h1><p id="summary">Multiple ways to look at data</p></div><div class="controls_container"><div id="breadcrumbs" style="display: none;"></div><div><label for="lightmode" id="light"><input type="checkbox" id="lightmode" aria-label="lightmode"></label> <label for="expandmode" id="expand" style="display: none;"><input type="checkbox" id="expandmode" aria-label="expandmode"></label><p id="audio" title="undefined" style="display: none;"><span><audio controls="" controlslist="nodownload noplaybackrate" preload="none" loop="" src="undefined"></audio></span>Audio Version</p></div></div><div id="toc" style="display: none;"></div><main id="content"><p><a href="https://mybinder.org/v2/gh/karpatic/karpatic/main?filepath=src%2Fipynb%2Fdatalabs%2F01_scooter_exploration.ipynb" target="_blank" rel="nosopener noreferrer nofollow" id="782228"><img src="https://mybinder.org/badge_logo.svg" alt="Binder"></a><a href="https://colab.research.google.com/github/karpatic/karpatic/blob/main/src/ipynb/datalabs/01_scooter_exploration.ipynb" target="_blank" rel="nosopener noreferrer nofollow" id="366122"><img src="https://pete88b.github.io/fastpages/assets/badges/colab.svg" alt="Binder"></a><a href="https://github.com/karpatic/karpatic/blob/main/src/ipynb/datalabs/01_scooter_exploration.ipynb" target="_blank" rel="nosopener noreferrer nofollow" id="117345"><img src="https://pete88b.github.io/fastpages/assets/badges/github.svg" alt="Binder"></a><a href="https://github.com/ellerbrock/open-source-badges/" target="_blank" rel="nosopener noreferrer nofollow" id="284430"><img src="https://badges.frapsoft.com/os/v3/open-source.svg?v=103" alt="Open Source Love svg3"></a></p><p><a href="https://github.com/karpatic/karpatic/blob/main/LICENSE" target="_blank" rel="nosopener noreferrer nofollow" id="251692"><img src="https://img.shields.io/npm/l/all-contributors.svg?style=flat" alt="NPM License"></a><a href="https://karpatic.github.io" target="_blank" rel="nosopener noreferrer nofollow" id="640595"><img src="http://img.shields.io/badge/Status-Active-green.svg" alt="Active"></a><a href="" target="_blank" rel="nosopener noreferrer nofollow" id="621208"><img src="https://img.shields.io/github/last-commit/karpatic/karpatic.svg?style=flat" alt="GitHub last commit"></a></p><br><p><a href="https://github.com/karpatic/karpatic" target="_blank" rel="nosopener noreferrer nofollow" id="432212"><img src="https://img.shields.io/github/stars/karpatic/karpatic.svg?style=social&amp;label=Star" alt="GitHub stars"></a><a href="https://github.com/karpatic/karpatic" target="_blank" rel="nosopener noreferrer nofollow" id="155822"><img src="https://img.shields.io/github/watchers/karpatic/karpatic.svg?style=social&amp;label=Watch" alt="GitHub watchers"></a><a href="https://github.com/karpatic/karpatic" target="_blank" rel="nosopener noreferrer nofollow" id="297525"><img src="https://img.shields.io/github/forks/karpatic/karpatic.svg?style=social&amp;label=Fork" alt="GitHub forks"></a><a href="https://github.com/karpatic/karpatic" target="_blank" rel="nosopener noreferrer nofollow" id="244657"><img src="https://img.shields.io/github/followers/karpatic.svg?style=social&amp;label=Follow" alt="GitHub followers"></a></p><br><p>Today we will run through a few experiments to work with data</p><p>We will be using a library created by bnia among others</p><p>Lets start from where we left off last time</p><p><a href="https://seaborn.pydata.org/examples/horizontal_boxplot.html" target="_blank" rel="nosopener noreferrer nofollow" id="Httpsseaborn...257512">https://seaborn.pydata.org/examples/horizontal_boxplot.html</a></p><p>What we want is 1 record for every year and every CSA as a column. To do this, transpose the dataset. Set the CSA labels (first row) as our columns, relabel the index (for clarity) and cast our datatypes.</p><p>What we want is 1 record for every year and every CSA as a column. To do this, transpose the dataset. Set the CSA labels (first row) as our columns, relabel the index (for clarity) and cast our datatypes.</p><p>We want to create a linear regression for each CSA using {X: year, Y: value} for a given indicator</p><p>We may need to normalize the data for this to be useable</p><p><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.hist.html" target="_blank" rel="nosopener noreferrer nofollow" id="Httpspandasp...54416">https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.hist.html</a></p></main><div id="footer"><p id="thanks">Thank's for visiting! - <a href="./../../legal.html" id="Terms_of_use371590">Terms of use</a></p><div id="footer_bg_wrapper"><div id="footer_bg"></div></div></div><script src="/build/index.57.b744818c540cb864b852.js"></script><script>function loadLazy() {
+    w.loadOnce || (
+      ( (document.head || d).appendChild(document.createElement("script")).src = origin + "/rsc/templates/article_lazy.js" )
+      && (w.loadOnce=true)
+    );
+  }
+
+  [
+    [["scroll", "mousedown", "touchstart"], w, loadLazy, { once: true }],
+  ].forEach((evt) =>
+    evt[0].forEach((type) =>
+      evt[1].addEventListener(type, evt[2], evt[3] || { passive: false })
+    )
+  );
+
+  // Intersection Observer for TOC line-through and Scroll-shaking
+  w.activeHeader = null;
+  w.observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => { 
+      let e = entry.target;
+      let txt = "0.5s ease-in-out 0s 2 normal none running wiggle";
+      let pos = e.getBoundingClientRect().top;
+      let el =
+        (e.parentNode?.nodeName == "SUMMARY" && e.parentNode.style) || e.style;
+      el.animation = txt;
+      if (!entry.isIntersecting) return (el.animation = "");
+      if (pos < 300 || pos > 300) { 
+        w.activeHeader && (
+          (w.activeHeader.style.textDecoration = "none"),
+          (w.activeHeader.style.animation = '')
+        ); // unset previous active TOC header
+        let tocLink = document.querySelector(`#toc-content a[href="#${e.id}"]`);
+        tocLink &&
+          ((tocLink.style.animation = txt),
+          (tocLink.style.textDecoration = "line-through"));
+        w.activeHeader = tocLink;
+      }
+    });
+  });
+  (w.loadObserver = (t) => {
+    document.querySelectorAll("h2,h3,h4").forEach((el) => observer.observe(el));
+  })();</script></body></html>

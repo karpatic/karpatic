@@ -153,6 +153,20 @@ const shouldServeSpaRoute = ({ pathname, publicPath }) => {
   return ext === "" || ext === ".html";
 };
 
+const normalizeDocsAssetPath = pathname => {
+  if (!pathname?.startsWith("/docs/")) return pathname;
+
+  const assetRoots = ["/build/", "/rsc/", "/images/", "/audio/", "/cdn/"];
+  for (const assetRoot of assetRoots) {
+    const assetIndex = pathname.indexOf(assetRoot);
+    if (assetIndex > 0) {
+      return pathname.slice(assetIndex);
+    }
+  }
+
+  return pathname;
+};
+
 const crawl = async (opt) => {
   const {
     options,
@@ -429,12 +443,22 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
     const spaPath = path.join(sourceDir, options.spa.replace(/^\/+/, ''));
     const app = express()
       .use((req, res, next) => {
+        const originalPath = req.path;
+        const normalizedPath = normalizeDocsAssetPath(originalPath);
+        if (normalizedPath !== originalPath) {
+          req.url = normalizedPath + req.url.slice(originalPath.length);
+        }
+        next();
+      })
+      .use((req, res, next) => {
         if (shouldServeSpaRoute({ pathname: req.path, publicPath })) {
           res.sendFile(spaPath);
           return;
         }
         next();
       })
+      // Serve root-mounted assets like /build/* during /docs/* prerender crawls.
+      .use(serveStatic(sourceDir))
       .use(publicPath, serveStatic(sourceDir))
       .use(fallback(options.spa, { root: sourceDir }));
     const server = require("http").createServer(app);
