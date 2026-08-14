@@ -52,18 +52,15 @@
   <div id="footer_bg_wrapper"><div id="footer_bg"></div></div>
 </div>
 <script>
-  function loadLazy() {
-    w.loadOnce || (
-      ( (document.head || d).appendChild(document.createElement("script")).src = origin + "/rsc/templates/article_lazy.js" )
-      && (w.loadOnce=true)
-    );
-  }
+  function loadLazy() { !!window.lazyLoaded || ( (document.head || d).appendChild(document.createElement("script")).src = origin + "/rsc/templates/article_lazy.js" ) }
+
 
   [
     [["scroll", "mousedown", "touchstart"], w, loadLazy, { once: true }],
   ].forEach((evt) =>
-    evt[0].forEach((type) =>
+    evt[0].forEach((type) =>{
       evt[1].addEventListener(type, evt[2], evt[3] || { passive: false })
+    }
     )
   );
 

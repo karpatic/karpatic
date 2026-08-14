@@ -19,7 +19,7 @@ const minify = require("html-minifier").minify;
 // This script prerenders SPA routes by crawling the 'entry' pages for relative links.
 // Express serves the the SPA file for all unmatched routes.
 // Puppeteer loads these routes to generate static HTML files for each page.
-// 
+//
 // Does not account for hydration drift.
 //
 
@@ -34,7 +34,7 @@ const defaultOptions = {
   replaceEntryWPrerender: true,
   clearEntries: false, // RM entry file forcing use of spa fallback on it. Not really needed as wp rebuilds the page.
   clearDestination: true, // RM existing files in destination dir.
-  destination: "./docs", 
+  destination: "./docs",
   spa: "404.html", // fallback page used if file not found.
   publicPath: "/docs/",
   userAgent: "Prerendererest", // source can use this to detect prerenderer env.
@@ -42,8 +42,8 @@ const defaultOptions = {
   puppeteerArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
   puppeteer: { cache: false },
   minifyHtml: {
-    collapseWhitespace: true, 
-    removeComments: true
+    collapseWhitespace: true,
+    removeComments: true,
   },
   viewport: { width: 480, height: 850 },
   skipThirdPartyRequests: false,
@@ -57,6 +57,9 @@ const defaultOptions = {
   skipExistingCheck: true, // false to prevent double rendering.
   keepPagesOpen: false,
   rewriteRules: null,
+  sitemapPath: "./sitemap.txt",
+  sitemapBaseUrl: "https://charleskarpati.com",
+  useExistingSitemap: false,
 };
 
 const resolvePuppeteerExecutablePath = (options = {}) => {
@@ -88,18 +91,16 @@ const defaults = userOptions => {
 
 const toRouteKey = route => {
   const normalizedRoute = (route || "").split("?")[0].split("#")[0];
-  return (
-    normalizedRoute === "/"
-      ? "index"
-      : normalizedRoute
-          .replaceAll("/docs/", "/")
-          .replaceAll("./", "")
-          .replaceAll("../", "")
-          .replace(/\.html$/i, "")
-          .replace(/^\//, "")
-          .replace("build/", "")
-          .replace(/\/$/, "")
-  );
+  return normalizedRoute === "/"
+    ? "index"
+    : normalizedRoute
+        .replaceAll("/docs/", "/")
+        .replaceAll("./", "")
+        .replaceAll("../", "")
+        .replace(/\.html$/i, "")
+        .replace(/^\//, "")
+        .replace("build/", "")
+        .replace(/\/$/, "");
 };
 
 const hasLocalContent = ({ route, sourceDir }) => {
@@ -129,9 +130,7 @@ const routeHasChildren = ({ route, sourceDir }) => {
 };
 
 const resolveOutputPath = ({ route, destinationDir, publicPath, sourceDir }) => {
-  let routePath = route
-    .replace(publicPath || "/", "")
-    .replace(/^\/+/, "");
+  let routePath = route.replace(publicPath || "/", "").replace(/^\/+/, "");
 
   if (!routePath) {
     return path.join(destinationDir, "index.html");
@@ -167,22 +166,104 @@ const normalizeDocsAssetPath = pathname => {
   return pathname;
 };
 
-const crawl = async (opt) => {
-  const {
-    options,
-    basePath,
-    beforeFetch,
-    afterFetch,
-    onEnd,
-    publicPath,
-    sourceDir
-  } = opt;
+const sitemapKey = sitemapUrl => {
+  try {
+    const parsedUrl = new URL(sitemapUrl);
+    let pathname = parsedUrl.pathname.replace(/\/index\.html$/i, "/").replace(/\.html$/i, "");
+    pathname = pathname === "/" ? pathname : pathname.replace(/\/$/, "");
+    return `${parsedUrl.hostname.toLowerCase()}${pathname}`;
+  } catch {
+    return sitemapUrl.trim();
+  }
+};
+
+const normalizeSitemapPublicPath = publicPath => {
+  let normalizedPublicPath = publicPath || "/";
+  if (!normalizedPublicPath.startsWith("/")) normalizedPublicPath = `/${normalizedPublicPath}`;
+  if (!normalizedPublicPath.endsWith("/")) normalizedPublicPath = `${normalizedPublicPath}/`;
+  return normalizedPublicPath;
+};
+
+const routeToSitemapUrl = ({ route, options }) => {
+  const baseUrl = (options.sitemapBaseUrl || "").replace(/\/+$/, "");
+  if (!baseUrl || !route) return null;
+
+  let pathname = route.split("?")[0].split("#")[0];
+  if (!pathname.startsWith("/")) pathname = `/${pathname}`;
+
+  const publicPath = normalizeSitemapPublicPath(options.publicPath);
+  if (publicPath !== "/" && !pathname.startsWith(publicPath)) {
+    pathname = `${publicPath.replace(/\/+$/, "")}/${pathname.replace(/^\/+/, "")}`;
+  }
+
+  return `${baseUrl}${pathname.replace(/\/{2,}/g, "/")}`;
+};
+
+const shouldAddRouteToSitemap = ({ route, options }) => {
+  const pathname = (route || "").split("?")[0].split("#")[0];
+  const { ext } = path.parse(pathname);
+  if (ext && ext !== ".html") return false;
+
+  const publicPath = normalizeSitemapPublicPath(options.publicPath);
+  const spaRoute = `/${options.spa.replace(/^\/+/, "")}`;
+  const routeWithoutPublicPath = pathname.startsWith(publicPath)
+    ? `/${pathname.slice(publicPath.length).replace(/^\/+/, "")}`
+    : pathname;
+
+  return routeWithoutPublicPath !== spaRoute;
+};
+
+const updateSitemap = ({ routes, options, fs }) => {
+  const sitemapPath = options.sitemapPath && String(options.sitemapPath).trim();
+  if (!sitemapPath) return;
+
+  const urls = [];
+  const keys = new Set();
+  const addUrl = sitemapUrl => {
+    if (!sitemapUrl) return false;
+    const trimmedUrl = sitemapUrl.trim();
+    if (!trimmedUrl) return false;
+
+    const key = sitemapKey(trimmedUrl);
+    if (keys.has(key)) return false;
+
+    keys.add(key);
+    urls.push(trimmedUrl);
+    return true;
+  };
+
+  const resolvedSitemapPath = path.resolve(process.cwd(), sitemapPath);
+  if (options.useExistingSitemap) {
+    const inputPath = resolvedSitemapPath;
+    if (fs.existsSync(inputPath)) {
+      fs
+        .readFileSync(inputPath, "utf8")
+        .split(/\r?\n/)
+        .forEach(addUrl);
+    }
+  }
+
+  let added = 0;
+  for (const route of routes) {
+    if (!shouldAddRouteToSitemap({ route, options })) continue;
+    if (addUrl(routeToSitemapUrl({ route, options }))) added++;
+  }
+
+  const sitemapContent = `${urls.join("\n")}\n`;
+  fs.mkdirSync(path.dirname(resolvedSitemapPath), { recursive: true });
+  fs.writeFileSync(resolvedSitemapPath, sitemapContent);
+
+  console.log(`🗺️  Updated sitemap with ${added} prerendered route(s): ${sitemapPath}`);
+};
+
+const crawl = async opt => {
+  const { options, basePath, beforeFetch, afterFetch, onEnd, publicPath, sourceDir } = opt;
   let streamClosed = false;
   const errorReport = {
     pageErrors: [],
     consoleErrors: [],
     httpErrors: [],
-    fetchErrors: []
+    fetchErrors: [],
   };
 
   // exit process
@@ -191,11 +272,11 @@ const crawl = async (opt) => {
     process.exit(1);
   };
   process.on("SIGINT", onSigint);
- 
+
   // Exit on unhandled promise rejections
   process.on("unhandledRejection", error => {
     console.log("🔥  UnhandledPromiseRejectionWarning", error);
-    errorReport.pageErrors.push({ route: 'global', error: error.message });
+    errorReport.pageErrors.push({ route: "global", error: error.message });
   });
 
   const queue = [];
@@ -206,9 +287,9 @@ const crawl = async (opt) => {
   const baseOrigin = new URL(basePath).origin;
 
   const addToQueue = newUrl => {
-    if(!newUrl) return;
-    if(newUrl.includes('mailto:')) return;
-    if(newUrl.includes('javascript:')) return;
+    if (!newUrl) return;
+    if (newUrl.includes("mailto:")) return;
+    if (newUrl.includes("javascript:")) return;
     let parsedUrl;
     try {
       parsedUrl = new URL(newUrl, basePath);
@@ -218,8 +299,8 @@ const crawl = async (opt) => {
 
     if (!/^https?:$/.test(parsedUrl.protocol)) return;
 
-    if(options.rewriteRules){
-      for(const [from, to] of options.rewriteRules){
+    if (options.rewriteRules) {
+      for (const [from, to] of options.rewriteRules) {
         if (parsedUrl.pathname.startsWith(from)) {
           parsedUrl.pathname = parsedUrl.pathname.replace(from, to);
         }
@@ -259,13 +340,13 @@ const crawl = async (opt) => {
     args: options.puppeteerArgs,
     executablePath: resolvedExecutablePath,
     ignoreHTTPSErrors: options.puppeteerIgnoreHTTPSErrors,
-    handleSIGINT: false
+    handleSIGINT: false,
   });
 
-  // 
+  //
   const fetchPage = async pageUrl => {
     const route = pageUrl.replace(basePath, "");
-  
+
     let skipExistingFile = false;
     const routePath = route.replace(/\//g, path.sep);
     const { ext } = path.parse(routePath);
@@ -274,23 +355,29 @@ const crawl = async (opt) => {
       const filePath = path.join(sourceDir, routePath);
       console.log(`🕸 Inspecting File ${filePath}`);
       skipExistingFile = nativeFs.existsSync(filePath);
+    } else {
     }
-    else{ 
-    }
-  
+
     // Crawl the page if it's not already crawled and it's not a third-party URL
     if (!skipExistingFile) {
-        console.log(`🕸 Pulling file ${route}`);
+      console.log(`🕸 Pulling file ${route}`);
       try {
         const page = await browser.newPage();
         const client = await page.target().createCDPSession();
-        await client.send('ServiceWorker.disable');
+        await client.send("ServiceWorker.disable");
         await page.setCacheEnabled(options.puppeteer.cache);
         if (options.viewport) await page.setViewport(options.viewport);
         if (options.skipThirdPartyRequests) await skipThirdPartyRequests({ page, options, basePath });
-        enableLogging({ page, options, route, onError: (error) => { 
-          errorReport.pageErrors.push({ route, error }); 
-        }, sourcemapStore, errorReport });
+        enableLogging({
+          page,
+          options,
+          route,
+          onError: error => {
+            errorReport.pageErrors.push({ route, error });
+          },
+          sourcemapStore,
+          errorReport,
+        });
         if (beforeFetch) await beforeFetch({ page, route });
         await page.setUserAgent(options.userAgent);
         const tracker = createTracker(page);
@@ -305,8 +392,8 @@ const crawl = async (opt) => {
         if (options.waitFor) await page.waitFor(options.waitFor);
         if (options.crawl) {
           console.log(`🕸 Crawling Rendered Page: ${route}`);
-            const links = await getLinks({ page });
-            links.forEach(addToQueue);
+          const links = await getLinks({ page });
+          links.forEach(addToQueue);
         }
         if (afterFetch) await afterFetch({ page, route, browser, addToQueue });
         if (!options.keepPagesOpen) {
@@ -319,10 +406,9 @@ const crawl = async (opt) => {
         console.log(`🔥  error at ${route}`, e);
         errorReport.fetchErrors.push({ route, error: e.message });
       }
-    } 
-    else{
-        console.log(`DID NOT CRAWL ${route}`);
-      }
+    } else {
+      console.log(`DID NOT CRAWL ${route}`);
+    }
     processed++;
     if (enqued === processed) {
       streamClosed = true;
@@ -335,9 +421,7 @@ const crawl = async (opt) => {
   }
 
   while (queue.length > 0) {
-    await Promise.all(
-      queue.splice(0, options.concurrency).map(fetchPage)
-    );
+    await Promise.all(queue.splice(0, options.concurrency).map(fetchPage));
   }
 
   if (!options.keepPagesOpen) {
@@ -345,52 +429,55 @@ const crawl = async (opt) => {
   } else {
     console.log("ℹ️  keepPagesOpen enabled: browser left running.");
   }
-  
+
   // Print error report
-  console.log('\n📊 CRAWLING COMPLETE - ERROR REPORT:');
-  console.log('=====================================');
-  
-  const totalErrors = errorReport.pageErrors.length + errorReport.consoleErrors.length + 
-                     errorReport.httpErrors.length + errorReport.fetchErrors.length;
-  
+  console.log("\n📊 CRAWLING COMPLETE - ERROR REPORT:");
+  console.log("=====================================");
+
+  const totalErrors =
+    errorReport.pageErrors.length +
+    errorReport.consoleErrors.length +
+    errorReport.httpErrors.length +
+    errorReport.fetchErrors.length;
+
   if (totalErrors === 0) {
-    console.log('✅ No errors detected during crawling!');
+    console.log("✅ No errors detected during crawling!");
   } else {
     console.log(`❌ Total errors found: ${totalErrors}\n`);
-    
+
     if (errorReport.fetchErrors.length > 0) {
       console.log(`🔥 Fetch Errors (${errorReport.fetchErrors.length}):`);
       errorReport.fetchErrors.forEach(({ route, error }) => {
         console.log(`  - ${route}: ${error}`);
       });
-      console.log('');
+      console.log("");
     }
-    
+
     if (errorReport.pageErrors.length > 0) {
       console.log(`🔥 Page Errors (${errorReport.pageErrors.length}):`);
       errorReport.pageErrors.forEach(({ route, error }) => {
         console.log(`  - ${route}: ${error}`);
       });
-      console.log('');
+      console.log("");
     }
-    
+
     if (errorReport.consoleErrors.length > 0) {
       console.log(`🔥 Console Errors (${errorReport.consoleErrors.length}):`);
       errorReport.consoleErrors.forEach(({ route, error }) => {
         console.log(`  - ${route}: ${error}`);
       });
-      console.log('');
+      console.log("");
     }
-    
+
     if (errorReport.httpErrors.length > 0) {
       console.log(`⚠️  HTTP Errors (${errorReport.httpErrors.length}):`);
       errorReport.httpErrors.forEach(({ route, error }) => {
         console.log(`  - ${route}: ${error}`);
       });
-      console.log('');
+      console.log("");
     }
   }
-  
+
   onEnd && onEnd();
 };
 
@@ -417,10 +504,10 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
   // Clear entry files to force SPA fallback rendering
   if (options.clearEntries) {
     console.log("🧹 clearEntries enabled: removing entry files before starting server...");
-    const uniqEntries = new Set(options.entry.map(e => e.replace(/^\/+/, '')));
+    const uniqEntries = new Set(options.entry.map(e => e.replace(/^\/+/, "")));
     for (const entryFile of uniqEntries) {
       // Avoid deleting the SPA file itself if user accidentally included it
-      if (entryFile === options.spa.replace(/^\/+/, '')) {
+      if (entryFile === options.spa.replace(/^\/+/, "")) {
         console.log(`ℹ️ Skipping SPA file (cannot clear): ${entryFile}`);
         continue;
       }
@@ -439,8 +526,8 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
   }
 
   const startServer = options => {
-    const publicPath = options.publicPath || '/';
-    const spaPath = path.join(sourceDir, options.spa.replace(/^\/+/, ''));
+    const publicPath = options.publicPath || "/";
+    const spaPath = path.join(sourceDir, options.spa.replace(/^\/+/, ""));
     const app = express()
       .use((req, res, next) => {
         const originalPath = req.path;
@@ -478,16 +565,17 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
 
   const server = startServer(options);
   const basePath = `http://localhost:${options.port}`;
+  const renderedRoutes = new Set();
 
   await crawl({
     options,
     basePath,
-    publicPath: options.publicPath || '/',
+    publicPath: options.publicPath || "/",
     sourceDir,
     beforeFetch: async ({ page }) => {
       if (options.skipThirdPartyRequests) {
         await page.setRequestInterception(true);
-        page.on('request', request => {
+        page.on("request", request => {
           if (request.url().startsWith(basePath)) {
             request.continue();
           } else {
@@ -497,11 +585,8 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
       }
     },
     afterFetch: async ({ page, route }) => {
-      const content = await page.content(); 
-      const stripped = content.replace(
-        new RegExp(`https?:\\/\\/localhost:${options.port}`, 'g'),
-        ''
-      );
+      const content = await page.content();
+      const stripped = content.replace(new RegExp(`https?:\\/\\/localhost:${options.port}`, "g"), "");
       const minifiedStripped = minify(stripped, options.minifyHtml);
       const filePath = resolveOutputPath({
         route,
@@ -510,17 +595,17 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
         sourceDir,
       });
 
- 
       // Create directories if they do not exist
       if (!fs.existsSync(path.dirname(filePath))) {
-          fs.mkdirSync(path.dirname(filePath), { recursive: true });
+        fs.mkdirSync(path.dirname(filePath), { recursive: true });
       }
       fs.writeFileSync(filePath, minifiedStripped);
+      renderedRoutes.add(route);
 
       if (options.replaceEntryWPrerender) {
         // Normalize route to compare with entries (strip leading slash)
-        const normalized = route.replace(/^\/+/, '');
-        const entrySet = new Set(options.entry.map(e => e.replace(/^\/+/, '')));
+        const normalized = route.replace(/^\/+/, "");
+        const entrySet = new Set(options.entry.map(e => e.replace(/^\/+/, "")));
         if (entrySet.has(normalized)) {
           const sourceEntryPath = path.join(sourceDir, normalized);
           try {
@@ -540,14 +625,16 @@ const run = async (userOptions, { fs } = { fs: nativeFs }) => {
       }
     },
   });
+
+  updateSitemap({ routes: renderedRoutes, options, fs });
 };
 
 if (require.main === module) {
   const args = process.argv.slice(2);
   const userOptions = {};
-  
+
   // Show help if requested
-  if (args.includes('--help') || args.includes('-h')) {
+  if (args.includes("--help") || args.includes("-h")) {
     console.log(`
 Usage: prerendererest [options]
 
@@ -578,6 +665,9 @@ Options:
   --puppeteerArgs <args>       Comma-separated Puppeteer arguments
   --puppeteerExecutablePath    Explicit browser executable path for Puppeteer
   --rewriteRules <json>        JSON array of [from,to] path prefixes to rewrite
+  --sitemapPath <path>         Write sitemap path (default: ./sitemap.txt; empty disables)
+  --sitemapBaseUrl <url>       Base URL for prerendered sitemap entries
+  --use-w-existing-sitemap     Read existing sitemap entries before writing
   -h, --help                   Show this help message
 
 Examples:
@@ -587,96 +677,101 @@ Examples:
 `);
     process.exit(0);
   }
-  
+
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--entry' && args[i + 1]) {
-      userOptions.entry = args[i + 1].split(',');
+    if (args[i] === "--entry" && args[i + 1]) {
+      userOptions.entry = args[i + 1].split(",");
       i++;
-    } 
-    else if (args[i] === '--replaceEntryWPrerender') {
+    } else if (args[i] === "--replaceEntryWPrerender") {
       userOptions.replaceEntryWPrerender = true;
-    }
-    else if (args[i] === '--clearEntries') {
+    } else if (args[i] === "--clearEntries") {
       userOptions.clearEntries = true;
-    }
-    else if (args[i] === '--source' && args[i + 1]) {
+    } else if (args[i] === "--source" && args[i + 1]) {
       userOptions.source = args[i + 1];
       i++;
-    } else if (args[i] === '--destination' && args[i + 1]) {
+    } else if (args[i] === "--destination" && args[i + 1]) {
       userOptions.destination = args[i + 1];
       i++;
-    } else if (args[i] === '--spa' && args[i + 1]) {
+    } else if (args[i] === "--spa" && args[i + 1]) {
       userOptions.spa = args[i + 1];
       i++;
-    } else if (args[i] === '--headless') {
+    } else if (args[i] === "--headless") {
       userOptions.headless = true;
-    } else if (args[i] === '--port' && args[i + 1]) {
+    } else if (args[i] === "--port" && args[i + 1]) {
       userOptions.port = parseInt(args[i + 1], 10);
       i++;
-    } else if (args[i] === '--crawl') {
+    } else if (args[i] === "--crawl") {
       userOptions.crawl = true;
-    } else if (args[i] === '--no-crawl') {
+    } else if (args[i] === "--no-crawl") {
       userOptions.crawl = false;
-    } else if (args[i] === '--userAgent' && args[i + 1]) {
+    } else if (args[i] === "--userAgent" && args[i + 1]) {
       userOptions.userAgent = args[i + 1];
       i++;
-    } else if (args[i] === '--puppeteerArgs' && args[i + 1]) {
-      userOptions.puppeteerArgs = args[i + 1].split(',');
+    } else if (args[i] === "--puppeteerArgs" && args[i + 1]) {
+      userOptions.puppeteerArgs = args[i + 1].split(",");
       i++;
-    } else if (args[i] === '--puppeteerExecutablePath' && args[i + 1]) {
+    } else if (args[i] === "--puppeteerExecutablePath" && args[i + 1]) {
       userOptions.puppeteerExecutablePath = args[i + 1];
       i++;
-    } else if (args[i] === '--rewriteRules' && args[i + 1]) {
+    } else if (args[i] === "--rewriteRules" && args[i + 1]) {
       try {
         userOptions.rewriteRules = JSON.parse(args[i + 1]);
       } catch {
         console.log('⚠️  Invalid --rewriteRules JSON; ignoring. Expected format: [["/docs/","/"], ["./docs/","./"]]');
       }
       i++;
-    } else if (args[i] === '--puppeteer.cache' && args[i + 1]) {
-      userOptions.puppeteer = userOptions.puppeteer || {};
-      userOptions.puppeteer.cache = args[i + 1] === 'true';
+    } else if (args[i] === "--sitemapPath" && i + 1 < args.length && !args[i + 1].startsWith("--")) {
+      userOptions.sitemapPath = args[i + 1];
       i++;
-    } else if (args[i] === '--minifyHtml' && args[i + 1]) {
+    } else if (args[i] === "--sitemapBaseUrl" && args[i + 1]) {
+      userOptions.sitemapBaseUrl = args[i + 1];
+      i++;
+    } else if (args[i] === "--use-w-existing-sitemap") {
+      userOptions.useExistingSitemap = true;
+    } else if (args[i] === "--puppeteer.cache" && args[i + 1]) {
+      userOptions.puppeteer = userOptions.puppeteer || {};
+      userOptions.puppeteer.cache = args[i + 1] === "true";
+      i++;
+    } else if (args[i] === "--minifyHtml" && args[i + 1]) {
       try {
         userOptions.minifyHtml = JSON.parse(args[i + 1]);
       } catch {
         // ignore parse error
       }
       i++;
-    } else if (args[i] === '--viewport' && args[i + 1]) {
+    } else if (args[i] === "--viewport" && args[i + 1]) {
       try {
         userOptions.viewport = JSON.parse(args[i + 1]);
       } catch {
         // ignore parse error
       }
       i++;
-    } else if (args[i] === '--skipThirdPartyRequests') {
+    } else if (args[i] === "--skipThirdPartyRequests") {
       userOptions.skipThirdPartyRequests = true;
-    } else if (args[i] === '--concurrency' && args[i + 1]) {
+    } else if (args[i] === "--concurrency" && args[i + 1]) {
       userOptions.concurrency = parseInt(args[i + 1], 10);
       i++;
-    } else if (args[i] === '--limit' && args[i + 1]) {
+    } else if (args[i] === "--limit" && args[i + 1]) {
       userOptions.limit = parseInt(args[i + 1], 10);
       if (Number.isNaN(userOptions.limit)) delete userOptions.limit;
       i++;
-    } else if (args[i] === '--inlineCss') {
+    } else if (args[i] === "--inlineCss") {
       userOptions.inlineCss = true;
-    } else if (args[i] === '--removeStyleTags') {
+    } else if (args[i] === "--removeStyleTags") {
       userOptions.removeStyleTags = true;
-    } else if (args[i] === '--preloadImages') {
+    } else if (args[i] === "--preloadImages") {
       userOptions.preloadImages = true;
-    } else if (args[i] === '--asyncScriptTags') {
+    } else if (args[i] === "--asyncScriptTags") {
       userOptions.asyncScriptTags = true;
-    } else if (args[i] === '--removeScriptTags') {
+    } else if (args[i] === "--removeScriptTags") {
       userOptions.removeScriptTags = true;
-    } else if (args[i] === '--skipExistingCheck') {
+    } else if (args[i] === "--skipExistingCheck") {
       userOptions.skipExistingCheck = true;
-    } else if (args[i] === '--keepPagesOpen') {
+    } else if (args[i] === "--keepPagesOpen") {
       userOptions.keepPagesOpen = true;
     }
   }
-  
+
   run(userOptions).catch(e => {
     console.error(e);
     process.exit(1);
@@ -685,6 +780,7 @@ Examples:
 
 exports.run = run;
 exports.defaultOptions = defaultOptions;
+exports.updateSitemap = updateSitemap;
 
 // Remove all files in a target directory. Safe utility if needed elsewhere.
 const clearDestination = (dirPath, { fs } = { fs: nativeFs }) => {
@@ -720,13 +816,11 @@ const enableLogging = opt => {
   page.on("console", msg => {
     const text = msg.text();
     if (text === "JSHandle@object") {
-      Promise.all(msg.args().map(objectToJson)).then(args =>
-        console.log(`💬  console.log at ${route}:`, ...args)
-      );
+      Promise.all(msg.args().map(objectToJson)).then(args => console.log(`💬  console.log at ${route}:`, ...args));
     } else if (text === "JSHandle@error") {
       Promise.all(msg.args().map(errorToString)).then(args => {
         console.log(`💬  console.log at ${route}:`, ...args);
-        errorReport.consoleErrors.push({ route, error: args.join(' ') });
+        errorReport.consoleErrors.push({ route, error: args.join(" ") });
       });
     } else {
       console.log(`️️️💬  console.log at ${route}:`, text);
@@ -741,13 +835,11 @@ const enableLogging = opt => {
     if (options.sourceMaps) {
       mapStackTrace(e.stack || e.message, {
         isChromeOrEdge: true,
-        store: sourcemapStore || {}
+        store: sourcemapStore || {},
       })
         .then(result => {
           const stackRows = result.split("\n");
-          const puppeteerLine =
-            stackRows.findIndex(x => x.includes("puppeteer")) ||
-            stackRows.length - 1;
+          const puppeteerLine = stackRows.findIndex(x => x.includes("puppeteer")) || stackRows.length - 1;
 
           const errorMsg = `${(e.stack || e.message).split("\n")[0] + "\n"}${stackRows.slice(0, puppeteerLine).join("\n")}`;
           console.log(`🔥  pageerror at ${route}: ${errorMsg}`);
@@ -768,9 +860,7 @@ const enableLogging = opt => {
     if (response.status() >= 400) {
       let responseRoute = "";
       try {
-        responseRoute = response._request
-          .headers()
-          .referer.replace(`http://localhost:${options.port}`, "");
+        responseRoute = response._request.headers().referer.replace(`http://localhost:${options.port}`, "");
       } catch (e) {}
       const errorMsg = `got ${response.status()} HTTP code for ${response.url()}`;
       console.log(`️️️⚠️  warning at ${responseRoute}: ${errorMsg}`);
@@ -792,44 +882,44 @@ const getLinks = async opt => {
     })
   );
 
-  const iframes = await page.evaluate(() =>
-    Array.from(document.querySelectorAll("iframe")).map(iframe => iframe.src)
-  );
+  const iframes = await page.evaluate(() => Array.from(document.querySelectorAll("iframe")).map(iframe => iframe.src));
   return anchors.concat(iframes);
 };
 
-
-const createTracker = (page) => {
+const createTracker = page => {
   let requestCount = 0;
   let successCount = 0;
   let failureCount = 0;
   const pendingRequests = new Set();
 
-  const updateStatus = (request) => {
-    if (request._failureText) { failureCount += 1; } 
-    else { successCount += 1; }
+  const updateStatus = request => {
+    if (request._failureText) {
+      failureCount += 1;
+    } else {
+      successCount += 1;
+    }
     pendingRequests.delete(request);
   };
 
-  const onRequest = (request) => {
+  const onRequest = request => {
     requestCount += 1;
     pendingRequests.add(request);
   };
 
-  const onRequestFinished = (request) => updateStatus(request);
-  const onRequestFailed = (request) => updateStatus(request);
+  const onRequestFinished = request => updateStatus(request);
+  const onRequestFailed = request => updateStatus(request);
 
-  page.on('request', onRequest);
-  page.on('requestfinished', onRequestFinished);
-  page.on('requestfailed', onRequestFailed);
+  page.on("request", onRequest);
+  page.on("requestfinished", onRequestFinished);
+  page.on("requestfailed", onRequestFailed);
 
   const dispose = () => {
-    page.off('request', onRequest);
-    page.off('requestfinished', onRequestFinished);
-    page.off('requestfailed', onRequestFailed);
+    page.off("request", onRequest);
+    page.off("requestfinished", onRequestFinished);
+    page.off("requestfailed", onRequestFailed);
   };
 
-  const augmentTimeoutError = (error) => {
+  const augmentTimeoutError = error => {
     return `${error.message}\nPending requests: ${pendingRequests.size}\nSuccess requests: ${successCount}\nFailure requests: ${failureCount}\nRequest count: ${requestCount}`;
   };
 
@@ -846,10 +936,10 @@ const objectToJson = async jsHandle => {
     // If jsonValue fails, try to get a string representation
     try {
       return await jsHandle.evaluate(obj => {
-        if (obj === null) return 'null';
-        if (obj === undefined) return 'undefined';
-        if (typeof obj === 'function') return obj.toString();
-        if (typeof obj === 'object') {
+        if (obj === null) return "null";
+        if (obj === undefined) return "undefined";
+        if (typeof obj === "function") return obj.toString();
+        if (typeof obj === "object") {
           try {
             return JSON.stringify(obj, null, 2);
           } catch {
@@ -864,9 +954,9 @@ const objectToJson = async jsHandle => {
   }
 };
 const errorToString = async jsHandle => {
-    try {
-      return await jsHandle.evaluate(error => error.toString());
-    } catch (e) {
-      return jsHandle.toString();
-    }
-  };
+  try {
+    return await jsHandle.evaluate(error => error.toString());
+  } catch (e) {
+    return jsHandle.toString();
+  }
+};

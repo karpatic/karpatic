@@ -1,17 +1,14 @@
+// refresh template js will reload this script on pag nav.
 (async () => {
   w.loadStyleOnce ||
     document.body.insertAdjacentHTML(
       "beforeend",
-      `<style>${await (
-        await fetch(w.location.origin + `/rsc/templates/article_lazy.css`)
-      ).text()}</style>`
+      `<style>${await (await fetch(w.location.origin + `/rsc/templates/article_lazy.css`)).text()}</style>`
     );
   w.loadStyleOnce = true;
 })();
 
-window.rir = (min, max) =>
-  Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) +
-  Math.ceil(min);
+window.rir = (min, max) => Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min);
 
 // Footer Background Animation
 function generatePath(bars) {
@@ -21,25 +18,17 @@ function generatePath(bars) {
     y = h - rir(2, 5) * 40;
     return addPath(x, y) + addPath(x + 1, y);
   });
-  return (
-    "M0," +
-    h +
-    path.join("") +
-    addPath(bars, h) +
-    "L0," +
-    h +
-    "Z"
-  ).replace("undefined", "");
+  return ("M0," + h + path.join("") + addPath(bars, h) + "L0," + h + "Z").replace("undefined", "");
 }
 
 // Sets clipPath to be the old path, then sets css vars to transition to newPath
-function updatePath() { 
+function updatePath() {
+  // console.log('Update Path', window.lazyLoaded)
+  window.width = Math.min(window.innerWidth, 800);
   const newPath = "path('" + generatePath(6) + "')";
   const footer = document.getElementById("footer_bg").style;
   // set css var --path2 to --path1's computed value and update --path1 with new path(d)
-  const pastPath = getComputedStyle(document.documentElement).getPropertyValue(
-    "--newpath"
-  );
+  const pastPath = getComputedStyle(document.documentElement).getPropertyValue("--newpath");
   footer.clipPath = pastPath;
   // Using css vars helps ensure auto-prefixing is done correctly
   document.documentElement.style.setProperty("--newpath", newPath);
@@ -49,7 +38,7 @@ function updatePath() {
   setTimeout(() => {
     footer.animation = "footer-bars 1000ms forwards";
   }, 100);
+  return true;
 }
-window.width = Math.min(window.innerWidth, 800);
-updatePath();
-setInterval(updatePath, 1500);
+!!!window.lazyLoaded && updatePath() && setInterval(updatePath, 1500);
+window.lazyLoaded = true;

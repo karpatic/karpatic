@@ -2,28 +2,27 @@ window.w = window;
 
 //
 // route.js
-// 
+//
 
-// navEvent: 
-// Handles clicks on relative links, 
-// calls handleRoute for different pages or scrolls to anchor on same page, 
-// opens parent <details> elements, 
+// navEvent:
+// Handles clicks on relative links (could be same page),
+// calls handleRoute for different pages or scrolls to anchor,
+// opens parent <details> elements,
 // updates history
 
-// handleRoute: 
-// Registers service worker, 
-// updates window.meta from path using nb2json (local) / JSON fetch (prod) / CMS fallback, 
-// imports refresh_template.js, 
+// handleRoute:
+// Registers service worker,
+// updates window.meta from path using nb2json (local) / JSON fetch (prod) / CMS fallback,
+// imports refresh_template.js,
 // dispatches refresh event
 
-
-export const navEvent = async (push) => {
+export const navEvent = async push => {
   console.group("Route: navEvent");
 
-  const toUrl = (value) => new URL(value || location.href, location.origin);
+  const toUrl = value => new URL(value || location.href, location.origin);
   const docsSegmentPattern = /\/docs(?=\/|$)/g;
   const normalizePath = (pathname = "/") => pathname.replace(docsSegmentPattern, "") || "/";
-  const toRouteUrl = (value) => {
+  const toRouteUrl = value => {
     const url = toUrl(value);
     url.pathname = normalizePath(url.pathname);
     return url;
@@ -80,17 +79,16 @@ export const navEvent = async (push) => {
 };
 
 export const handleRoute = async () => {
-  console.group("Route: HandleRoute");  
+  console.group("Route: HandleRoute");
 
-  if (w.newRoute.includes("undefined")){
+  if (w.newRoute.includes("undefined")) {
     console.log("Invalid pathname detected:", w.newRoute);
     return;
   }
 
   // One-time initialization: service worker and template import
   w.meta || (!isLocal && !preRendering && registerServiceWorker());
-  w.toast ||
-    (await import(/* webpackChunkName: "template" */ "./refresh_template.js"));
+  w.toast || (await import(/* webpackChunkName: "template" */ "./refresh_template.js"));
 
   // Parse route: default to 'index' for root, clean breadcrumb artifacts (./, ../, leading/trailing slashes)
   let route =
@@ -101,16 +99,14 @@ export const handleRoute = async () => {
           .replaceAll("./", "")
           .replaceAll("../", "")
           .replace(".html", "")
-          .replace(/^\//, "").replace("build/", "")
-          .replace(/\/$/, ""); 
+          .replace(/^\//, "")
+          .replace("build/", "")
+          .replace(/\/$/, "");
 
   // Determine fetch URL: JSON (prod/prerendering) or ipynb (local dev)
-  let url =
-    !isLocal || preRendering
-      ? `/rsc/posts/${route}.json`
-      : `/ipynb/${route}.ipynb`;
+  let url = !isLocal || preRendering ? `/rsc/posts/${route}.json` : `/ipynb/${route}.ipynb`;
   let content = {};
-  
+
   // Fetch content: Try JSON first, then ipynb conversion,
   // then CMS fallback, with error handling and reload on total failure
   try {
@@ -120,25 +116,25 @@ export const handleRoute = async () => {
         })()
       : (
           await (async () => {
-            let x = await import(
-              /* webpackChunkName: "convert" */ "../../../../packages/ipynb2web/src/convert.mjs"
-            );
+            let x = await import(/* webpackChunkName: "convert" */ "../../../../packages/ipynb2web/src/convert.mjs");
             return x;
           })()
         ).nb2json(url, false));
   } catch (err) {
-    try{ 
-      console.log('Get Failed. Trying to get content from CMS.');
-      let txt = route.split('/').pop(); // Title from last route segment
+    try {
+      console.log("Get Failed. Trying to get content from CMS.");
+      let txt = route.split("/").pop(); // Title from last route segment
       // Transform route to CMS path format (e.g., 'blog/post' -> 'Blog_Post')
-      let path = route.split('/').map(segment => segment.charAt(0).toUpperCase() + segment.slice(1)).join('_');
-      let tryThisUrl = 'https://getfrom.net/notes/' + path; 
-      let text = await (await fetch(tryThisUrl)).text();  
-      let marked = await import('/rsc/cdn/marked.js'); // Import marked and convert markdown to HTML
-      content = {meta: {title: txt, markdown: 'true'}, content: marked.marked(text)};
-    }
-    catch{
-      console.log('Unable to get content');
+      let path = route
+        .split("/")
+        .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1))
+        .join("_");
+      let tryThisUrl = "https://getfrom.net/notes/" + path;
+      let text = await (await fetch(tryThisUrl)).text();
+      let marked = await import("/rsc/cdn/marked.js"); // Import marked and convert markdown to HTML
+      content = { meta: { title: txt, markdown: "true" }, content: marked.marked(text) };
+    } catch {
+      console.log("Unable to get content");
       // Total failure: reload with #reload hash to prevent infinite loop
       console.log("GET_CONTENT:ERROR", {
         givenPath: w.newRoute,
@@ -159,7 +155,7 @@ export const handleRoute = async () => {
   meta.content = content.content;
 
   // Dispatch refresh event (listeners in refresh_template.js populate w.newTemplate & update TOC)
-  console.log("Dispatching refresh");
+  // console.log("Dispatching refresh");
   console.groupEnd();
   w.dispatchEvent(new CustomEvent("refresh"));
 };
@@ -169,9 +165,7 @@ const registerServiceWorker = async () => {
     return;
   }
   try {
-    const registration = await navigator.serviceWorker.register(
-      "/utils/service-worker.js"
-    );
+    const registration = await navigator.serviceWorker.register("/utils/service-worker.js");
     // Handle SW updates when file is modified
     registration.onupdatefound = () => {
       const installingWorker = registration.installing;
@@ -180,9 +174,7 @@ const registerServiceWorker = async () => {
           return;
         }
         if (navigator.serviceWorker.controller) {
-          console.log(
-            "New content is available; Purge occurred. fresh content added to the cache. Refresh."
-          );
+          console.log("New content is available; Purge occurred. fresh content added to the cache. Refresh.");
         } else {
           console.log("Content is cached for offline use."); // Everything has been precached
         }

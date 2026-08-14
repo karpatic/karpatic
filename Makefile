@@ -38,5 +38,8 @@ webdev:
 
 sitemap:
 	# Generate SEO sitemap from generated *_map.json files in rsc/posts
-	node ../../packages/ipynb2web/src/cli.js sitemap './rsc/posts' './sitemap.txt' '' 'charleskarpati.com'
+	node ../../packages/ipynb2web/src/cli.js sitemap './rsc/posts' './sitemap.txt' 'docs' 'charleskarpati.com'
+	echo "http://charleskarpati.com/index" >> ./sitemap.txt
+	echo "http://charleskarpati.com/404" >> ./sitemap.txt
+	sed -i 's/$$/.html/' ./sitemap.txt
 	cp ./sitemap.txt ./rsc/posts/sitemap.txt

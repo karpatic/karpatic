@@ -10,45 +10,31 @@ import "./index.css";
 //
 
 // Page Load Logic and Routing
-window.w = window; 
+window.w = window;
 w.oldRoute = location.pathname; //
 w.newRoute = location.pathname; //
 w.isLocal ||= !!!w.content; // Used to not register worker, send pings, load json/ipynb
 w.preRendering = /Prerendererest/.test(navigator.userAgent); // Used to skip console logs cluttering prerenders terminal output.
 
 // Message for the sleuths.
-w.refresh || w.preRendering ||
-  ( (w.refresh=false), console.log(
+w.refresh ||
+  w.preRendering ||
+  ((w.refresh = false),
+  console.log(
     "%c Like what you see?",
     "font-weight: bold; font-size: 50px;color: red; text-shadow: 3px 3px 0 red , 6px 6px 0 green , 9px 9px 0 blue"
   ),
-  console.log(
-    "%c Contact me@charleskarpati.com",
-    "color: blue; font-family:sans-serif; font-size: 20px"
-  ));
-
-// Simple analytics
-w.pingServer = async (event = false) => {
-  w.content &&
-    console.log("INDEX:pingServer") &&
-    navigator.sendBeacon(
-      "https://ping.charleskarpati.com/",
-      `{"from":"${oldRoute || location.href}","to":"${
-        event?.href || event?.target?.href || oldRoute
-      }"}`
-    );
-};
-!isLocal && w.pingServer();
+  console.log("%c Contact me@charleskarpati.com", "color: blue; font-family:sans-serif; font-size: 20px"));
 
 // Called in head.js to trigger handleRoute when in dev.
 // No event means initial load.
 // event = Popstate means Back/FWD button.
 // event = Click means user clicked a relative link.
 
-// Sitemap -> Click evt -> href='./paths' 
+// Sitemap -> Click evt -> href='./paths'
 // TOC -> Popstate evt -> href='#paths'
 w.redirect = async (event = false) => {
-  const eventType = event?.type || 'initial';
+  const eventType = event?.type || "initial";
   console.group(`INDEX:Event:${eventType.toUpperCase()}`);
   event?.preventDefault?.();
   !w.navEvent &&
@@ -57,11 +43,11 @@ w.redirect = async (event = false) => {
     ));
 
   // Update oldRoute to current pathname before routing
-  w.oldRoute = w.newRoute; 
-  if (eventType === 'click'){ 
+  w.oldRoute = w.newRoute;
+  if (eventType === "click") {
     w.newRoute = event?.target?.pathname || location.pathname;
   }
-  if (eventType === 'popstate'){ 
+  if (eventType === "popstate") {
     w.newRoute = location.pathname;
   }
   // console.log({ same: w.oldRoute == w.newRoute, oldRoute: w.oldRoute, newRoute: w.newRoute });
@@ -73,7 +59,7 @@ addEventListener("popstate", redirect);
 
 // Removes then Reattaches redirects. Called on refresh template.
 // w.setRedirectListeners = () => {
-//   console.log("INDEX:setRedirectListeners"); 
+//   console.log("INDEX:setRedirectListeners");
 //   document
 //     .querySelectorAll('a[href^="./"]')
 //     .forEach((l) => {
@@ -83,11 +69,9 @@ addEventListener("popstate", redirect);
 // };
 // setRedirectListeners();
 
-
-
 // Minimal, idempotent delegated navigation setup (needed at startup)
-  // Click delegation for relative links
-  const clickHandler = (e) => {
+// Click delegation for relative links
+const clickHandler = e => {
   const a = e.target?.closest && e.target.closest('a[href^="./"]');
   if (!a) return;
   e.preventDefault();

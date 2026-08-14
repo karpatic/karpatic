@@ -1,29 +1,39 @@
-window.w = window; 
+window.w = window;
 
-// Description: Generates the page. Used in Prerender. 
-// Any Elements and JS applied during prerendering will be preserved for final build 
+// Description: Generates the page. Used in Prerender.
+// Any Elements and JS applied during prerendering will be preserved for final build
 // - This has previously been a problem because of the page transition css was triggering onload in prod (expected in dev).
 // 1. refresh evt: Loads template, handles transition timing, then populates page
-// 2. populateTemplate: Populates template elements, breadcrumbs, toc, sitemap 
- 
+// 2. populateTemplate: Populates template elements, breadcrumbs, toc, sitemap
 
 // Gets the sitemap name from the first path segment:
 // index.html -> "index" || /notes/ -> "notes" ||  /notes/uniquepage.html -> "notes" || /notes/2021/01/01/index.html -> "notes"
 
-const getRoutePath = () => location.pathname.replace('/docs/', '/');
-const getRouteParts = () => getRoutePath().split("/").filter(Boolean).map((part) => part.replace(/\.html$/, ""));
+const getRoutePath = () => location.pathname.replace("/docs/", "/");
+const getRouteParts = () =>
+  getRoutePath()
+    .split("/")
+    .filter(Boolean)
+    .map(part => part.replace(/\.html$/, ""));
 const getDocsRelativeRoot = () => `./${"../".repeat(Math.max(getRouteParts().length - 1, 0))}`;
 const getsmname = () => getRouteParts()[0] || "index";
 const shorten = (str, len = 12) => str?.trim().slice(0, len) + (str?.length > len + 1 ? "..." : "");
-const capitalize = (str) => str?.replace(/\b\w/g, (c) => c.toUpperCase());
-const formatLink = (str) => shorten(capitalize(str?.replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "")));
-const displayLink = (str) => capitalize(str.toLowerCase().replace(getsmname() + '_', '').replace(/^\d+/g, "").replaceAll("_", " "));
+const capitalize = str => str?.replace(/\b\w/g, c => c.toUpperCase());
+const formatLink = str => shorten(capitalize(str?.replaceAll(" ", "_").replace(/[^a-zA-Z_]/g, "")));
+const displayLink = str =>
+  capitalize(
+    str
+      .toLowerCase()
+      .replace(getsmname() + "_", "")
+      .replace(/^\d+/g, "")
+      .replaceAll("_", " ")
+  );
 
-// Creates relative URLs to target 
-const create_url = (link, sitemap) => { 
+// Creates relative URLs to target
+const create_url = (link, sitemap) => {
   // Remove sitemap prefix from link (e.g., "notes_page" -> "page")
-  link = link.replace(new RegExp(`^${sitemap}_`, 'i'), ''); 
-  
+  link = link.replace(new RegExp(`^${sitemap}_`, "i"), "");
+
   // Determine if we're navigating from/to a subdirectory
   let fromSubpath = getRouteParts().length > 1;
   let toSubpath = link != sitemap;
@@ -31,49 +41,47 @@ const create_url = (link, sitemap) => {
   if (!toSubpath) {
     return fromSubpath ? `./../${sitemap}.html` : `./${sitemap}.html`;
   }
-  
+
   // Build relative path: "../" to go up, "sitemap/" to go down, or "./" to stay at same level
-  let t = `./${
-    (!fromSubpath && toSubpath && !!sitemap && sitemap + "/") ||
-    ""
-  }${link}`;
+  let t = `./${(!fromSubpath && toSubpath && !!sitemap && sitemap + "/") || ""}${link}`;
   return t;
-}; 
- 
+};
+
 // Load template HTML/CSS and refresh scripts
-// 1. Injects template HTML/CSS if changed. 
-// 2. Re-injects and refreshes all script tags 
+// 1. Injects template HTML/CSS if changed.
+// 2. Re-injects and refreshes all script tags
 // 3. Handles transition timing
 // 4. Populates page content
 const refresh = async () => {
   console.group("refresh_template:refresh");
 
-  await animatePageTransition(); 
-  await fetchAndInjectTemplate(); 
+  await animatePageTransition();
+  await fetchAndInjectTemplate();
   await populateTemplateElements();
   await updateBreadcrumbs();
   await updateUtilityButtons();
 
-  // Prepare TOC. Uses #tocHere 1st, #toc 2nd. 
+  // Prepare TOC. Uses #tocHere 1st, #toc 2nd.
   // w.sitemap.innerHTML = ""; // Clear sitemap to prepare for rebuild
   const hide_toc = w.meta.hide_toc?.toLowerCase() == "true";
-  let toc = !hide_toc && await buildToc();  
-  let tocNode = w["tocHere"] || w["toc"]; 
-  if(tocNode) tocNode.style.display = toc ? "block" : "none";
-  if(tocNode) tocNode.innerHTML = toc || "";
+  let toc = !hide_toc && (await buildToc());
+  let tocNode = w["tocHere"] || w["toc"];
+  if (tocNode) tocNode.style.display = toc ? "block" : "none";
+  if (tocNode) tocNode.innerHTML = toc || "";
 
   // Prepare Sitemap
-  const hide_sitemap = !w.sitemap || w.meta.hide_sitemap?.toLowerCase() == "true"; 
+  const hide_sitemap = !w.sitemap || w.meta.hide_sitemap?.toLowerCase() == "true";
   w.sitemap.style.visibility = hide_sitemap ? "hidden" : "visible";
   w.sitemap.innerHTML = hide_sitemap ? "" : await createSitemap();
   // Simple initial state: default closed; open if collapse_sitemap === false
   if (!hide_sitemap) {
     const toggle = document.getElementById("toggle_sitemap");
-    if (toggle) toggle.checked = w.meta?.collapse_sitemap == 'false';
+    if (toggle) toggle.checked = w.meta?.collapse_sitemap == "false";
   }
 
-  // Insert TOC -> Inserts into Sitemap if 
-  if (!hide_sitemap && !tocNode && toc) w['nav-toc'].innerHTML = `
+  // Insert TOC -> Inserts into Sitemap if
+  if (!hide_sitemap && !tocNode && toc)
+    w["nav-toc"].innerHTML = `
     <input type="checkbox" id="toggle_toc" class="toc-toggle" />
     <label class="toc-label" for="toggle_toc">
       Table of Contents → 
@@ -86,60 +94,55 @@ const refresh = async () => {
       ${toc} 
     </div>
   `;
-  
+
   // inject into sitemap if !tocNode but also !hide_toc.
-  // Things w Side Effects done very last. 
-  await forceReloadScripts();  
-  w.loadObserver?.(); 
+  // Things w Side Effects done very last.
+  await forceReloadScripts();
+  w.loadObserver?.();
   // Kinda botched. Timeout is length of sitemap transition + small buffer so it doesnt trigger.
-  setTimeout(() => { 
-    document.body.style.setProperty('--loaded', 'true'); 
+  setTimeout(() => {
+    document.body.style.setProperty("--loaded", "true");
     document.body.dataset.loaded = "true";
   }, 900);
-  console.groupEnd(); 
+  console.groupEnd();
 };
 
-w.addEventListener( "refresh", refresh );
-  
+w.addEventListener("refresh", refresh);
 
 const fetchAndInjectTemplate = async () => {
   w.meta.template ||= "article";
-  
+
   const needsLoading = meta.template !== document.body.getAttribute("data-template");
   if (!needsLoading) return false;
   let url = `/rsc/templates/${w.meta.template}`;
   try {
     document.body.setAttribute("data-template", w.meta.template);
-    document.body.innerHTML = await (await fetch(`${url}.html`)).text(); 
-    document.body.insertAdjacentHTML("beforeend",`<style>${await (await fetch(`${url}.css`)).text()}</style>`
-    );
+    document.body.innerHTML = await (await fetch(`${url}.html`)).text();
+    document.body.insertAdjacentHTML("beforeend", `<style>${await (await fetch(`${url}.css`)).text()}</style>`);
   } catch (err) {
     console.log("INJECT_TEMPLATE:ERROR:", err);
-  } 
-  return true
+  }
+  return true;
 };
 
 // Forceload scripts. Moves main.js to footer.
-const forceReloadScripts = async () => { 
-  Array.from(document.getElementsByTagName("script")).forEach(
-    (script) => { 
-      const newScript = document.createElement("script");
-      ["src", "type", "async", "textContent"].forEach(
-        (attr) => script[attr] && (newScript[attr] = script[attr])
-      ); 
-      script.parentNode.removeChild(script); 
-      try{
-      document.body.appendChild(newScript); 
-      }catch(e){console.log("FORCERELOADSCRIPTS ERROR:", e)}
+const forceReloadScripts = async () => {
+  Array.from(document.getElementsByTagName("script")).forEach(script => {
+    const newScript = document.createElement("script");
+    ["src", "type", "async", "textContent"].forEach(attr => script[attr] && (newScript[attr] = script[attr]));
+    script.parentNode.removeChild(script);
+    try {
+      document.body.appendChild(newScript);
+    } catch (e) {
+      console.log("FORCERELOADSCRIPTS ERROR:", e);
     }
-  ); 
+  });
 };
-  
 
 // Populate helpers split from former populateTemplate
 const populateTemplateElements = async () => {
   const insert = ["content", "title", "summary"];
-  insert.forEach((id) => {
+  insert.forEach(id => {
     if (!meta[id]) return;
     const el = document.getElementById(id);
     if (!el) return;
@@ -153,18 +156,13 @@ const populateTemplateElements = async () => {
 const animatePageTransition = async () => {
   const transitionable = !w.preRendering && location.href.indexOf("#") == -1 && w.page_transition;
   const skipTransition = w.meta.hide_transition?.toLowerCase() == "true";
-  if(!transitionable | skipTransition ) return;
+  if (!transitionable | skipTransition) return;
   console.log("animatePageTransition");
   const pageT = w.page_transition;
-  pageT.style.animation =
-    "page_transition 0.375s alternate 2, gradient 0.375s alternate 2";
-  pageT.addEventListener(
-    "animationend",
-    async () => (pageT.style.animation = "none"),
-    { once: true }
-  );
+  pageT.style.animation = "page_transition 0.375s alternate 2, gradient 0.375s alternate 2";
+  pageT.addEventListener("animationend", async () => (pageT.style.animation = "none"), { once: true });
   // Wait until the midpoint before returning
-  await new Promise((resolve) => setTimeout(resolve, 450));
+  await new Promise(resolve => setTimeout(resolve, 450));
 };
 
 const updateBreadcrumbs = async () => {
@@ -176,7 +174,7 @@ const updateBreadcrumbs = async () => {
 
 // Generates breadcrumb navigation from current URL path
 // Example: /notes/mypage.html -> /Home, /Notes, /Notes/Mypage
-const createBreadcrumbs = async () => { 
+const createBreadcrumbs = async () => {
   const parts = getRouteParts();
   const depth = parts.length; // e.g., ["blog","aboutmysite"] => depth 2
   const docsRoot = getDocsRelativeRoot();
@@ -195,16 +193,15 @@ const createBreadcrumbs = async () => {
   return [`<a href="${homeHref}">Home</a>`, trail].filter(Boolean).join("/");
 };
 
-
 // Finds all h2, h3, h4 headers and adds anchor links for deep linking
 // Anchor links copy the full URL to clipboard when clicked and show a toast notification
 // Returns array of heading data: [{id, text, level}, ...]
 const getTocContent = async () => {
   let headers = [...document.querySelectorAll("h2, h3, h4")];
   console.log("getTocContent: Found headers:", headers);
-  headers = headers.filter((h) => !h.closest("#sitemap") && !h.closest(".sitemap"));
+  headers = headers.filter(h => !h.closest("#sitemap") && !h.closest(".sitemap"));
   headers = headers
-    .map((header) => {
+    .map(header => {
       const text = (header.innerText || header.textContent || "").trim();
       if (!text) return null;
       const id = formatLink(text);
@@ -222,25 +219,25 @@ const getTocContent = async () => {
       anchor.setAttribute(
         "onclick",
         `event?.preventDefault?.(); navigator.clipboard.writeText('https://charleskarpati.com${
-          location.pathname + '#' + header.id
+          location.pathname + "#" + header.id
         }'); w.toast?.();`
-      ); 
-      
+      );
+
       return {
         id,
         text,
         level: Number(header.tagName.slice(1)),
       };
     })
-  .filter(Boolean);
-  
+    .filter(Boolean);
+
   // Ensure all <a> tags have unique IDs
-  document.querySelectorAll("a").forEach((el) => {
+  document.querySelectorAll("a").forEach(el => {
     el.id = el.id || formatLink(el.innerText) + Math.floor(Math.random() * 1000000);
   });
 
-  return headers
-}; 
+  return headers;
+};
 
 const buildToc = async () => {
   console.group("buildToc");
@@ -273,7 +270,7 @@ w.toast = () => {
     { once: true }
   );
 };
- 
+
 const updateUtilityButtons = async () => {
   if (w.expand) {
     w.expand.style.display = document.getElementsByTagName("aside").length > 0 ? "block" : "none";
@@ -284,31 +281,31 @@ const updateUtilityButtons = async () => {
     const nested = w.audio.querySelector("audio");
     if (nested) nested.src = w.meta.audio;
   }
-};  
- 
+};
 
 // Load sitemap css, and merges local JSON sitemap with remote CMS data
 const getSitemapInfo = async () => {
-  console.log('getSitemapInfo');
-  let sm = getsmname(); 
+  console.log("getSitemapInfo");
+  let sm = getsmname();
   const cont = w.sitemap && w.meta.hide_sitemap?.toLowerCase() != "true";
-  if (cont) { 
+  if (cont) {
     if (!w.sitemap_content) {
       const url = `/rsc/templates/${w.meta.template}_sitemap.css`;
       let txt = await (await fetch(url)).text();
       document.body.insertAdjacentHTML("beforeend", `<style>${txt}</style>`);
-    }  
+    }
     if (w.sm_name == sm) {
-      return 
-    } 
+      return;
+    }
+  } else {
+    return;
   }
-  else{ return }
-  w.sm_name = sm; 
-  
-  console.log('fetching sitemap content for:', sm);
+  w.sm_name = sm;
 
-  // Fetches sitemap content from local JSON and remote CMS, then merges them 
-  const url = `/rsc/posts/${sm}_map.json`; 
+  console.log("fetching sitemap content for:", sm);
+
+  // Fetches sitemap content from local JSON and remote CMS, then merges them
+  const url = `/rsc/posts/${sm}_map.json`;
   let localContent = await (await fetch(url)).json();
   // console.log("Local Sitemap Content:", localContent);
 
@@ -320,36 +317,35 @@ const getSitemapInfo = async () => {
       await fetch(`https://carlos-a-diez.com/notes/notes.json`, {
         signal: controller.signal,
       })
-    ).json()
-    clearTimeout(timeoutId); 
+    ).json();
+    clearTimeout(timeoutId);
   } catch {
     remoteContent = [];
   }
-  
+
   // Filters remote CMS data for entries matching current sitemap section (e.g., "notes_*") and merges them in.
   const filteredRemote = !remoteContent
     ? []
-    : Object.values(remoteContent).filter((x) => { 
-        let flag = x.filename
-          .toLowerCase()
-          .startsWith(sm.toLowerCase() + '_'); 
-        return !flag
-          ? false
-          : {
-              filename: x.filename || "Unknown",
-              summary: x.summary || "Unknown"
-            };
-      }).map(x => ({...x, cms: true})); // Mark CMS entries for potential special handling in UI
-  
-  w.sitemap_content =  [...localContent, ...filteredRemote]; 
+    : Object.values(remoteContent)
+        .filter(x => {
+          let flag = x.filename.toLowerCase().startsWith(sm.toLowerCase() + "_");
+          return !flag
+            ? false
+            : {
+                filename: x.filename || "Unknown",
+                summary: x.summary || "Unknown",
+              };
+        })
+        .map(x => ({ ...x, cms: true })); // Mark CMS entries for potential special handling in UI
+
+  w.sitemap_content = [...localContent, ...filteredRemote];
   return w.sitemap_content;
 };
- 
 
 // Generates sitemap using w.sitemap_content and may also include the TOC if the HTML given
 const createSitemap = async () => {
   console.group("createSitemap");
-  await getSitemapInfo()
+  await getSitemapInfo();
   const homeHref = `${getDocsRelativeRoot()}index.html`;
   const sitemap = `
     <input type="checkbox" id="toggle_sitemap" class="nav-toggle" />
@@ -361,22 +357,23 @@ const createSitemap = async () => {
     <a id="link_Home" href="${homeHref}" title="Home">Home</a>
     <div id="nav-toc"></div>
     <div id='sitemap-content'>  
-    ${(w.sitemap_content || []).map((x, i) => {
-      // First entry (i===0) is wrapped in h3 tag for section heading
-      let tab = x.tab || x.filename; 
-      let content = `
+    ${(w.sitemap_content || [])
+      .map((x, i) => {
+        // First entry (i===0) is wrapped in h3 tag for section heading
+        let tab = x.tab || x.filename;
+        let content = `
         <a id="${x.filename == w.meta.filename ? "currentPage" : "link_" + tab}"  
             href="${create_url(x.filename, w.sm_name)}" 
             title="${tab}">
             ${shorten(displayLink(tab), 20)}
-        </a>`; 
+        </a>`;
         return i === 0 ? `<h3>${content}</h3>` : content;
-  }).join("")} 
+      })
+      .join("")} 
     </div>`;
-  console.groupEnd(); 
+  console.groupEnd();
   return sitemap;
 };
-
 
 // Delegated navigation setup to avoid duplicate per-link listeners across reloads
 const setDelegatedNavigation = () => {
@@ -385,7 +382,7 @@ const setDelegatedNavigation = () => {
     document.removeEventListener("click", w._redirectHandler, true);
   }
 
-  w._redirectHandler = (e) => {
+  w._redirectHandler = e => {
     const a = e.target?.closest && e.target.closest('a[href^="./"]');
     if (!a) return;
     e.preventDefault();
@@ -398,24 +395,21 @@ const setDelegatedNavigation = () => {
   if (w._popstateHandler) {
     window.removeEventListener("popstate", w._popstateHandler);
   }
-  w._popstateHandler = (evt) => w.redirect?.({ type: "popstate" });
+  w._popstateHandler = evt => w.redirect?.({ type: "popstate" });
   window.addEventListener("popstate", w._popstateHandler);
 };
 
-
-
-// todo - style - of hyperlinks spacing 
+// todo - style - of hyperlinks spacing
 // todo - style - nested tables
 
 // todo - fix - Unique IDs: don’t randomize every <a>; Random IDs break deep links across renders. Dedupe within the page.
 // todo - fix - update ipynb2web sitemap.txt to prefix docs/ & handle index better
 // Todo - investigate - navEvent hashbang slide after handleRoute transitions the page.
-// Todo - fix - toc and sitemap template given in md. 
+// Todo - fix - toc and sitemap template given in md.
 // TODO - feature - read in yaml from markdown.
 // Todo - feature - make toast for more than just copied links
 // Todo - feature - import { create } from "handlebars";
 // Todo - fix - ipynb2web - clear footnotes count on transitions - Move to template
-
 
 /*
 - description: this isnt working

@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --mode development --devtool eval-source-map --progress",
-    "build": "make pages; webpack --mode production --profile --progress && node prerendererest.js --headless && cp docs/index.html ./index.html && cp docs/404.html ./404.html", 
+    "build": "make pages; webpack --mode production --profile --progress && node prerendererest.js --headless --sitemapPath ./sitemap.txt --use-w-existing-sitemap && cp docs/index.html ./index.html && cp docs/404.html ./404.html && cp ./sitemap.txt ./rsc/posts/sitemap.txt",
     "buildwp": "webpack --mode production --profile --progress",
     "buildpre": "node prerendererest.js --headless",
     "audio": "node ../../packages/ipynb2web/bin/ipynb2web.cli.cjs audio",  

@@ -1,5 +1,17 @@
 {
   "liveServer.settings.multiRootWorkspaceName": "charleskarpati.github.io",
   "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": false,
+  "prettier.semi": true,
+  "prettier.singleQuote": false,
+  "prettier.trailingComma": "es5",
+  "prettier.bracketSpacing": true,
+  "prettier.arrowParens": "avoid",
+  "prettier.endOfLine": "lf",
+  "prettier.bracketSameLine": false,
+  "prettier.printWidth": 120,
   "liveServer.settings.port": 5501
 }

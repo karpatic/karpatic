@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=110&section=header" width="100%">
+]133;A\<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=110&section=header" width="100%">
 
 <div align="center">
   <img width="100%" src="https://cardivo.vercel.app/api?name=Carlos%20Karpati&description=Full-Stack%20Developer%20specializing%20in%20Blockchain,%20AI,%20and%20process%20automation.%20Currently%20teaching%20at%20AACC.&image=https%3A%2F%2Fraw.githubusercontent.com%2Fkarpatic%2Fkarpatic%2Frefs%2Fheads%2Fmain%2Frsc%2Fimages%2Fphotos%2Fself%2Fheadshot1-round.png&backgroundColor=%23f0dcd1&colorPattern=%23eaeaea&linkedin=CarlosKarpati&twitter=CarlosKarpati" alt="Carlos Karpati's Card">
@@ -321,6 +321,27 @@ I have an MS in Information Systems from [UMBC](https://informationsystems.umbc.
 ## Public notes integration
 
 This site currently blends in Carlos's **public** notes corpus.
+
+## Legacy private note migration
+
+Migrated from `Project_CKCOM.md`.
+
+### Backlog
+
+- Fix the GitHub page presentation and keep notes/blog relationships clear.
+- Add or improve links to gists.
+- Revisit sitemap behavior and big/small-screen alignment.
+- Test `nb2html` / notebook-to-web output paths.
+- Improve full-width image breakout behavior.
+- Tune text-wrap balance.
+- Revisit code-line vs code-block styling.
+- Add fancier quote borders and curved decorative details.
+- Explore spinning diagrams with CSS.
+- Improve sharing-page support and image sizing behavior.
+- Revisit integrations or policy surfaces around WebAuthn, Firebase, Termly, Twilio, and Calendly.
+- Add `click2like` and a site-stats / analytics page.
+- Consider exporting main conversion helpers as an npm package.
+- Support dynamic tables generated from Python output.
 
 ## 📫 Let's Connect! 
 

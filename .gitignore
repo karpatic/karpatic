@@ -34,3 +34,6 @@ Dockerfile
 docker-compose.yml 
 
 remote-debug-profile
+
+.vscode/*
+sftp.json
