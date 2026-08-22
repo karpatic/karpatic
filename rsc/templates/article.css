@@ -1,4 +1,4 @@
-:root {
+]133;A\:root {
   --radial1:
     radial-gradient(at 52% 13%, hsla(215, 77%, 79%, 1) 0px, transparent 50%),
     radial-gradient(at 40% 33%, hsla(173, 63%, 76%, 1) 0px, transparent 50%),
@@ -19,18 +19,10 @@
   --path2: 0;
 
   /*Foot and Header Gradients And Shadows */
-  --bgheader: linear-gradient(
-    70deg,
-    rgba(var(--background), 0.5),
-    rgba(var(--foreground), 0.5),
-    rgba(var(--background), 0.5)
-  );
-  --bgfooter: linear-gradient(
-    70deg,
-    rgba(var(--background), 0.6),
-    rgba(var(--foreground), 0.6),
-    rgba(var(--background), 0.6)
-  );
+  /* prettier-ignore */
+  --bgheader: linear-gradient(70deg, rgba(var(--background), 0.5), rgba(var(--foreground), 0.5), rgba(var(--background), 0.5));
+  /* prettier-ignore */
+  --bgfooter: linear-gradient(70deg, rgba(var(--background), 0.6), rgba(var(--foreground), 0.6), rgba(var(--background), 0.6));
 }
 h1 > a::selection {
   color: rgb(var(--near-black));
