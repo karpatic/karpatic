@@ -39,7 +39,7 @@ w.redirect = async (event = false) => {
   event?.preventDefault?.();
   !w.navEvent &&
     ({ handleRoute: w.handleRoute, navEvent: w.navEvent } = await import(
-      /* webpackChunkName: "route" */ "./utils/route.js"
+      /* webpackIgnore: true */ "/src/utils/route.js"
     ));
 
   // Update oldRoute to current pathname before routing

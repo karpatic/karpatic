@@ -6,12 +6,11 @@ const webpack = require("webpack");
 const cssnano = require("cssnano"); // or: https://webpack.js.org/plugins/css-minimizer-webpack-plugin/
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin-patched");
-const HTMLInlineCSSWebpackPlugin =
-  require("html-inline-css-webpack-plugin").default;
+const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").default;
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
-const rmlogs = true; 
+const rmlogs = true;
 // auto-generate a PWA manifest + assets using webpack.config + a header.json file that you can copy to src/ for future deploys.
 // add '_projectname' to each generated asset and header.js will inject the manifest tag contingently.
 const hr = require("./rsc/header.json");
@@ -29,12 +28,11 @@ const CompressionPlugin = require("compression-webpack-plugin");
 const compress = false;
 const analyze = false;
 
-const BundleAnalyzerPlugin =
-  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 module.exports = (env, args) => {
   // process.env is different from env here
-  const isDev = args.mode === "development"; 
+  const isDev = args.mode === "development";
   const addPwa = isDev ? false : false; // No need to inject PWA
   let template = `
   <!DOCTYPE html>
@@ -50,14 +48,12 @@ module.exports = (env, args) => {
       "service-worker": "./src/utils/service-worker.js",
     },
     output: {
-      path: path.resolve("./build"),  // Writes file to this path. Not used in browser (or while in dev)
+      path: path.resolve("./build"), // Writes file to this path. Not used in browser (or while in dev)
       publicPath: isDev ? "/" : "auto", // isDev ? "/" : "./", // Basepath from which all loaded assets are retrieved.
-      filename: (pathData) => {
+      filename: pathData => {
         // [name] defers to id when it doesn't exist.
         // console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', pathData)
-        return pathData.runtime == "service-worker"
-          ? "service-worker.js"
-          : "[runtime].[id].[hash].js";
+        return pathData.runtime == "service-worker" ? "service-worker.js" : "[runtime].[id].[hash].js";
       },
       chunkFilename: "chunk.[name].[chunkhash].js",
       globalObject: "self",
@@ -101,9 +97,7 @@ module.exports = (env, args) => {
                             removeViewBox: false,
                             addAttributesToSVGElement: {
                               params: {
-                                attributes: [
-                                  { xmlns: "http://www.w3.org/2000/svg" },
-                                ],
+                                attributes: [{ xmlns: "http://www.w3.org/2000/svg" }],
                               },
                             },
                           },
@@ -189,10 +183,10 @@ module.exports = (env, args) => {
         },
       ],
     },
-    
+
     plugins: [
       new webpack.DefinePlugin({
-        CACHEBUST: JSON.stringify(Math.floor(Math.random() * 100000000)), 
+        CACHEBUST: JSON.stringify(Math.floor(Math.random() * 100000000)),
       }),
       new MiniCssExtractPlugin({
         filename: "[name].css",
@@ -203,7 +197,7 @@ module.exports = (env, args) => {
         chunks: ["index", "head"],
         // excludeChunks: ["???"],
         templateContent: template,
-        // inlineSource: "index.*.js$",
+        inlineSource: "index.*.js$",
         // inject: "head",
       }),
       new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
@@ -240,7 +234,15 @@ module.exports = (env, args) => {
       isDev
         ? () => {}
         : new HtmlMinimizerPlugin({
-            minimizerOptions: { minifyJS: true },
+            minimizerOptions: {
+              // collapseWhitespace: true,
+              // conservativeCollapse: true,
+              // minifyCSS: true,
+              // minifyJS: true,
+              // removeComments: true,
+              // removeScriptTypeAttributes: true,
+              // removeStyleLinkTypeAttributes: true,
+            },
             // test: /template_article\.html$/,
             exclude: [/tables/, /maps/, /music/],
           }),
@@ -272,8 +274,8 @@ module.exports = (env, args) => {
         ? () => {}
         : new CopyRootIndexPlugin({
             enabled: true,
-            filename: 'index.html',
-            prefix: '/build/' // adjust if you deploy under a subpath
+            filename: "index.html",
+            prefix: "/build/", // adjust if you deploy under a subpath
           }),
     ],
     devServer: {
@@ -292,8 +294,8 @@ module.exports = (env, args) => {
           return middlewares;
         }
         devServer.app.use((req, res, next) => {
-          if (req.url && req.url.startsWith('/docs/')) {
-            req.url = req.url.replace(/^\/docs\//, '/');
+          if (req.url && req.url.startsWith("/docs/")) {
+            req.url = req.url.replace(/^\/docs\//, "/");
           }
           next();
         });
@@ -306,36 +308,31 @@ module.exports = (env, args) => {
   };
 };
 
-
 class CopyRootIndexPlugin {
   constructor(opts = {}) {
     this.enabled = opts.enabled !== false;
-    this.filename = opts.filename || '404.html';
-    this.prefix = opts.prefix || '/build/'; // how to prefix asset paths in root copy
+    this.filename = opts.filename || "404.html";
+    this.prefix = opts.prefix || "/build/"; // how to prefix asset paths in root copy
   }
   apply(compiler) {
-    compiler.hooks.afterEmit.tap('CopyRootIndexPlugin', (compilation) => {
+    compiler.hooks.afterEmit.tap("CopyRootIndexPlugin", compilation => {
       if (!this.enabled) return;
       const srcPath = path.join(compiler.options.output.path, this.filename);
       if (!fs.existsSync(srcPath)) return;
-      let html = fs.readFileSync(srcPath, 'utf-8');
+      let html = fs.readFileSync(srcPath, "utf-8");
 
       // Only rewrite when we create the root copy (so original stays untouched)
       // Prefix relative (no leading /, http, https, data:, mailto:, #) asset refs.
       const matches = [];
-      html = html.replace(
-        /(src|href)=["'](?!\/|https?:|data:|mailto:|#)([^"']+)["']/g,
-        (m, attr, asset) => {
-          const before = m;
-          const after = `${attr}="${this.prefix}${asset}"`;
-          matches.push({ before, after });
-          return after;
-        }
-      );
+      html = html.replace(/(src|href)=["'](?!\/|https?:|data:|mailto:|#)([^"']+)["']/g, (m, attr, asset) => {
+        const before = m;
+        const after = `${attr}="${this.prefix}${asset}"`;
+        matches.push({ before, after });
+        return after;
+      });
       matches.forEach(({ before, after }) => {
         console.log(`\n Rewriting: ${before} -> ${after}`);
       });
- 
 
       // Write to index.html in root
       const destPath = path.resolve(compiler.options.context, this.filename);
@@ -344,7 +341,7 @@ class CopyRootIndexPlugin {
 
       // Edit: index.html copied to 404.html in rerendererest.js then index is prerendered in place.
       // Write to 404.html in root to serve as ERR fallback on github pages
-      const dest404Path = path.resolve(compiler.options.context, '404.html');
+      const dest404Path = path.resolve(compiler.options.context, "404.html");
       fs.writeFileSync(dest404Path, html);
       console.log(`\nCopied ${this.filename} to 404.html in project root`);
     });
@@ -354,27 +351,24 @@ class CopyRootIndexPlugin {
 // Converts images in output to webp
 class WebpWebpackPlugin {
   apply(compiler) {
-    compiler.hooks.afterEmit.tap("WebpWebpackPlugin", (compilation) => {
+    compiler.hooks.afterEmit.tap("WebpWebpackPlugin", compilation => {
       const outputFolder = path.resolve(compiler.options.output.path, "images");
       fs.readdir(outputFolder, (err, files) => {
         if (err) {
           console.error("Error reading output folder:", err);
           return;
         }
-        files.forEach((file) => {
+        files.forEach(file => {
           const inputPath = path.join(outputFolder, file);
           if (path.extname(inputPath).toLowerCase() === ".png") {
-            const outputPath = path.join(
-              outputFolder,
-              `${path.parse(inputPath).name}.webp`
-            );
+            const outputPath = path.join(outputFolder, `${path.parse(inputPath).name}.webp`);
             sharp(inputPath)
               .webp()
               .toFile(outputPath)
               .then(() => {
                 console.log(`Converted ${inputPath} to ${outputPath}`);
               })
-              .catch((err) => {
+              .catch(err => {
                 console.error(`Error converting ${inputPath}:`, err);
               });
           }

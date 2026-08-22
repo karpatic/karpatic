@@ -1,9 +1,6 @@
 :root {
-  --radial1: radial-gradient(
-      at 52% 13%,
-      hsla(215, 77%, 79%, 1) 0px,
-      transparent 50%
-    ),
+  --radial1:
+    radial-gradient(at 52% 13%, hsla(215, 77%, 79%, 1) 0px, transparent 50%),
     radial-gradient(at 40% 33%, hsla(173, 63%, 76%, 1) 0px, transparent 50%),
     radial-gradient(at 15% 92%, hsla(166, 97%, 69%, 1) 0px, transparent 50%),
     radial-gradient(at 97% 78%, hsla(229, 94%, 76%, 1) 0px, transparent 50%),
@@ -11,7 +8,6 @@
     radial-gradient(at 68% 16%, hsla(339, 76%, 78%, 1) 0px, transparent 50%),
     radial-gradient(at 25% 1%, hsla(202, 73%, 63%, 1) 0px, transparent 50%);
   /* transparent text w animated lin gradient bg */
-
 
   /* shadows should double blur than their y's */
   /* Borders should contrast both interior and int/exterior of container */
@@ -66,7 +62,6 @@ h1 > a {
 h2 {
   filter: url(#header);
 }
- 
 
 #header {
   /* center and size to header_nav*/
@@ -152,13 +147,11 @@ h2 {
   flex-wrap: wrap;
 }
 
-
-
-#toc{
+#toc {
   max-width: calc(var(--max-width) - 40px);
   margin: auto;
-  margin-bottom: 32px; 
-  .toc-link { 
+  margin-bottom: 32px;
+  .toc-link {
     line-height: 1.6rem;
     padding-left: 0px;
     font-size: 1.1em;
@@ -170,14 +163,13 @@ h2 {
   }
   .layer-2 {
     padding-left: 40px;
-    font-size: .9rem;
+    font-size: 0.9rem;
   }
   .layer-3 {
     padding-left: 80px;
     font-size: 0.9rem;
   }
 }
-
 
 #footer {
   height: 200px;
@@ -220,27 +212,28 @@ h2 {
   max-width: -webkit-fill-available;
 }
 
-details > details > summary { 
+details > details > summary {
   text-align: left;
-} 
+}
 /* #content > div > *,
 #content > *, */
-details{
+details {
   padding: 12px 1rem;
 
-  details{
+  details {
     /* border-left: 1px solid rgb(var(--near-black)); */
     padding: 12px 0px 12px 16px;
     margin: 0px;
   }
+}
+#content > div {
+  padding: 0px;
+}
 
-}  
-#content > div{ padding: 0px; }
- 
 @media only screen and (max-width: 800px) {
   details > details,
   #content > * {
-    padding: 0rem 1rem; 
+    padding: 0rem 1rem;
   }
   #content {
     border-width: 28px 0px 28px 8px;
@@ -313,8 +306,8 @@ audio::-webkit-media-controls-panel {
   top: 50%;
   transform: translate(-50%, -50%) scale(0.7);
   min-width: 250px;
-   max-width: 400px;
-  border: solid rgb(var(--near-black));    
+  max-width: 400px;
+  border: solid rgb(var(--near-black));
   padding: 15px;
   z-index: 1000;
   margin: 0;
@@ -324,17 +317,20 @@ audio::-webkit-media-controls-panel {
   border-radius: 7% 7% 0% 0%;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   background: rgb(var(--canvas));
-  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-} 
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    visibility 0.3s;
+}
 
-details.ipynb{
+details.ipynb {
   border: 2px solid rgb(var(--near-black));
-  padding:0px;
+  padding: 0px;
   width: 100%;
   max-width: 250px;
   overflow: hidden;
   transition: max-width 0.4s ease;
-  summary{
+  summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -347,7 +343,7 @@ details.ipynb{
     font-weight: bold;
     transition: padding 0.4s ease;
   }
- 
+
   summary::after {
     content: "Show";
     margin-left: 1rem;
@@ -356,17 +352,17 @@ details.ipynb{
   &[open] {
     max-width: 100%;
   }
-  &[open] summary{
+  &[open] summary {
     padding: 12px 20px;
   }
   &[open] summary::after {
     content: "Hide";
   }
-} 
+}
 
-details.ipynb-input{ 
+details.ipynb-input {
   summary::after {
-    content: "Show Code"; 
+    content: "Show Code";
   }
   &[open] summary::after {
     content: "Hide Code";
@@ -382,34 +378,65 @@ details.ipynb-input{
   transform: translate(-50%, -50%) scale(1);
 }
 
- 
-.tip::before, .info::before, .warning::before, .caution::before, .important::before {
-  font-size:1.5em;  display:inline-block; margin:10px 10px 10px 0px;
-}  
-.tip, .info, .important, .warning, .caution {
-  padding:  10px 20px;
+.tip::before,
+.info::before,
+.warning::before,
+.caution::before,
+.important::before {
+  font-size: 1.5em;
+  display: inline-block;
+  margin: 10px 10px 10px 0px;
+}
+.tip,
+.info,
+.important,
+.warning,
+.caution {
+  padding: 10px 20px;
   margin: 10px 0px;
   border-radius: 5px;
   /* display:inline-flex;  */
-  align-items:center;
-  color:rgb(var(--near-white));
-  * { display: inline; }
-  a{ color:rgb(var(--near-white)) }
+  align-items: center;
+  color: rgb(var(--near-white));
+  * {
+    display: inline;
+  }
+  a {
+    color: rgb(var(--near-white));
+  }
 }
-.tip::before { content: "💡"; }
-.info::before { content: "ℹ️"; }
-.important::before { content: "❗"; }
-.warning::before { content: "⚡"; }
-.caution::before { content: "⚠️"; }
-.tip{background:rgba(var(--near-black),1);}
-.info{background:rgba(8, 122, 187,1)} 
-.important{background:rgba(0, 139, 139, 1);}
-.warning{background:rgba(139, 0, 0, 1);}
-.caution{background:rgba(255, 165, 0, 1);   color: rgb(var(--near-black)); }
- 
+.tip::before {
+  content: "💡";
+}
+.info::before {
+  content: "ℹ️";
+}
+.important::before {
+  content: "❗";
+}
+.warning::before {
+  content: "⚡";
+}
+.caution::before {
+  content: "⚠️";
+}
+.tip {
+  background: rgba(var(--near-black), 1);
+}
+.info {
+  background: rgba(8, 122, 187, 1);
+}
+.important {
+  background: rgba(0, 139, 139, 1);
+}
+.warning {
+  background: rgba(139, 0, 0, 1);
+}
+.caution {
+  background: rgba(255, 165, 0, 1);
+  color: rgb(var(--near-black));
+}
 
- 
- 
 #expand::before {
   content: "➕ Expand notes";
 }
@@ -489,16 +516,6 @@ body:has(#expandmode:checked) .inline-note {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
 .card-container {
   display: flex;
   flex-wrap: wrap;
@@ -513,11 +530,25 @@ body:has(#expandmode:checked) .inline-note {
   padding: 15px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
-@media (max-width: 1200px) { .card {    flex: 1 1 300px;   }}
-@media (max-width: 800px) {  .card {    flex: 1 1 320px;  }}
-@media (max-width: 450px) {  .card {    width: 100%;   }}
+@media (max-width: 1200px) {
+  .card {
+    flex: 1 1 300px;
+  }
+}
+@media (max-width: 800px) {
+  .card {
+    flex: 1 1 320px;
+  }
+}
+@media (max-width: 450px) {
+  .card {
+    width: 100%;
+  }
+}
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -528,14 +559,13 @@ body:has(#expandmode:checked) .inline-note {
   border-radius: 8px;
 }
 .card a {
-  display: block; 
+  display: block;
   font-size: 18px;
   font-weight: bold;
   color: #007bff;
   text-decoration: none;
   transition: color 0.3s ease;
 }
-.card a:hover {  color: #0056b3;}
-
-
- 
+.card a:hover {
+  color: #0056b3;
+}

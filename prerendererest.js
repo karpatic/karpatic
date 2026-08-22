@@ -44,6 +44,8 @@ const defaultOptions = {
   minifyHtml: {
     collapseWhitespace: true,
     removeComments: true,
+    minifyCSS: true,
+    minifyJS: true,
   },
   viewport: { width: 480, height: 850 },
   skipThirdPartyRequests: false,
@@ -59,7 +61,7 @@ const defaultOptions = {
   rewriteRules: null,
   sitemapPath: "./sitemap.txt",
   sitemapBaseUrl: "https://charleskarpati.com",
-  useExistingSitemap: false,
+  useExistingSitemap: true,
 };
 
 const resolvePuppeteerExecutablePath = (options = {}) => {
@@ -236,10 +238,7 @@ const updateSitemap = ({ routes, options, fs }) => {
   if (options.useExistingSitemap) {
     const inputPath = resolvedSitemapPath;
     if (fs.existsSync(inputPath)) {
-      fs
-        .readFileSync(inputPath, "utf8")
-        .split(/\r?\n/)
-        .forEach(addUrl);
+      fs.readFileSync(inputPath, "utf8").split(/\r?\n/).forEach(addUrl);
     }
   }
 
@@ -667,7 +666,7 @@ Options:
   --rewriteRules <json>        JSON array of [from,to] path prefixes to rewrite
   --sitemapPath <path>         Write sitemap path (default: ./sitemap.txt; empty disables)
   --sitemapBaseUrl <url>       Base URL for prerendered sitemap entries
-  --use-w-existing-sitemap     Read existing sitemap entries before writing
+  --useExistingSitemap         Read existing sitemap entries before writing
   -h, --help                   Show this help message
 
 Examples:
@@ -726,7 +725,7 @@ Examples:
     } else if (args[i] === "--sitemapBaseUrl" && args[i + 1]) {
       userOptions.sitemapBaseUrl = args[i + 1];
       i++;
-    } else if (args[i] === "--use-w-existing-sitemap") {
+    } else if (args[i] === "--useExistingSitemap") {
       userOptions.useExistingSitemap = true;
     } else if (args[i] === "--puppeteer.cache" && args[i + 1]) {
       userOptions.puppeteer = userOptions.puppeteer || {};

@@ -1,6 +1,3 @@
-https://charleskarpati.com/docs/blog.html
-https://charleskarpati.com/docs/blog/aboutmysite.html
-https://charleskarpati.com/docs/blog/sitestats.html
 https://charleskarpati.com/docs/datascience.html
 https://charleskarpati.com/docs/datascience/clustering_association.html
 https://charleskarpati.com/docs/datascience/distributions_and_regression_tests.html
@@ -10,12 +7,15 @@ https://charleskarpati.com/docs/datascience/ml.html
 https://charleskarpati.com/docs/datascience/process.html
 https://charleskarpati.com/docs/datascience/visualization.html
 https://charleskarpati.com/docs/404.html
+https://charleskarpati.com/docs/blog.html
 https://charleskarpati.com/docs/.html
 https://charleskarpati.com/docs/labs.html
 https://charleskarpati.com/docs/legal.html
 https://charleskarpati.com/docs/notes.html
 https://charleskarpati.com/docs/software.html
 https://charleskarpati.com/docs/webdev.html
+https://charleskarpati.com/docs/blog/aboutmysite.html
+https://charleskarpati.com/docs/blog/sitestats.html
 https://charleskarpati.com/docs/labs/01_nb_2_html_tests.html
 https://charleskarpati.com/docs/labs/02_211_web_scraper.html
 https://charleskarpati.com/docs/labs/05_wordclouds.html
