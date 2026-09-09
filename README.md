@@ -1,4 +1,4 @@
-]133;A\<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=110&section=header" width="100%">
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=110&section=header" width="100%">
 
 <div align="center">
   <img width="100%" src="https://cardivo.vercel.app/api?name=Carlos%20Karpati&description=Full-Stack%20Developer%20specializing%20in%20Blockchain,%20AI,%20and%20process%20automation.%20Currently%20teaching%20at%20AACC.&image=https%3A%2F%2Fraw.githubusercontent.com%2Fkarpatic%2Fkarpatic%2Frefs%2Fheads%2Fmain%2Frsc%2Fimages%2Fphotos%2Fself%2Fheadshot1-round.png&backgroundColor=%23f0dcd1&colorPattern=%23eaeaea&linkedin=CarlosKarpati&twitter=CarlosKarpati" alt="Carlos Karpati's Card">
